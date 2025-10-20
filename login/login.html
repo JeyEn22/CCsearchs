@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCSearch Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="container">
+    <div class="page-bg"></div>
+
+    <!-- LEFT SIDE -->
+    <div class="left-section">
+      <div class="back-btn" onclick="window.location.href='file:///C:/Users/John%20Nathaniel%20Batas/Downloads/CCsearch/landing/landing.html'">
+        <span>&larr;</span>
+      </div>
+
+      <div class="form-box">
+        <img src="../image/logo.png" alt="Logo" class="logo">
+        <h2>Login to your CCSearch Account</h2>
+
+        <form id="loginForm">
+          <input type="text" id="studentId" placeholder="Student ID" required>
+
+          <div class="password-field">
+            <input type="password" id="password" placeholder="Password" required>
+            <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
+          </div>
+
+          <button type="submit">Login</button>
+
+          <p class="redirect-text">
+            Don’t have an account?
+            <a href="file:///C:/Users/John%20Nathaniel%20Batas/Downloads/CCsearch/register/register.html">Sign up</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-section">
+      <div class="overlay"></div>
+      <div class="quote">
+        <h3>Welcome back!<br>Continue your search for knowledge.</h3>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 👁 Toggle password visibility
+    function togglePassword(id, el) {
+      const input = document.getElementById(id);
+      if (input.type === "password") {
+        input.type = "text";
+        el.classList.remove("fa-eye");
+        el.classList.add("fa-lock");
+      } else {
+        input.type = "password";
+        el.classList.remove("fa-lock");
+        el.classList.add("fa-eye");
+      }
+    }
+
+    // ✅ Simple login validation (demo only)
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const studentId = document.getElementById("studentId").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (studentId === "" || password === "") {
+        alert("Please fill in all fields.");
+      } else {
+        alert("Login successful!");
+      }
+    });
+  </script>
+</body>
+</html>

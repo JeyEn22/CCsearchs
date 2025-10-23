@@ -1,4 +1,6 @@
-/* --- GENERAL PAGE STYLE --- */
+*{
+    font-family: "Poppins", sans-serif;
+}/* --- GENERAL PAGE STYLE --- */
 body {
   margin: 0;
   padding: 0;

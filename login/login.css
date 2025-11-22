@@ -1,4 +1,6 @@
-/* --- GENERAL PAGE STYLE --- */
+*{
+    font-family: "Poppins", sans-serif;
+}/* --- GENERAL PAGE STYLE --- */
 body {
   margin: 0;
   padding: 0;
@@ -20,6 +22,12 @@ body {
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   animation: fadeIn 1s ease-in-out;
+  border-left: none;
+  border-right: none;
+}
+
+.container {
+  animation: fadeInSmooth 0.6s ease-in-out;
 }
 
 /* --- BACKGROUND IMAGE --- */
@@ -38,12 +46,16 @@ body {
 /* --- LEFT SECTION --- */
 .left-section {
   width: 40%;
-  padding: 40px;
+  padding: 0 60px;                /* side padding only */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center;        /* vertical center */
+  align-items: center;            /* horizontal center */
   background: #fff;
   position: relative;
+}
+.left-section {
+  border-right: 1.5px solid #dcdcdc; /* light gray divider line */
 }
 
 .back-btn {
@@ -56,12 +68,27 @@ body {
 
 .form-box {
   text-align: center;
+<<<<<<< HEAD
+  width: 100%;
+  max-width: 320px;
+  margin-top: -20px;              /* fine-tune vertical balance */
 }
 
 .logo {
-  width: 100px;
-  margin-bottom: 15px;
+  width: 210px;         /* ✅ Looks proportional to your image */
+  display: block;
+  margin: 20px auto -60px;  /* ✅ Center horizontally, nice spacing below */
+=======
+  margin-bottom: 50px;
 }
+
+.logo {
+  width: 265px;
+  margin-bottom: 30px;
+
+>>>>>>> bbdc22ffd40a25c4a0750d6c2ed9d300346ebbb7
+}
+
 
 h2 {
   font-weight: 500;
@@ -90,7 +117,7 @@ input {
 
 .password-field .toggle {
   position: absolute;
-  right: 10px;
+  right: -10px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -98,7 +125,7 @@ input {
 }
 
 button {
-  width: 120px;
+  width: 347px;
   height: 40px;
   font-size: 14px;
   border-radius: 8px;
@@ -113,36 +140,96 @@ button {
 button:hover {
   background-color: #004c99;
 }
+.remember-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  margin: 10px auto 0;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;       /* ✅ prevent “Remember me” from breaking */
+  font-size: 10px;
+  color: #333;
+  cursor: pointer;
+}
+
+.remember-me input {
+  width: 10px;
+  height: 10px;
+  accent-color: #0066cc;     /* ✅ nice pale blue checkbox */
+}
+
+.forgot-pass {
+  color: #0066cc;
+  font-size: 10px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
+
 
 /* --- RIGHT SECTION --- */
 .right-section {
-  width: 70%;
+  width: 90%;
   position: relative;
-  background: lightgray url("../image/CC_BUILDING.jpg") no-repeat center center / cover;
+
+  background-image: url("../image/CC_BUILDING.jpg");
+  background-repeat: no-repeat;
+
+  /* 👇 manually control image size and position */
+  background-size: 85%;        /* adjust: 50% to 120% depending on zoom */
+  background-position: 100% 1%;
+  
+  /* Optional subtle tint */
+  background-color: #e6e6e6;
+  background-blend-mode: multiply;
+
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-  color: #fff;
+  align-items: flex-start;
+  overflow: hidden;
 }
+
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
 }
-
 .quote {
   position: absolute;
-  top: 10px;
-  left: 20px;
-  z-index: 2;
-  font-size: 22px;
-  color: #fff;
+  top: 10px;                /* same vertical distance as in your screenshot */
+  left: 20px;               /* same horizontal offset */
+  color: #000;              /* black text like your image */
   font-family: "Georgia", serif;
-  animation: slideUp 1s ease-in-out;
+  font-size: 24px;          /* perfect proportional size */
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  text-shadow: 0 0 5px rgba(255,255,255,0.5); /* subtle white glow */
+  z-index: 2;
+}
+.quote::first-letter {
+  font-size: 28px;          /* Capitalized stylized first letter */
 }
 
 /* --- ANIMATIONS --- */
+
+@media (max-width: 900px) {
+  .right-section {
+    display: none; /* hide for small screens if needed */
+  }
+}
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -151,4 +238,15 @@ button:hover {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInSmooth {
+  from {
+    opacity: 0;
+    transform: scale(0.98); /* slight zoom effect, doesn’t shift layout */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

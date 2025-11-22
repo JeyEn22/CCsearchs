@@ -52,17 +52,18 @@ body::before {
 .content-box {
   width: 80%;
   text-align: center;
+  margin-bottom: 60px;
 }
 
 .logo {
-  width: 100px;
-  margin-bottom: 15px;
+  width: 359px;
+  margin-bottom: 40px;
 }
 
 h2 {
   font-size: 26px;
   font-weight: 600;
-  color: #004aad;
+  color: #000;
   margin-bottom: 8px;
 }
 
@@ -104,6 +105,7 @@ h2 {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 74, 173, 0.5);
 }
+
 
 /* SIGN UP BUTTON */
 .signup-btn {

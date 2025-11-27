@@ -1,0 +1,368 @@
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #e6edf1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Main container */
+.container {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 1100px;
+  height: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #1c315e;
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.logo {
+  background: #fff;
+  width: 90%;
+  height: 160px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  padding: 0;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+  width: 250px;
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo h2 {
+  color: #1c315e;
+  font-size: 20px;
+  font-weight: 600;
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-55%);
+  margin: 0;
+}
+
+.nav {
+  width: 100%;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+.nav a:hover,
+.nav a.active {
+  background-color: #2f4363;
+}
+
+.logout {
+  width: 100%;
+}
+
+.logout a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  background: #1c315e;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  transition: 0.3s;
+}
+
+.logout a:hover {
+  background: #2f4363;
+}
+
+/* Main Section */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-image: url('../image/cloud.jpg');
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: 100% 33%;
+  transition: background-position 0.3s ease, background-size 0.3s ease;
+}
+
+
+
+/* Content Layout */
+.content {
+  display: flex;
+  flex: 1;
+  padding: 40px;
+  gap: 30px;
+  align-items: stretch;
+  z-index: 1;
+  position: relative;
+}
+
+/* Profile Card */
+.profile-card {
+  flex: 0 0 280px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Profile Image Wrapper */
+.profile-image {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Profile Image itself */
+.profile-image img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e6edf1;
+  border: 3px solid #1c315e;
+}
+
+/* Camera Icon */
+.camera-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  background-color: #1c315e;
+  color: #fff;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #fff;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.camera-icon:hover {
+  background-color: #2f4363;
+  transform: scale(1.05);
+}
+
+/* Profile Info Text */
+.profile-card h3 {
+  font-size: 18px;
+  color: #1c315e;
+  margin-bottom: 8px;
+}
+
+.profile-card p {
+  font-size: 14px;
+  color: #333;
+  margin: 5px 0;
+}
+
+.profile-card .divider {
+  width: 100%;
+  height: 1px;
+  background: #ccc;
+  margin: 20px 0;
+}
+
+.profile-card button {
+  margin-top: auto;
+  padding: 10px 18px;
+  border: 1px solid #1c315e;
+  background: #fff;
+  color: #1c315e;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.profile-card button:hover {
+  background: #1c315e;
+  color: #fff;
+}
+
+/* Info Section */
+.info-section {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px 35px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #d0d7de;
+  margin-bottom: 25px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  transition: 0.3s;
+}
+
+.tab.active {
+  color: #1c315e;
+  border-bottom: 3px solid #1c315e;
+}
+
+/* Form Layout */
+.tab-content {
+  display: block;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px 40px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #1c315e;
+  box-shadow: 0 0 0 2px rgba(28, 49, 94, 0.15);
+}
+
+/* Button */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.update {
+  background: #1c315e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.update:hover {
+  background: #2f4363;
+}
+
+/* Hidden tab content */
+.hidden {
+  display: none;
+}
+
+
+/* Fade-in animation for content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content {
+  animation: fadeIn 0.5s ease;
+}
+
+/* Smooth hover transitions */
+.nav a,
+.logout a,
+.profile-card button,
+.tab,
+.update {
+  transition: all 0.3s ease;
+}
+
+/* Sidebar logo bounce effect */
+.logo img {
+  transition: transform 0.4s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+/* Smooth image hover */
+.profile-image img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-image img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Button pop effect */
+button:hover {
+  transform: scale(1.03);
+}

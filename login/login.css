@@ -1,10 +1,10 @@
-*{
-    font-family: "Poppins", sans-serif;
-}/* --- GENERAL PAGE STYLE --- */
+* {
+  font-family: "Poppins", sans-serif;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", sans-serif;
   background-color: #e6edf1;
   height: 100vh;
   display: flex;
@@ -21,10 +21,12 @@ body {
   border-radius: 10px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeInSmooth 0.6s ease-in-out;
+  border-left: none;
+  border-right: none;
 }
 
-/* --- BACKGROUND IMAGE --- */
+/* Background Image */
 .page-bg {
   position: fixed;
   top: 0;
@@ -37,15 +39,17 @@ body {
   z-index: -1;
 }
 
-/* --- LEFT SECTION --- */
+/* Left Section */
 .left-section {
   width: 40%;
-  padding: 40px;
+  padding: 0 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   background: #fff;
   position: relative;
+  border-right: 1.5px solid #dcdcdc;
 }
 
 .back-btn {
@@ -62,9 +66,9 @@ body {
 }
 
 .logo {
-  width: 265px;
-  margin-bottom: 30px;
-
+  width: 210px;
+  display: block;
+  margin: 20px auto -60px;
 }
 
 h2 {
@@ -94,7 +98,7 @@ input {
 
 .password-field .toggle {
   position: absolute;
-  right: 10px;
+  right: -10px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -102,7 +106,7 @@ input {
 }
 
 button {
-  width: 120px;
+  width: 347px;
   height: 40px;
   font-size: 14px;
   border-radius: 8px;
@@ -118,35 +122,84 @@ button:hover {
   background-color: #004c99;
 }
 
-/* --- RIGHT SECTION --- */
+.remember-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  margin: 10px auto 0;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 10px;
+  color: #333;
+  cursor: pointer;
+}
+
+.remember-me input {
+  width: 10px;
+  height: 10px;
+  accent-color: #0066cc;
+}
+
+.forgot-pass {
+  color: #0066cc;
+  font-size: 10px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
+
+/* Right Section */
 .right-section {
-  width: 70%;
+  width: 90%;
   position: relative;
-  background: lightgray url("../image/CC_BUILDING.jpg") no-repeat center center / cover;
+  background-image: url("../image/CC_BUILDING.jpg");
+  background-repeat: no-repeat;
+  background-size: 85%;
+  background-position: 100% 1%;
+  background-color: #e6e6e6;
+  background-blend-mode: multiply;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-  color: #fff;
+  align-items: flex-start;
+  overflow: hidden;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
 }
 
 .quote {
   position: absolute;
   top: 10px;
   left: 20px;
-  z-index: 2;
-  font-size: 22px;
-  color: #fff;
+  color: #000;
   font-family: "Georgia", serif;
-  animation: slideUp 1s ease-in-out;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  z-index: 2;
 }
 
-/* --- ANIMATIONS --- */
+.quote::first-letter {
+  font-size: 28px;
+}
+
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -155,4 +208,16 @@ button:hover {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInSmooth {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .right-section {
+    display: none;
+  }
 }

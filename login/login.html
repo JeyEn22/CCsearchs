@@ -21,27 +21,21 @@
         <img src="../image/Icon.png" alt="Logo" class="logo">
         <h2>Login to your CCSearch Account</h2>
 
-        <form id="loginForm">
-          <input type="text" id="studentId" placeholder="Student ID" required>
+        <!-- Login Form -->
+       <form id="loginForm" action="login.php" method="POST">
+  <input type="text" name="studentID" id="studentId" placeholder="Student ID" required>
+  
+  <div class="password-field">
+    <input type="password" name="password" id="password" placeholder="Password" required>
+    <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
+  </div>
 
-          <div class="password-field">
-            <input type="password" id="password" placeholder="Password" required>
-            <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
-          </div>
+  <button type="submit">Login</button>
 
-          <div class="remember-row">
-              <label class="remember-me">
-            <input type="checkbox" id="remember">
-              Remember me
-            </label>
-         <a href="#" class="forgot-pass">Forgot password?</a>
-           </div>
-
-          <button type="submit">Login</button>
 
           <p class="redirect-text">
             Don’t have an account?
-            <a href="/register/register.html">Sign up</a>
+            <a href="../register/register.html">Sign up</a>
           </p>
         </form>
       </div>
@@ -71,18 +65,17 @@
       }
     }
 
-    // ✅ Simple login validation (demo only)
+    // Optional: client-side validation
     document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
       const studentId = document.getElementById("studentId").value.trim();
       const password = document.getElementById("password").value.trim();
-      
 
       if (studentId === "" || password === "") {
+        e.preventDefault();
         alert("Please fill in all fields.");
-      } else {
-        alert("Login successful!");
+        return false;
       }
+      // Form submits normally to login.php
     });
   </script>
 </body>

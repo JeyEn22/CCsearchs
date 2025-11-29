@@ -21,25 +21,25 @@
         <img src="../image/Icon.png" alt="Logo" class="logo">
         <h2>Create your CCSearch Account</h2>
 
-        <form id="registerForm">
-          <input type="text" id="fullname" placeholder="Full Name" required>
-          <input type="email" id="email" placeholder="Email" required>
-          <input type="text" id="studentId" placeholder="Student ID" required>
+        <!-- FIXED FORM -->
+        <form id="registerForm" action="registration.php" method="POST">
+          <input type="email" name="emailAddress" id="emailAddress" placeholder="Email" required>
+          <input type="text" name="studentID" id="studentID" placeholder="Student ID" required>
 
           <div class="password-field">
-            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" name="password" id="password" placeholder="Password" required>
             <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
           </div>
 
           <div class="password-field">
-            <input type="password" id="confirm" placeholder="Confirm Password" required>
+            <input type="password" name="confirmPassword" id="confirm" placeholder="Confirm Password" required>
             <i class="fa-solid fa-eye toggle" onclick="togglePassword('confirm', this)"></i>
           </div>
 
           <button type="submit">Register</button>
 
           <p class="redirect-text">
-            Already have an account? <a href="/login/login.html">Login</a>
+            Already have an account? <a href="../login/login.html">Login</a>
           </p>
         </form>
       </div>
@@ -67,19 +67,16 @@
       }
     }
 
-    // Form validation
+    // Client-side password match check (optional)
     document.getElementById("registerForm").addEventListener("submit", (e) => {
-      e.preventDefault();
       const pass = document.getElementById("password").value.trim();
       const confirm = document.getElementById("confirm").value.trim();
 
       if (pass !== confirm) {
+        e.preventDefault();
         alert("❌ Passwords do not match!");
-        return;
+        return false;
       }
-
-      alert("✅ Registration successful!");
-      window.location.href = "../login/login.html";
     });
   </script>
 </body>

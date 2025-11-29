@@ -1,11 +1,27 @@
+<?php
+session_start();
+
+// Redirect to login if user is not logged in
+if (!isset($_SESSION['studentID'])) {
+  header("Location: ../login/login.html");
+  exit();
+}
+
+// Prevent browser caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CCSearch Dashboard</title>
   <link rel="stylesheet" href="home.css" />
 </head>
+
 <body>
   <div class="layout-container">
 
@@ -13,27 +29,28 @@
     <aside class="sidebar">
       <div>
         <div class="logo-container">
-          <img src="/icons/sidebar-icons/icon.png" alt="Logo" />
+          <img src="../icons/sidebar-icons/icon.png" alt="Logo" />
           <h2>CCSEARCH</h2>
         </div>
         <nav class="nav-menu">
-          <a href="#" class="active"><img src="/icons/sidebar-icons/home.png" alt=""> Home</a>
-          <a href="#"><img src="/icons/sidebar-icons/profile.png" alt=""> Profile</a>
-          <a href="#"><img src="/icons/sidebar-icons/library.png" alt=""> My Library</a>
-          <a href="#"><img src="/icons/sidebar-icons/publication.png" alt=""> Publication</a>
-          <a href="#"><img src="/icons/sidebar-icons/authors.png" alt=""> Authors</a>
-          <a href="#"><img src="/icons/sidebar-icons/notification.png" alt=""> Notification</a>
+          <a href="#" class="active"><img src="../icons/sidebar-icons/home.png" alt=""> Home</a>
+          <a href="../profile/profile.php"><img src="../icons/sidebar-icons/profile.png" alt=""> Profile</a>
+          <a href="../libary/libary.php"><img src="../icons/sidebar-icons/library.png" alt=""> My Library</a>
+          <a href="#"><img src="../icons/sidebar-icons/publication.png" alt=""> Publication</a>
+          <a href="../authors/authors.php"><img src="../icons/sidebar-icons/authors.png" alt=""> Authors</a>
+          <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png" alt="">
+            Notification</a>
         </nav>
       </div>
       <div class="logout">
-        <a href="#"><img src="/icons/sidebar-icons/logout.png" alt=""> Logout</a>
+        <a href="logout.php"><img src="../icons/sidebar-icons/logout.png" alt=""> Logout</a>
       </div>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-section">
       <div class="welcome-header">
-       <img src="/image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
+        <img src="../image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
 
         <div class="welcome-content">
           <h2>Welcome to CCSearch Jelly</h2>
@@ -100,9 +117,9 @@
           <a href="#">See all</a>
         </div>
         <ul>
-          <li><img src="/icons/tool-icons/quillbot.png" alt=""> Quillbot</li>
-          <li><img src="/icons/tool-icons/canva.png" alt=""> Canva </li>
-          <li><img src="/icons/tool-icons/grammarly.png" alt=""> Grammarly</li>
+          <li><img src="../icons/tool-icons/quillbot.png" alt=""> Quillbot</li>
+          <li><img src="../icons/tool-icons/canva.png" alt=""> Canva </li>
+          <li><img src="../icons/tool-icons/grammarly.png" alt=""> Grammarly</li>
         </ul>
       </div>
 
@@ -120,5 +137,16 @@
     </aside>
 
   </div>
+
+  <script>
+    // Detect page show from back/forward cache
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) {
+        // Page was loaded from bfcache, force reload
+        window.location.reload(0);
+      }
+    });
+  </script>
 </body>
+
 </html>

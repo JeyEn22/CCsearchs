@@ -114,6 +114,7 @@ body {
   margin-left: 15px;
   margin-bottom: 15px;
 
+
 }
 
 /* HEADER */
@@ -127,7 +128,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
  
 }
 
@@ -183,7 +184,7 @@ body {
 .content-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 35px;
 }
 
 .category-box {
@@ -243,10 +244,10 @@ body {
   color: #000;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 35px;
   padding: 0px 15px;
   border-radius: 5px;
-  margin-top: 172px;
+  margin-top: 183px;
   height: 72%;
 }
 

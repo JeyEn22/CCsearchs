@@ -8,26 +8,26 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <div class="container">
+  <div class="layout-container">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="logo">
-        <img src="../image/Logo-removebg-preview.png" alt="Logo" />
-        <h2>CCSearch</h2>
-      </div>
-
-      <nav class="nav">
-        <a href="#" class="active">🏠 Home</a>
-        <a href="#">👤 Profile</a>
-        <a href="#">📚 My Library</a>
-        <a href="#">📰 Publication</a>
-        <a href="#">✍️ Authors</a>
-        <a href="#">🔔 Notifications</a>
+      <div>
+          <div class="logo-container">
+            <img src="../image/Icon.png" alt="Logo" class="sidebar-logo" />
+            <h2>CCSEARCH</h2>
+          </div>
+      <nav class="nav-menu">
+        <a href="../home/home.php"><i class="fa fa-home"></i> Home</a>
+        <a href="..//profile/profile.html"><i class="fa fa-user"></i> Profile</a>
+        <a href="../libary/library.html"><i class="fa fa-book"></i> My Library</a>
+        <a href="../publication/publication.html" class="active"><i class="fa fa-newspaper"></i> Publication</a>
+        <a href="../authors/authors.php"><i class="fa fa-pen"></i> Authors</a>
+        <a href="../notification/notification.php"><i class="fa fa-bell"></i> Notification</a>
       </nav>
-
-      <div class="logout">
-        <a href="file:///C:/Users/John%20Nathaniel%20Batas/Downloads/CCsearch/login/login.html" id="logoutBtn">🚪 Logout</a>
-      </div>
+    </div>
+    <div class="logout">
+      <a href="../landing/landing.html"><i class="fa fa-door-open"></i> Logout</a>
+    </div>
     </aside>
 
     <!-- Main Section with Background -->
@@ -36,12 +36,13 @@
         <!-- Profile Card -->
         <div class="profile-card">
           <div class="profile-image">
-            <img src="../image/Logo.png" alt="User" id="profilePic">
+            <img src="../image/profile.png" alt="User" id="profilePic">
             <label for="fileInput" class="camera-icon">
               <i class="fa fa-camera"></i>
             </label>
             <input type="file" id="fileInput" accept="image/*" hidden>
           </div>
+          
 
           <h3>Nani Daski</h3>
           <p>Uploaded Documents: <strong>20</strong></p>

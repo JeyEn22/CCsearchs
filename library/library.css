@@ -19,11 +19,11 @@ body {
 .layout-container {
   display: grid;
   grid-template-columns: 240px 1fr; 
-  height: 85vh;
+  height: 93vh;
+  width: 95vw;
   background-color: #475d79;
-  margin: 20px;
   border-radius: 5px;
-  padding: 18px;
+  padding: 30px 30px;
   overflow: hidden;
 }
 /* --- SIDEBAR --- */
@@ -33,13 +33,14 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1px 1px;
+  padding: 0px 0px;
   border-radius: 4px;
-  position: relative; 
+  position: relative;  /* ← REQUIRED for z-index to work */
   z-index: 1;   
   margin-left: 13px;
-  margin-bottom: 15px;
   box-shadow: 0px 2px 1px rgb(0, 0, 0);
+  width: 225px;
+
 }
 
 .logo-container {
@@ -68,7 +69,13 @@ body {
 }
 
 .nav-menu {
-  margin-top: 57px;
+  margin-top: 50px;
+}
+
+
+.nav-menu a img {
+  width: 18px;
+  height: 18px;
 }
 
 .nav-menu a {
@@ -94,8 +101,7 @@ body {
 
 .logout {
   text-align: center;
-  padding: 15px 0 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
 }
 
 .logout a {
@@ -104,6 +110,10 @@ body {
   gap: 8px;
   color: #fff;
   text-decoration: none;
+}
+
+.logout img {
+  width: 18px;
 }
 
 /* --- MAIN SECTION --- */
@@ -260,19 +270,20 @@ body {
 .category-box {
   background-color: #fff; 
   border-radius: 10px;
-  padding: 12px 20px; 
+  padding: 15px 12px; 
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .category-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px; 
+
 }
 
 .category-header h3 {
   color: #000;
   font-size: 18px; 
+  padding-bottom: 10px;
 }
 
 .category-header a {
@@ -301,8 +312,8 @@ body {
 
 .book-card {
   flex: 0 0 150px; 
-  height: 200px;
-  background-color: #fff;
+  height: 150px;
+  background-color: #000;
   border-radius: 8px;
   border: 1px solid #ccc;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
@@ -314,6 +325,7 @@ body {
   position: relative;
   overflow: hidden;
   text-align: left;
+  
 }
 
 .book-card::before {
@@ -405,51 +417,5 @@ body {
   .nav-menu a i {
     margin: 0 auto;
   }
-}
-
-/* --- ANIMATIONS --- */
-@keyframes fadeSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.layout-container {
-  animation: fadeSlideUp 0.6s ease-out forwards;
-}
-
-.sidebar {
-  animation: fadeSlideUp 0.6s ease-out 0.2s forwards;
-  opacity: 0; 
-}
-
-.welcome-header.library-header {
-  animation: fadeSlideUp 0.6s ease-out 0.3s forwards;
-  opacity: 0;
-}
-
-.category-box {
-  animation: fadeSlideUp 0.6s ease-out 0.4s forwards;
-  opacity: 0;
-}
-
-.mini-item {
-  animation: fadeSlideUp 0.6s ease-out 0.5s forwards;
-  opacity: 0;
-}
-
-.search-bar {
-  animation: fadeSlideUp 0.6s ease-out 0.35s forwards;
-  opacity: 0;
 }
 

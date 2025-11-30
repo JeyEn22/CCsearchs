@@ -1,0 +1,171 @@
+<?php
+session_start();
+
+// Redirect to login if user is not logged in
+if (!isset($_SESSION['studentID'])) {
+  header("Location: ../login/login.html");
+  exit();
+}
+
+// Prevent browser caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CCSearch Library</title>
+  <link rel="stylesheet" href="library.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div>
+        <div class="logo-container">
+          <img src="../image/Icon.png" alt="Logo" class="sidebar-logo" />
+          <h2>CCSEARCH</h2>
+        </div>
+        <nav class="nav-menu">
+          <a href="../home/home.php"><img src="../icons/sidebar-icons/home.png" alt=""> Home</a>
+          <a href="../profile/profile.php"><img src="../icons/sidebar-icons/profile.png" alt="">
+            Profile</a>
+          <a href="#" class="active"><img src="../icons/sidebar-icons/library.png" alt=""> My Library</a>
+          <a href="../publication/publication.php"><img src="../icons/sidebar-icons/publication.png" alt="">
+            Publication</a>
+          <a href="../authors/authors.php"><img src="../icons/sidebar-icons/authors.png" alt=""> Authors</a>
+          <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png" alt="">
+            Notification</a>
+        </nav>
+      </div>
+      <div class="logout">
+        <a href="logout.php"><img src="../icons/sidebar-icons/logout.png" alt=""> Logout</a>
+      </div>
+    </aside>
+
+    <main class="main-section">
+      <!-- WELCOME HEADER -->
+      <div class="welcome-header library-header">
+        <img src="../image/download.png" alt="Welcome hands icon" class="banner-icon-left" />
+        <img src="../image/cloud.jpg" alt="Wavy blue background" class="banner-background" />
+
+        <div class="welcome-content">
+          <h2>Welcome to CCSearch, Jelly! 👋</h2>
+          <p>Where you can share credible knowledge and discover reliable sources — all in one place!</p>
+
+          <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+            <button><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+
+        <img src="../image/globe.png" alt="Globe and book icon" class="banner-icon-right" />
+      </div>
+
+      <div class="content-section">
+        <div class="category-box">
+          <div class="category-header">
+            <h3>My Books</h3>
+            <a href="#">View all →</a>
+          </div>
+          <div class="book-grid-wrapper">
+            <div class="book-grid">
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+              <div class="book-card">
+                <p>Title</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="small-sections-row">
+          <div class="category-box small-section">
+            <div class="category-header">
+              <h3>Saved Books</h3>
+              <a href="#">View all →</a>
+            </div>
+            <div class="mini-list">
+              <div class="mini-item">
+                <p>Case Study on Boeing Accident</p><small>Title</small>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="category-box small-section">
+            <div class="category-header">
+              <h3>Favorite Authors</h3>
+              <a href="#">View all →</a>
+            </div>
+            <div class="mini-list">
+              <div class="mini-item">
+                <p>Case Study on Boeing Accident</p><small>Title</small>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="category-box small-section">
+            <div class="category-header">
+              <h3>Recently Viewed</h3>
+              <a href="#">View all →</a>
+            </div>
+            <div class="mini-list">
+              <div class="mini-item">
+                <p>Case Study on Boeing Accident</p><small>Title</small>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+              <div class="mini-item">
+                <p>Title</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Detect page show from back/forward cache
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) {
+        // Page was loaded from bfcache, force reload
+        window.location.reload(0);
+      }
+    });
+  </script>
+</body>
+
+</html>

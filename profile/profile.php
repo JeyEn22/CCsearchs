@@ -1,5 +1,21 @@
+<?php
+session_start();
+
+// Redirect to login if user is not logged in
+if (!isset($_SESSION['studentID'])) {
+  header("Location: ../login/login.html");
+  exit();
+}
+
+// Prevent browser caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,27 +23,30 @@
   <link rel="stylesheet" href="profile.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
   <div class="layout-container">
     <!-- Sidebar -->
     <aside class="sidebar">
       <div>
-          <div class="logo-container">
-            <img src="../image/Icon.png" alt="Logo" class="sidebar-logo" />
-            <h2>CCSEARCH</h2>
-          </div>
-      <nav class="nav-menu">
-        <a href="../home/home.php"><i class="fa fa-home"></i> Home</a>
-        <a href="..//profile/profile.html"><i class="fa fa-user"></i> Profile</a>
-        <a href="../libary/library.html"><i class="fa fa-book"></i> My Library</a>
-        <a href="../publication/publication.html" class="active"><i class="fa fa-newspaper"></i> Publication</a>
-        <a href="../authors/authors.php"><i class="fa fa-pen"></i> Authors</a>
-        <a href="../notification/notification.php"><i class="fa fa-bell"></i> Notification</a>
-      </nav>
-    </div>
-    <div class="logout">
-      <a href="../landing/landing.html"><i class="fa fa-door-open"></i> Logout</a>
-    </div>
+        <div class="logo-container">
+          <img src="../image/Icon.png" alt="Logo" class="sidebar-logo" />
+          <h2>CCSEARCH</h2>
+        </div>
+        <nav class="nav-menu">
+          <a href="../home/home.php"><img src="../icons/sidebar-icons/home.png" alt=""> Home</a>
+          <a href="#" class="active"><img src="../icons/sidebar-icons/profile.png" alt=""> Profile</a>
+          <a href="../library/library.php"><img src="../icons/sidebar-icons/library.png" alt=""> My Library</a>
+          <a href="../publication/publication.php"><img src="../icons/sidebar-icons/publication.png" alt="">
+            Publication</a>
+          <a href="../authors/authors.php"><img src="../icons/sidebar-icons/authors.png" alt=""> Authors</a>
+          <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png" alt="">
+            Notification</a>
+        </nav>
+      </div>
+      <div class="logout">
+        <a href="logout.php"><img src="../icons/sidebar-icons/logout.png"> Logout</a>
+      </div>
     </aside>
 
     <!-- Main Section with Background -->
@@ -42,7 +61,7 @@
             </label>
             <input type="file" id="fileInput" accept="image/*" hidden>
           </div>
-          
+
 
           <h3>Nani Daski</h3>
           <p>Uploaded Documents: <strong>20</strong></p>
@@ -114,4 +133,5 @@
   </div>
   <script src="profile.js"></script>
 </body>
+
 </html>

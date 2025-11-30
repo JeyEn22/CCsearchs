@@ -18,26 +18,28 @@ body {
   display: grid;
   grid-template-columns: 240px 1fr;
   width: 95%;
-  min-height: 86vh; 
-  height: auto;   
+  height: 95%;   
   background-color: #475d79;
-  margin: 25px auto;
   border-radius: 6px;
-  padding: 15px;
+  padding: 35px;
   box-shadow: 0 0 12px rgba(0,0,0,0.18);
 }
 
 
 /* SIDEBAR */
 .sidebar {
-  width: 230px;
-  background: #27548a;
-  color: white;
+  background-color: #27548a;
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 0px 0px;
   border-radius: 4px;
-  padding: 5px;
+  position: relative;  /* ← REQUIRED for z-index to work */
+  z-index: 1;   
+  box-shadow: 0px 2px 1px rgb(0, 0, 0);
+  width: 225px;
+  height: 87%;
 }
 
 .logo-container {
@@ -53,38 +55,50 @@ body {
 }
 
 .logo-container h2 {
-  color: white;
+  color:#000;
   font-size: 22px;
 }
 
 .nav-menu {
-  margin-top: 60px;
+  margin-top: 50px;
 }
 
 .nav-menu a {
   display: flex;
+  align-items: center;
   gap: 10px;
-  color: white;
+  color: #fff;
   text-decoration: none;
-  padding: 12px 20px;
-  margin: 6px 0;
+  padding: 12px 25px;
   transition: 0.3s;
+  margin-top: 5px;
 }
 
-.nav-menu a.active,
-.nav-menu a:hover {
-  background: #1e3e68;
+.nav-menu a img {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  background-color: #1e3e68;
 }
 
 .logout {
-  padding: 15px 0;
-  border-top: 1px solid rgba(255,255,255,0.3);
   text-align: center;
+  padding: 15px 0 20px;
+ 
 }
 
 .logout a {
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
   text-decoration: none;
+}
+.logout img {
+  width: 18px;
 }
 
 /* MAIN CONTENT AREA */
@@ -95,7 +109,7 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 90%;
 }
 
 /* TOP BAR */
@@ -108,14 +122,19 @@ body {
 }
 
 .top-bar h1 {
-  margin-left: 270px;
   font-size: 20px;
-  color: white
+  color: #fff;
+  position: absolute;
+  margin-left: 480px;
 }
 
-.back {
-  font-size: 14px;
+.top-bar .back {
+  font-size: 12px;
   cursor: pointer;
+  color: #fff;
+  position: relative;
+  top: 10px;
+  right: 5px; 
 }
 
 .search-bar {
@@ -174,6 +193,13 @@ body {
   gap: 18px;
   margin-bottom: 10px;
 }
+.card-row a {
+  text-decoration: none;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 18px;
+  margin-bottom: 10px;
+  color: black;
+}
 
 .doc-card {
   height: 150px;
@@ -225,6 +251,11 @@ body {
 .upload-card i {
   font-size: 22px;
   margin-bottom: 5px;
+  text-decoration: none;
+}
+
+.upload-card span {
+  text-align: center;
 }
 
 .caption {
@@ -232,4 +263,194 @@ body {
   font-size: 13px;
   color: black;
 }
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; 
+  z-index: 1000; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.6); /* semi-transparent */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; /* 5% from top, centered */
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%; 
+  max-width: 1000px;
+  position: relative;
+}
+
+/* Close button */
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover {
+  color: black;
+}
+
+
+/* FULL DARK BACKGROUND */
+.outer-background {
+  background-color: #475d79;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 73vh;
+  margin: 120px auto;      /* reduced margin to increase width */
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+  width: 95%;             /* make it take most of the screen width */
+  max-width: 1200px;      /* optional: limit max width */
+}
+
+
+/* CSS Variables */
+:root {
+  --left-column-width: 260px;
+  --grid-gap: 20px;
+  --white-box-width: 950px;
+  --main-blue: #2576c5;
+  --dark-blue: #2f455c;
+  --light-bg: #f3f6fc;
+  --text-color: #333;
+}
+
+/* WHITE BOX */
+.white-box {
+  background: var(--light-bg);
+  padding: 20px 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  display: grid;
+  grid-template-columns: var(--left-column-width) 1fr;
+  gap: var(--grid-gap);
+  width: var(--white-box-width);
+  margin: 0 auto;
+  align-items: stretch; /* stretches both columns to same height */
+}
+
+/* LEFT SECTION */
+.left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* pushes upload button to bottom */
+  align-items: flex-start;
+  height: 100%; /* ensures full height of white-box */
+}
+
+.back {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--dark-blue);
+  margin-bottom: 15px;
+}
+
+/* PREVIEW BOX */
+.preview-container {
+  width: 230px;
+  height: 320px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.upload-btn {
+  background: var(--main-blue);
+  color: white;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* RIGHT SECTION */
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* FORM GROUPS - label on left, input on right */
+.form-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+label {
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--text-color);
+  min-width: 130px;
+  text-align: right;
+  margin-bottom: 0;
+}
+
+input[type="text"], select, textarea {
+  flex: 1;
+  max-width: 500px;
+  padding: 6px 8px;
+  border: 1px solid #c7c7c7;
+  border-radius: 3px;
+  font-size: 14px;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 130px;
+  resize: none;
+}
+
+/* PUBLISH BUTTON - bottom right */
+.publish-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.publish-btn {
+  background: var(--main-blue);
+  color: white;
+  padding: 10px 34px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+
 

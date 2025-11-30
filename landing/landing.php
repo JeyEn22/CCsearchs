@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="landing.css">
 </head>
+
 <body>
   <div class="container">
     <!-- LEFT SECTION -->
@@ -17,7 +19,8 @@
         <p class="subtitle">Your trusted source for credible research references</p>
 
         <div class="button-group">
-          <button type="button" class="btn login-btn" onclick="window.location.href='../login/login.html'">Login</button>
+          <button type="button" class="btn login-btn"
+            onclick="window.location.href='../login/login.html'">Login</button>
           <button class="btn signup-btn" onclick="window.location.href='../register/register.html'">Sign Up</button>
         </div>
       </div>
@@ -32,4 +35,5 @@
     </div>
   </div>
 </body>
+
 </html>

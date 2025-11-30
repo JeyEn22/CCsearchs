@@ -17,30 +17,30 @@ body {
 .layout-container {
   display: grid;
   grid-template-columns: 240px 1fr;
-  height: 85vh;
+  height: 95vh;
+  width: 120vw;
   background-color: #475d79;
   margin: 20px;
   border-radius: 5px;
-  padding: 20px;
+  padding: 40px 40px;
   overflow: hidden;
 }
 
 /* Sidebar */
 .sidebar {
-  position: relative;   
-  right: 7px;          
-  width: 230px;        
   background-color: #27548a;
   color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px;
+  padding: 0px 0px;
   border-radius: 4px;
+  position: relative;  /* ← REQUIRED for z-index to work */
+  z-index: 1;   
   box-shadow: 0px 2px 1px rgb(0, 0, 0);
-  z-index: 1;
-}
+  width: 225px;
 
+}
 .logo-container {
   background-color: #ffffff;
   border-radius: 4px;
@@ -58,12 +58,12 @@ body {
   margin: 0px;
   width: 265px;
 }
-
 .logo-container h2 {
-  color: #000;
+  color: #000; /* Optional: makes the text match your sidebar theme */
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 10px;
+  
 }
 
 .nav-menu {
@@ -81,6 +81,11 @@ body {
   margin-top: 5px;
 }
 
+.nav-menu a img {
+  width: 18px;
+  height: 18px;
+}
+
 .nav-menu a i {
   width: 18px;
   height: 18px;
@@ -94,7 +99,7 @@ body {
 .logout {
   text-align: center;
   padding: 15px 0 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+ 
 }
 
 .logout a {
@@ -103,6 +108,9 @@ body {
   gap: 8px;
   color: #fff;
   text-decoration: none;
+}
+.logout img {
+  width: 18px;
 }
 
 /* Main Section */
@@ -115,27 +123,31 @@ body {
   background-position: top center, bottom center;
   background-size: 100% 33%, 100% 67%;
   transition: background-position 0.3s ease, background-size 0.3s ease;
+  background-color: #f7f6f6;
+  margin-left: 20px;
 }
 
 /* Content Layout */
 .content {
   display: flex;
   flex: 1;
-  padding: 40px;
+  padding: 50px 50px;
   gap: 30px;
   align-items: stretch;
   z-index: 1;
   position: relative;
+  height: 100vh;
+  
 }
 
 /* Profile Card */
 .profile-card {
   flex: 0 0 230px;  
   width: 230px;        
-  background: #fff;
+  background: #EDEDED;
   border-radius: 15px;
   padding: 30px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.50);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -143,11 +155,11 @@ body {
   text-align: center;
   position: relative;
   z-index: 2;
-  top: 45px;
   height: auto;          
   min-height: 250px; 
   max-height: 550px;    
-  overflow-y: auto;     
+  overflow-y: auto;    
+
 }
 
 
@@ -235,19 +247,18 @@ body {
 /* Info Section */
 .info-section {
   flex: 1 1 auto;
-  background: #fff;
+  background: #EDEDED;
   border-radius: 10px;
   padding: 30px 35px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-top: 0;
   position: relative;
   z-index: 1;
-  top: 45px;
 
   height: auto;          
   min-height: 250px;       
   max-height: 550px;      
   overflow-y: auto; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.50);
 }
 
 /* Tabs */

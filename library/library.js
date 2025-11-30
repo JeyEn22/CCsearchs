@@ -16,18 +16,3 @@ document.getElementById('prevBtn').addEventListener('click', () => {
   bookGrid.style.transform = `translateX(${position}px)`;
 });
 
-// ===== BANNER ANIMATIONS =====
-window.addEventListener('DOMContentLoaded', () => {
-  const headerBox = document.querySelector('.header-box');
-  const bannerLeft = document.querySelector('.banner-left');
-  const bannerCenter = document.querySelector('.banner-center');
-  const bannerRight = document.querySelector('.banner-right');
-
-  // Fade in the banner container
-  headerBox.classList.add('fade-in');
-
-  // Animate children with staggered delay
-  setTimeout(() => bannerLeft.classList.add('slide-left'), 300);
-  setTimeout(() => bannerCenter.classList.add('slide-up'), 500);
-  setTimeout(() => bannerRight.classList.add('slide-right'), 700);
-});

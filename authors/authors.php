@@ -37,8 +37,9 @@ header("Pragma: no-cache");
             <nav class="nav-menu">
                 <a href="../home/home.php"><img src="../icons/sidebar-icons/home.png"> Home</a>
                 <a href="../profile/profile.php"><img src="../icons/sidebar-icons/profile.png"> Profile</a>
-                <a href="../libary/libary.php"><img src="../icons/sidebar-icons/library.png"> My Library</a>
-                <a href="#"><img src="../icons/sidebar-icons/publication.png"> Publication</a>
+                <a href="../library/library.php"><img src="../icons/sidebar-icons/library.png"> My Library</a>
+                <a href="../publication/publication.php"><img src="../icons/sidebar-icons/publication.png">
+                    Publication</a>
                 <a class="active" href="#"><img src="../icons/sidebar-icons/authors.png"> Authors</a>
                 <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png">
                     Notification</a>

@@ -1,0 +1,235 @@
+/**
+ * Library Page Specific Styles
+ * Works with unified layout.css
+ */
+
+/* Welcome Header */
+.welcome-header.library-header {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: #f7f9fd;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.banner-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.banner-icon-left {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+    height: auto;
+    z-index: 2;
+}
+
+.banner-icon-right {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+    height: auto;
+    z-index: 2;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 3;
+    max-width: 600px;
+}
+
+.welcome-content h2 {
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.welcome-content p {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Center the search box */
+.welcome-content .search-box {
+    margin: 10px auto 0;
+    display: flex;
+    width: 300px;
+}
+
+
+/* Content Section */
+.content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.category-box {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.category-header h3 {
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.category-header a {
+    color: #27548a;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.category-header a:hover {
+    color: #1e3e68;
+    text-decoration: underline;
+}
+
+/* Book Grid */
+.book-grid-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.book-grid-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.book-grid {
+    display: inline-flex;
+    gap: 20px;
+}
+
+.book-card {
+    flex: 0 0 150px;
+    height: 150px;
+    background-color: #000;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.book-card p,
+.book-card small {
+    position: relative;
+    z-index: 2;
+    background: white;
+    width: 100%;
+    padding-left: 5px;
+}
+
+.book-card small {
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.book-card p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+/* Small Sections Row */
+.small-sections-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.small-section {
+    padding: 15px;
+    height: 200px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.small-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mini-list {
+    margin-top: 10px;
+}
+
+.mini-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mini-item p {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+
+.mini-item small {
+    font-size: 11px;
+    color: #777;
+}

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../database/database.php";
 
 // Redirect to login if user is not logged in
 if (!isset($_SESSION['studentID'])) {
@@ -11,161 +12,107 @@ if (!isset($_SESSION['studentID'])) {
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
+
+$studentID = $_SESSION['studentID'];
+
+// Fetch publications in student's library
+$stmt = $conn->prepare("
+    SELECT p.publicationID, p.title, p.published_datetime, p.authors, p.department, p.type, p.abstract, p.file_path
+    FROM library l
+    JOIN publications p ON l.publicationID = p.publicationID
+    WHERE l.studentID = ?
+    ORDER BY p.published_datetime DESC
+");
+if ($stmt) {
+  $stmt->bind_param("s", $studentID);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $libraryPublications = [];
+  while ($row = $result->fetch_assoc()) {
+    $libraryPublications[] = $row;
+  }
+  $stmt->close();
+} else {
+  die("Failed to prepare statement: " . $conn->error);
+}
+
+// Set layout variables
+$pageTitle = 'CCSearch Library';
+$activeNav = 'library';
+$additionalCSS = ['library_page.css'];
+$additionalExternalCSS = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'];
+
+// Include layout header
+include "../layout/layout.php";
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CCSearch Library</title>
-  <link rel="stylesheet" href="library.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-</head>
-
-<body>
-  <div class="layout-container">
-    <aside class="sidebar">
-      <div>
-        <div class="logo-container">
-          <img src="../image/Icon.png" alt="Logo" class="sidebar-logo" />
-          <h2>CCSEARCH</h2>
-        </div>
-        <nav class="nav-menu">
-          <a href="../home/home.php"><img src="../icons/sidebar-icons/home.png" alt=""> Home</a>
-          <a href="../profile/profile.php"><img src="../icons/sidebar-icons/profile.png" alt="">
-            Profile</a>
-          <a href="#" class="active"><img src="../icons/sidebar-icons/library.png" alt=""> My Library</a>
-          <a href="../publication/publication.php"><img src="../icons/sidebar-icons/publication.png" alt="">
-            Publication</a>
-          <a href="../authors/authors.php"><img src="../icons/sidebar-icons/authors.png" alt=""> Authors</a>
-          <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png" alt="">
-            Notification</a>
-        </nav>
-      </div>
-      <div class="logout">
-        <a href="logout.php"><img src="../icons/sidebar-icons/logout.png" alt=""> Logout</a>
-      </div>
-    </aside>
-
-    <main class="main-section">
-      <!-- WELCOME HEADER -->
-      <div class="welcome-header library-header">
-        <img src="../image/download.png" alt="Welcome hands icon" class="banner-icon-left" />
-        <img src="../image/cloud.jpg" alt="Wavy blue background" class="banner-background" />
-
-        <div class="welcome-content">
-          <h2>Welcome to CCSearch, Jelly! 👋</h2>
-          <p>Where you can share credible knowledge and discover reliable sources — all in one place!</p>
-
-          <div class="search-bar">
+<!-- Welcome Header -->
+<div class="welcome-header library-header">
+    <img src="../image/home_images/welcome-header.png" alt="Wavy blue background" class="banner-background" />
+    <div class="welcome-content">
+        <h2>Welcome to CCSearch, Jelly! 👋</h2>
+        <p>Where you can share credible knowledge and discover reliable sources — all in one place!</p>
+        <div class="search-box">
             <input type="text" placeholder="Search..." />
-            <button><i class="fa fa-search"></i></button>
-          </div>
+            <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
+    </div>
+</div>
 
-        <img src="../image/globe.png" alt="Globe and book icon" class="banner-icon-right" />
-      </div>
-
-      <div class="content-section">
-        <div class="category-box">
-          <div class="category-header">
+<!-- Content Section -->
+<div class="content-section">
+    <div class="category-box">
+        <div class="category-header">
             <h3>My Books</h3>
             <a href="#">View all →</a>
-          </div>
-          <div class="book-grid-wrapper">
+        </div>
+        <div class="book-grid-wrapper">
             <div class="book-grid">
-              <div class="book-card">
-                <p>Title</p>
-              </div>
-              <div class="book-card">
-                <p>Title</p>
-              </div>
-              <div class="book-card">
-                <p>Title</p>
-              </div>
-              <div class="book-card">
-                <p>Title</p>
-              </div>
-              <div class="book-card">
-                <p>Title</p>
-              </div>
-              <div class="book-card">
-                <p>Title</p>
-              </div>
+                <?php if (!empty($libraryPublications)): ?>
+                    <?php foreach ($libraryPublications as $pub): ?>
+                        <div class="book-card">
+                            <p><?= htmlspecialchars($pub['title']) ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No publications in your library yet.</p>
+                <?php endif; ?>
             </div>
-          </div>
         </div>
+    </div>
 
-        <div class="small-sections-row">
-          <div class="category-box small-section">
+    <div class="small-sections-row">
+        <div class="category-box small-section">
             <div class="category-header">
-              <h3>Saved Books</h3>
-              <a href="#">View all →</a>
+                <h3>Saved Books</h3>
+                <a href="#">View all →</a>
             </div>
             <div class="mini-list">
-              <div class="mini-item">
-                <p>Case Study on Boeing Accident</p><small>Title</small>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
+                <?php
+                // Fetch saved publications
+                $stmt2 = $conn->prepare("
+                    SELECT p.title
+                    FROM saved_publications sp
+                    JOIN publications p ON sp.publicationID = p.publicationID
+                    WHERE sp.studentID = ?
+                    ORDER BY sp.savedID DESC
+                ");
+                if ($stmt2) {
+                    $stmt2->bind_param("s", $studentID);
+                    $stmt2->execute();
+                    $res2 = $stmt2->get_result();
+                    while ($row2 = $res2->fetch_assoc()) {
+                        echo "<div class='mini-item'><p>" . htmlspecialchars($row2['title']) . "</p></div>";
+                    }
+                    $stmt2->close();
+                }
+                ?>
             </div>
-          </div>
-
-          <div class="category-box small-section">
-            <div class="category-header">
-              <h3>Favorite Authors</h3>
-              <a href="#">View all →</a>
-            </div>
-            <div class="mini-list">
-              <div class="mini-item">
-                <p>Case Study on Boeing Accident</p><small>Title</small>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="category-box small-section">
-            <div class="category-header">
-              <h3>Recently Viewed</h3>
-              <a href="#">View all →</a>
-            </div>
-            <div class="mini-list">
-              <div class="mini-item">
-                <p>Case Study on Boeing Accident</p><small>Title</small>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
-              <div class="mini-item">
-                <p>Title</p>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </main>
-  </div>
+    </div>
+</div>
 
-  <script>
-    // Detect page show from back/forward cache
-    window.addEventListener("pageshow", function (event) {
-      if (event.persisted) {
-        // Page was loaded from bfcache, force reload
-        window.location.reload(0);
-      }
-    });
-  </script>
-</body>
-
-</html>
+<?php
+// Include layout footer
+include "../layout/layout_footer.php";
+?>

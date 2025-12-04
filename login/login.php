@@ -37,7 +37,7 @@
 
           <p class="redirect-text">
             Don’t have an account?
-            <a href="../register/register.html">Sign up</a>
+            <a href="../register/register.php">Sign up</a>
           </p>
         </form>
       </div>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../database/database.php"; // Make sure this connects to your database
 
 // Redirect to login if user is not logged in
 if (!isset($_SESSION['studentID'])) {
@@ -11,143 +12,129 @@ if (!isset($_SESSION['studentID'])) {
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
+
+// Fetch Most Viewed Research
+$stmt1 = $conn->prepare("
+    SELECT publicationID, title, published_datetime, views, bg_image
+    FROM publications
+    ORDER BY views DESC
+    LIMIT 5
+");
+if ($stmt1) {
+  $stmt1->execute();
+  $result1 = $stmt1->get_result();
+  $mostViewed = [];
+  while ($row = $result1->fetch_assoc()) {
+    $mostViewed[] = $row;
+  }
+  $stmt1->close();
+} else {
+  die("Failed to fetch Most Viewed Research: " . $conn->error);
+}
+
+// Fetch Newly Added Publications
+$stmt2 = $conn->prepare("
+    SELECT publicationID, title, published_datetime, bg_image
+    FROM publications
+    ORDER BY published_datetime DESC
+    LIMIT 5
+");
+if ($stmt2) {
+  $stmt2->execute();
+  $result2 = $stmt2->get_result();
+  $newlyAdded = [];
+  while ($row = $result2->fetch_assoc()) {
+    $newlyAdded[] = $row;
+  }
+  $stmt2->close();
+} else {
+  die("Failed to fetch Newly Added Publications: " . $conn->error);
+}
+
+// Set layout variables
+$pageTitle = 'CCSearch Dashboard';
+$activeNav = 'home';
+$additionalCSS = ['home_page.css'];
+
+// Include layout header
+include "../layout/layout.php";
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CCSearch Dashboard</title>
-  <link rel="stylesheet" href="home.css" />
-</head>
-
-<body>
-  <div class="layout-container">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div>
-        <div class="logo-container">
-          <img src="../icons/sidebar-icons/icon.png" alt="Logo" />
-          <h2>CCSEARCH</h2>
-        </div>
-        <nav class="nav-menu">
-          <a href="#" class="active"><img src="../icons/sidebar-icons/home.png" alt=""> Home</a>
-          <a href="../profile/profile.php"><img src="../icons/sidebar-icons/profile.png" alt=""> Profile</a>
-          <a href="../library/library.php"><img src="../icons/sidebar-icons/library.png" alt=""> My Library</a>
-          <a href="../publication/publication.php"><img src="../icons/sidebar-icons/publication.png" alt="">
-            Publication</a>
-          <a href="../authors/authors.php"><img src="../icons/sidebar-icons/authors.png" alt=""> Authors</a>
-          <a href="../notification/notification.php"><img src="../icons/sidebar-icons/notification.png" alt="">
-            Notification</a>
-        </nav>
-      </div>
-      <div class="logout">
-        <a href="logout.php"><img src="../icons/sidebar-icons/logout.png" alt=""> Logout</a>
-      </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-section">
-      <div class="welcome-header">
-        <img src="../image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
-
-        <div class="welcome-content">
-          <h2>Welcome to CCSearch Jelly</h2>
-          <p>Discover and explore the best research works</p>
-          <div class="search-bar">
+<!-- Welcome Header -->
+<div class="welcome-header">
+    <img src="../image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
+    <div class="welcome-content">
+        <h2>Welcome to CCSearch Jelly</h2>
+        <p>Discover and explore the best research works</p>
+        <div class="search-box">
             <input type="text" placeholder="Search..." />
-            <button>Search</button>
-          </div>
+            <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
-      </div>
+    </div>
+</div>
 
-      <div class="content-section">
-        <!-- CATEGORY 1 -->
-        <div class="category-box">
-          <div class="category-header">
+<!-- Content Sections -->
+<div class="content-section">
+    <!-- Most Viewed Research -->
+    <div class="category-box">
+        <div class="category-header">
             <h3>Most Viewed Research</h3>
             <a href="#">See all</a>
-          </div>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-          </div>
         </div>
+        <div class="card-grid">
+            <?php if (!empty($mostViewed)): ?>
+                <?php foreach ($mostViewed as $pub): ?>
+                    <?php
+                    $bg = !empty($pub['bg_image']) ? $pub['bg_image'] : '../icons/publications/template_card.png';
+                    ?>
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image:url('<?= htmlspecialchars($bg) ?>'); 
+                            background-size:cover; 
+                            background-position:center;">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="card-title"><?= htmlspecialchars($pub['title']) ?></h4>
+                            <small>Published: <?= date("M d, Y", strtotime($pub['published_datetime'])) ?></small>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No publications available.</p>
+            <?php endif; ?>
+        </div>
+    </div>
 
-        <!-- CATEGORY 2 -->
-        <div class="category-box">
-          <div class="category-header">
+    <!-- Newly Added Publications -->
+    <div class="category-box">
+        <div class="category-header">
             <h3>Newly Added</h3>
             <a href="#">See all</a>
-          </div>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-            <div class="card">
-              <div class="card-thumbnail"></div>
-              <p>Placeholder Title</p>
-            </div>
-          </div>
         </div>
-      </div>
-    </main>
-
-    <!-- RIGHT PANEL -->
-    <aside class="right-panel">
-      <div class="tools-box">
-        <div class="tools-header">
-          <h3>Tools</h3>
-          <a href="#">See all</a>
+        <div class="card-grid">
+            <?php if (!empty($newlyAdded)): ?>
+                <?php foreach ($newlyAdded as $pub): ?>
+                    <?php
+                    $bg = !empty($pub['bg_image']) ? $pub['bg_image'] : '../icons/publications/template_card.png';
+                    ?>
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image:url('<?= htmlspecialchars($bg) ?>'); 
+                            background-size:cover; 
+                            background-position:center;">
+                        </div>
+                        <div class="card-info">
+                            <h4 class="card-title"><?= htmlspecialchars($pub['title']) ?></h4>
+                            <small>Published: <?= date("M d, Y", strtotime($pub['published_datetime'])) ?></small>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No publications available.</p>
+            <?php endif; ?>
         </div>
-        <ul>
-          <li><img src="../icons/tool-icons/quillbot.png" alt=""> Quillbot</li>
-          <li><img src="../icons/tool-icons/canva.png" alt=""> Canva </li>
-          <li><img src="../icons/tool-icons/grammarly.png" alt=""> Grammarly</li>
-        </ul>
-      </div>
+    </div>
+</div>
 
-      <div class="recent-box">
-        <h3>Recent Activity</h3>
-        <div class="recent-item">
-          <div class="recent-thumb"></div>
-          <p>New upload detected <br><span>2 hours ago</span></p>
-        </div>
-        <div class="recent-item">
-          <div class="recent-thumb"></div>
-          <p>Profile updated <br><span>Yesterday</span></p>
-        </div>
-      </div>
-    </aside>
-
-  </div>
-
-  <script>
-    // Detect page show from back/forward cache
-    window.addEventListener("pageshow", function (event) {
-      if (event.persisted) {
-        // Page was loaded from bfcache, force reload
-        window.location.reload(0);
-      }
-    });
-  </script>
-</body>
-
-</html>
+<?php
+// Include layout footer
+include "../layout/layout_footer.php";
+?>

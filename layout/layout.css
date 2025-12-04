@@ -1,0 +1,319 @@
+/**
+ * CCSEARCH - Unified Layout Stylesheet
+ * 
+ * This stylesheet provides a FIXED layout structure optimized for 1440x900 resolution.
+ * All pages using this layout will have IDENTICAL dimensions to prevent layout shifts.
+ * 
+ * SIDEBAR: Fixed 240px width, 100vh height
+ * MAIN CONTENT: Fixed width, 100vh height with internal scrolling
+ */
+
+/* ============================
+   RESET & BASE STYLES
+============================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f3f6fc;
+    overflow: hidden;
+    /* Prevent body scroll */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ============================
+   LAYOUT WRAPPER
+   Fixed dimensions for 1440x900
+============================ */
+.layout-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    max-width: 1440px;
+    margin: 0 auto;
+    background-color: #f3f6fc;
+    position: relative;
+}
+
+/* ============================
+   FIXED SIDEBAR
+   EXACTLY 240px width, 100vh height
+   Same on EVERY page
+============================ */
+.sidebar {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    height: 100vh;
+    background-color: #27548a;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-container {
+    background-color: #ffffff;
+    border-radius: 0;
+    text-align: center;
+    padding: 0;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container img {
+    height: 130px;
+    width: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.logo-container h2 {
+    color: #000;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.nav-menu {
+    margin-top: 20px;
+    flex: 1;
+}
+
+.nav-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 25px;
+    transition: background-color 0.3s ease;
+    margin: 2px 0;
+    font-size: 15px;
+}
+
+.nav-menu a img {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+    background-color: #1e3e68;
+}
+
+.logout {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 16px;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+}
+
+.logout a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout img {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================
+   MAIN CONTENT AREA
+   Fixed size, scrollable internally
+   Same on EVERY page
+============================ */
+.main-content {
+    flex: 1;
+    margin-left: 240px;
+    /* Offset for fixed sidebar */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #f3f6fc;
+}
+
+.content-container {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f3f6fc;
+}
+
+/* Custom scrollbar for content area */
+.content-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.content-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.content-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.content-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ============================
+   COMMON CONTENT STYLES
+============================ */
+.content-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-header {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.page-header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ============================
+   SHARED SEARCH BOX STYLES
+   Used across all pages for consistency
+============================ */
+.search-box {
+    background: #f5f5f5;
+    padding: 8px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 300px;
+    border: 1px solid #1e3e68;
+    transition: border-color 0.3s ease;
+}
+
+.search-box:focus-within {
+    border-color: #27548a;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+}
+
+.search-box input::placeholder {
+    color: #999;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.search-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ============================
+   UTILITY CLASSES
+============================ */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #27548a;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #1e3e68;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}

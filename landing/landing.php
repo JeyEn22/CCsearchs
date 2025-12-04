@@ -19,9 +19,8 @@
         <p class="subtitle">Your trusted source for credible research references</p>
 
         <div class="button-group">
-          <button type="button" class="btn login-btn"
-            onclick="window.location.href='../login/login.html'">Login</button>
-          <button class="btn signup-btn" onclick="window.location.href='../register/register.html'">Sign Up</button>
+          <button type="button" class="btn login-btn" onclick="window.location.href='../login/login.php'">Login</button>
+          <button class="btn signup-btn" onclick="window.location.href='../register/register.php'">Sign Up</button>
         </div>
       </div>
     </div>

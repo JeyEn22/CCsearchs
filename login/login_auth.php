@@ -1,14 +1,20 @@
 <?php
+header('Content-Type: application/json');
 session_start();  // Start session for user login tracking
 include("../database/database.php");  // Your database connection
 
+// Initialize response
+$response = array('status' => 'error', 'message' => 'Unknown error');
+
 // Receive POST values
-$studentID = $_POST['studentID'];
-$password = $_POST['password'];
+$studentID = isset($_POST['studentID']) ? trim($_POST['studentID']) : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
 
 // Validate required fields
 if (empty($studentID) || empty($password)) {
-    die("Please fill in all fields.");
+    $response['message'] = 'Please fill in all fields.';
+    echo json_encode($response);
+    exit();
 }
 
 // Check if user exists
@@ -18,7 +24,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    die("Invalid Student ID or Password.");
+    $response['message'] = 'Invalid Student ID or Password.';
+    echo json_encode($response);
+    exit();
 }
 
 // Fetch hashed password
@@ -27,14 +35,14 @@ $hashedPassword = $row['password'];
 
 // Verify password
 if (password_verify($password, $hashedPassword)) {
-
     $_SESSION['studentID'] = $studentID;  // Store session
-    $conn->close();
-    // Redirect to landing page
-    header("Location: ../home/home.php");
-    exit();
+    $response['status'] = 'success';
+    $response['message'] = 'Login successful! Welcome back.';
+    echo json_encode($response);
 } else {
-    die("Invalid Student ID or Password.");
+    $response['message'] = 'Invalid Student ID or Password.';
+    echo json_encode($response);
 }
 
+$conn->close();
 ?>

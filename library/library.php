@@ -48,6 +48,7 @@ include "../layout/layout.php";
 
 <!-- Welcome Header -->
 <div class="welcome-header library-header">
+  
     <img src="../image/home_images/welcome-header.png" alt="Wavy blue background" class="banner-background" />
     <div class="welcome-content">
         <h2>Welcome to CCSearch, Jelly! 👋</h2>
@@ -57,6 +58,7 @@ include "../layout/layout.php";
             <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
     </div>
+    />
 </div>
 
 <!-- Content Section -->

@@ -17,7 +17,7 @@
 
 .top-bar h1 {
     font-size: 20px;
-    color: white;
+    color: #fff;
     flex: 1;
     text-align: right;
 }
@@ -305,4 +305,95 @@
 
 .publish-btn:hover {
     background: #1e5fa0;
+}
+
+/* Dark Mode Styles for Publication Page */
+body.dark-theme .top-bar {
+    background: #1E1E1E;
+    /* Secondary panels/cards */
+    color: #E0E0E0;
+}
+
+body.dark-theme .top-bar h1 {
+    color: #FFFFFF;
+    /* Headings */
+}
+
+body.dark-theme .top-bar .back {
+    color: #E0E0E0;
+}
+
+body.dark-theme .section-box {
+    background: #1E1E1E;
+    color: #E0E0E0;
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .section-box h2 {
+    color: #FFFFFF;
+    /* Headings */
+}
+
+body.dark-theme .doc-card {
+    background-color: #1E1E1E;
+}
+
+body.dark-theme .card-title {
+    color: #E0E0E0;
+}
+
+body.dark-theme .upload-card {
+    background-color: #1E1E1E;
+    border-color: #2A2A2A;
+    /* Borders/dividers */
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .upload-card:hover {
+    background-color: #2A2A2A;
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .upload-card i {
+    color: #B0B0B0;
+    /* Secondary text */
+}
+
+body.dark-theme .upload-card span {
+    color: #B0B0B0;
+    /* Secondary text */
+}
+
+body.dark-theme .caption {
+    color: #B0B0B0;
+    /* Secondary text */
+}
+
+body.dark-theme .modal-content {
+    background-color: #1A1A1A;
+    /* Modals/overlays */
+    color: #E0E0E0;
+}
+
+body.dark-theme .white-box {
+    background: #1E1E1E;
+}
+
+body.dark-theme .form-group label {
+    color: #E0E0E0;
+}
+
+body.dark-theme .form-group input,
+body.dark-theme .form-group select,
+body.dark-theme .form-group textarea {
+    background-color: #1E1E1E;
+    /* Input background */
+    border-color: #333333;
+    /* Input border */
+    color: #E0E0E0;
+    /* Input text */
+}
+
+body.dark-theme .preview-frame {
+    border-color: #2A2A2A;
 }

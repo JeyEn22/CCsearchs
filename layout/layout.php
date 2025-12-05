@@ -29,6 +29,9 @@
             <link rel="stylesheet" href="<?php echo htmlspecialchars($css); ?>">
         <?php endforeach; ?>
     <?php endif; ?>
+
+    <!-- Global Theme System -->
+    <script src="../js/theme.js"></script>
 </head>
 <body>
     <div class="layout-wrapper">
@@ -36,7 +39,7 @@
         <aside class="sidebar">
             <div class="sidebar-content">
                 <div class="logo-container">
-                    <img src="../icons/sidebar-icons/Icon.png" alt="CCSearch Logo" />
+                    <img id="main-logo" src="../icons/sidebar-icons/Icon.png" alt="CCSearch Logo" />
                     <h2>CCSEARCH</h2>
                 </div>
                 

@@ -25,18 +25,46 @@
 
         <!-- FIXED FORM -->
         <form id="registerForm" action="registration.php" method="POST">
-          <input type="email" name="emailAddress" id="emailAddress" placeholder="Email" required>
-          <input type="text" name="studentID" id="studentID" placeholder="Student ID" required>
+  <div class="form-grid">
+    <!-- Left Column: Personal Information -->
+    <div class="col">
+      <input type="text" name="firstName" id="firstName" placeholder="First Name" required maxlength="50" class="form-field">
+      <input type="text" name="lastName" id="lastName" placeholder="Last Name" required maxlength="50" class="form-field">
+      <input type="text" name="contactNumber" id="contactNumber" placeholder="Contact Number" required maxlength="11" pattern="[0-9]{11}" title="Please enter exactly 11 digits (e.g., 09123456789)" class="form-field">
+      <input type="email" name="emailAddress" id="emailAddress" placeholder="Email Address" required maxlength="100" class="form-field">
+      <input type="text" name="currentAddress" id="currentAddress" placeholder="Current Address" required maxlength="255" class="form-field">
+    </div>
 
-          <div class="password-field">
-            <input type="password" name="password" id="password" placeholder="Password" required>
-            <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
-          </div>
+    <!-- Right Column: Account Information -->
+    <div class="col">
+      <input type="text" name="department" id="department" placeholder="Department" required maxlength="100" class="form-field">
+      <input type="text" name="studentID" id="studentID" placeholder="Student ID" required maxlength="20" class="form-field">
+      <div class="password-field">
+        <input type="password" name="password" id="password" placeholder="Password" required minlength="8" pattern="(?=.*[A-Z])(?=.*\d).{8,}" class="form-field">
+        <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
+      </div>
+      <div class="password-field">
+        <input type="password" name="confirmPassword" id="confirm" placeholder="Confirm Password" required minlength="6" class="form-field">
+        <i class="fa-solid fa-eye toggle" onclick="togglePassword('confirm', this)"></i>
+      </div>
 
-          <div class="password-field">
-            <input type="password" name="confirmPassword" id="confirm" placeholder="Confirm Password" required>
-            <i class="fa-solid fa-eye toggle" onclick="togglePassword('confirm', this)"></i>
-          </div>
+      <!-- Password Validation Feedback -->
+      <div id="passwordValidation" class="password-rules">
+        <div id="lengthCheck" class="validation-item">
+          <i class="fas fa-times validation-icon"></i>
+          <span>At least 8 characters</span>
+        </div>
+        <div id="uppercaseCheck" class="validation-item">
+          <i class="fas fa-times validation-icon"></i>
+          <span>One uppercase letter</span>
+        </div>
+        <div id="numberCheck" class="validation-item">
+          <i class="fas fa-times validation-icon"></i>
+          <span>One number</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
           <button type="submit">Register</button>
 
@@ -56,29 +84,159 @@
     </div>
   </div>
 
+  <!-- Registration Modal (Outside container for proper overlay) -->
+  <div id="registrationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="modal-icon">
+          <i id="modalIcon" class="fas"></i>
+        </div>
+        <h3 id="modalTitle">Registration Status</h3>
+        <p id="modalMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalButton" class="modal-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Toggle password visibility
+    // Modal functionality
+    const modal = document.getElementById('registrationModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalButton = document.getElementById('modalButton');
+    const closeModal = document.querySelector('.close-modal');
+
+    // Ensure modal is hidden by default
+    if (modal) {
+      modal.style.display = 'none';
+    }
+
+    function showModal(status, message) {
+      // Set modal type and content
+      modal.className = 'modal ' + status;
+      modalTitle.textContent = status === 'success' ? 'Success!' : 'Error!';
+      modalMessage.textContent = message;
+      modalIcon.className = 'fas ' + (status === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle');
+
+      // Show modal with flexbox for centering
+      modal.style.display = 'flex';
+      // Force reflow to ensure transition works
+      modal.offsetHeight;
+      modal.style.opacity = '1';
+
+      // Set button text and action
+      if (status === 'success') {
+        modalButton.textContent = 'Go to Login';
+        modalButton.onclick = () => {
+          window.location.href = '../login/login.php';
+        };
+      } else {
+        modalButton.textContent = 'Try Again';
+        modalButton.onclick = hideModal;
+      }
+    }
+
+    function hideModal() {
+      modal.style.opacity = '0';
+      // Wait for transition to complete before hiding
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    // Event listeners
+    closeModal.onclick = hideModal;
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        hideModal();
+      }
+    }
+
+    // Password toggle functionality
     function togglePassword(id, el) {
       const input = document.getElementById(id);
       if (input.type === "password") {
         input.type = "text";
-        el.classList.replace("fa-eye", "fa-lock");
+        el.classList.replace("fa-eye", "fa-eye-slash");
       } else {
         input.type = "password";
-        el.classList.replace("fa-lock", "fa-eye");
+        el.classList.replace("fa-eye-slash", "fa-eye");
       }
     }
 
-    // Client-side password match check (optional)
-    document.getElementById("registerForm").addEventListener("submit", (e) => {
-      const pass = document.getElementById("password").value.trim();
-      const confirm = document.getElementById("confirm").value.trim();
+    // Password validation functionality
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const lengthCheck = document.getElementById('lengthCheck');
+      const uppercaseCheck = document.getElementById('uppercaseCheck');
+      const numberCheck = document.getElementById('numberCheck');
 
-      if (pass !== confirm) {
-        e.preventDefault();
-        alert("❌ Passwords do not match!");
-        return false;
+      // Check length (at least 8 characters)
+      const hasLength = password.length >= 8;
+      lengthCheck.className = hasLength ? 'validation-item valid' : 'validation-item invalid';
+
+      // Check uppercase letter
+      const hasUppercase = /[A-Z]/.test(password);
+      uppercaseCheck.className = hasUppercase ? 'validation-item valid' : 'validation-item invalid';
+
+      // Check number
+      const hasNumber = /\d/.test(password);
+      numberCheck.className = hasNumber ? 'validation-item valid' : 'validation-item invalid';
+
+      return hasLength && hasUppercase && hasNumber;
+    }
+
+    // Add event listener for real-time validation
+    document.getElementById('password').addEventListener('input', validatePassword);
+
+    // AJAX form submission - Only triggered by Register button click
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Validate password requirements
+      if (!validatePassword()) {
+        showModal('error', 'Please ensure your password meets all requirements: at least 8 characters, one uppercase letter, and one number.');
+        return;
       }
+
+      // Ensure modal is hidden before starting
+      if (modal) {
+        modal.style.display = 'none';
+      }
+
+      const formData = new FormData(this);
+
+      // Show loading state
+      const submitButton = this.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.textContent = 'Registering...';
+      submitButton.disabled = true;
+
+      fetch('registration.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        showModal(data.status, data.message);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showModal('error', 'An error occurred. Please try again.');
+      })
+      .finally(() => {
+        // Reset button state
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+      });
     });
   </script>
 </body>

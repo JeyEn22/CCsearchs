@@ -82,3 +82,60 @@
     text-align: right;
 }
 
+/* ============================
+   DARK MODE STYLES
+============================ */
+body.dark-theme .notification-wrapper {
+    background: #1E1E1E; /* Secondary panels/cards background */
+    color: #E0E0E0; /* Primary text */
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .notif-title {
+    background: #2A2A2A; /* Borders/dividers background */
+    color: #FFFFFF; /* Headings */
+    border: 1px solid #333333;
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .notif-section {
+    background: #1E1E1E; /* Secondary panels/cards background */
+    border: 1px solid #2A2A2A; /* Borders/dividers */
+    color: #E0E0E0; /* Primary text */
+    box-shadow: 2px 0 5px rgba(255, 250, 250, 0.137);
+}
+
+body.dark-theme .notif-section h3 {
+    color: #FFFFFF; /* Headings */
+    border-bottom-color: #2A2A2A; /* Borders/dividers */
+}
+
+body.dark-theme .notif-row {
+    border-bottom-color: #2A2A2A; /* Borders/dividers */
+}
+
+body.dark-theme .notif-type {
+    color: #BB86FC; /* Purple accent */
+}
+
+body.dark-theme .notif-text {
+    color: #B0B0B0; /* Secondary text */
+}
+
+body.dark-theme .notif-time,
+body.dark-theme .notif-date {
+    color: #7A7A7A; /* Disabled/placeholder text */
+}
+
+/* Checkbox styling in dark mode */
+body.dark-theme .notif-row input[type="checkbox"] {
+    background-color: #1E1E1E;
+    border-color: #333333;
+    accent-color: #BB86FC; /* Purple accent for checked state */
+}
+
+body.dark-theme .notif-row input[type="checkbox"]:checked {
+    background-color: #BB86FC;
+    border-color: #BB86FC;
+}
+

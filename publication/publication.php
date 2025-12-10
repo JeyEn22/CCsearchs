@@ -396,6 +396,9 @@ if (isset($_POST['publish'])) {
   echo "<script>alert('Publication uploaded successfully!'); location.href='publication.php';</script>";
 }
 
+// Search query
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Set layout variables
 $pageTitle = 'Publication';
 $activeNav = 'publication';
@@ -409,13 +412,13 @@ include "../layout/layout.php";
 <!-- Top Bar -->
 <div class="top-bar">
   <span class="back" onclick="goBack()">&larr; Back</span>
-  <h1>Publication</h1>
-  <div class="search-box">
-    <input type="text" placeholder="Search">
-    <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+  <div class="top-bar-right">
+    <h1>Publication</h1>
+    <div class="search-box">
+      <input type="text" id="searchPublicationInput" placeholder="Search titles..." value="<?php echo htmlspecialchars($searchQuery); ?>">
+      <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+    </div>
   </div>
-  <i class="fa fa-filter filter-icon"></i>
-  <i class="fa fa-bars menu-icon"></i>
 </div>
 
 <!-- Scroll Area -->
@@ -433,7 +436,12 @@ include "../layout/layout.php";
 
       <?php
       $studentID = $_SESSION['studentID'];
-      $result = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID WHERE p.studentID='$studentID' ORDER BY p.published_datetime DESC");
+  $where = "WHERE p.studentID='$studentID'";
+  if ($searchQuery !== '') {
+    $safeSearch = $conn->real_escape_string($searchQuery);
+    $where .= " AND p.title LIKE '%$safeSearch%'";
+  }
+  $result = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID $where ORDER BY p.published_datetime DESC");
       if ($result) {
         while ($row = $result->fetch_assoc()) {
           echo '<div class="card">';
@@ -467,7 +475,12 @@ include "../layout/layout.php";
     <h2>Other Documents</h2>
     <div class="card-grid">
       <?php
-      $result2 = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID WHERE p.studentID<>'$studentID' ORDER BY p.published_datetime DESC");
+      $where2 = "WHERE p.studentID<>'$studentID'";
+      if ($searchQuery !== '') {
+        $safeSearch2 = $conn->real_escape_string($searchQuery);
+        $where2 .= " AND p.title LIKE '%$safeSearch2%'";
+      }
+      $result2 = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID $where2 ORDER BY p.published_datetime DESC");
       if ($result2) {
         while ($row2 = $result2->fetch_assoc()) {
           echo '<div class="card">';
@@ -841,6 +854,23 @@ include "../layout/layout.php";
     if (previewModal && event.target === previewModal) closePreviewModal();
 }
 
+// Publication search (titles)
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchPublicationInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const q = searchInput.value.trim();
+                if (q) {
+                    window.location.href = 'publication.php?search=' + encodeURIComponent(q);
+                } else {
+                    window.location.href = 'publication.php';
+                }
+            }
+        });
+    }
+});
+
 // Publication preview functionality
 function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
     // Format the publication date
@@ -866,27 +896,27 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                         <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
                     </div>` : ''}
                     <div class="preview-details-container">
-                        <div class="publication-details">
-                            <div class="detail-row">
-                                <strong>Author:</strong> <span>${author}</span>
-                            </div>
-                            <div class="detail-row">
-                                <strong>Published:</strong> <span>${formattedDate}</span>
-                            </div>
-                            ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                            ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                        </div>
-                        ${abstract ? `<div class="abstract-section">
-                            <div class="abstract-label"><strong>Abstract:</strong></div>
-                            <div class="abstract-text">${abstract}</div>
-                        </div>` : ''}
+                <div class="publication-details">
+                    <div class="detail-row">
+                        <strong>Author:</strong> <span>${author}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong>Published:</strong> <span>${formattedDate}</span>
+                    </div>
+                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
+                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
+                </div>
+                <div class="abstract-section">
+                    <div class="abstract-label"><strong>Abstract:</strong></div>
+                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
+                </div>
                     </div>
                 </div>
                 <div class="preview-actions">
-                    <a href="${filePath}" target="_blank" class="btn btn-primary">
+                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> View Full Document
                     </a>
-                    <a href="${filePath}" download class="btn btn-secondary">
+                    <a href="../${filePath}" download class="btn btn-secondary">
                         <i class="fas fa-download"></i> Download
                     </a>
                 </div>

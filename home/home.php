@@ -13,6 +13,10 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
+// Search query
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+$searchResults = [];
+
 // Fetch Newly Added Publications
 $stmt1 = $conn->prepare("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID ORDER BY p.publicationID DESC LIMIT 10");
 if ($stmt1) {
@@ -29,6 +33,7 @@ if ($stmt1) {
 
 // Fetch Most Viewed Research
 $stmt2 = $conn->prepare("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID ORDER BY p.views DESC LIMIT 10");
+$stmt2 = $conn->prepare("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID ORDER BY p.views DESC LIMIT 10");
 if ($stmt2) {
   $stmt2->execute();
   $result2 = $stmt2->get_result();
@@ -41,6 +46,44 @@ if ($stmt2) {
   die("Failed to fetch Most Viewed Research: " . $conn->error);
 }
 
+// Search across all publications by title if a search term is provided
+if ($searchQuery !== '') {
+  $stmtSearch = $conn->prepare("
+    SELECT p.*, r.firstName, r.lastName
+    FROM publications p
+    JOIN registration r ON p.studentID = r.studentID
+    WHERE p.title LIKE ?
+    ORDER BY p.published_datetime DESC
+  ");
+  if ($stmtSearch) {
+    $like = '%' . $searchQuery . '%';
+    $stmtSearch->bind_param("s", $like);
+    $stmtSearch->execute();
+    $resSearch = $stmtSearch->get_result();
+    while ($row = $resSearch->fetch_assoc()) {
+      $searchResults[] = $row;
+    }
+    $stmtSearch->close();
+  }
+}
+
+
+// Get current user's first name for greeting
+$userFirstName = 'User';
+if (isset($_SESSION['studentID'])) {
+    $stmtUser = $conn->prepare("SELECT firstName FROM registration WHERE studentID = ? LIMIT 1");
+    if ($stmtUser) {
+        $stmtUser->bind_param("s", $_SESSION['studentID']);
+        if ($stmtUser->execute()) {
+            $resUser = $stmtUser->get_result();
+            if ($rowUser = $resUser->fetch_assoc()) {
+                $userFirstName = $rowUser['firstName'];
+            }
+            $resUser->free();
+        }
+        $stmtUser->close();
+    }
+}
 
 // Set layout variables
 $pageTitle = 'CCSearch Dashboard';
@@ -55,22 +98,60 @@ include "../layout/layout.php";
 <div class="welcome-header">
     <img src="../image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
     <div class="welcome-content">
-        <h2>Welcome to CCSearch Jelly</h2>
+        <h2>Welcome to CCSearch <?php echo htmlspecialchars($userFirstName); ?></h2>
         <p>Discover and explore the best research works</p>
-        <div class="search-box">
-            <input type="text" placeholder="Search..." />
-            <img src="../icons/authors/search.png" class="search-icon" alt="Search">
-        </div>
     </div>
 </div>
 
 <!-- Content Sections -->
 <div class="content-section">
+    <?php if (!empty($searchQuery)): ?>
+    <!-- Search Results -->
+    <div class="category-box">
+        <div class="category-header">
+            <h3>Search Results</h3>
+            <span class="posted-by">Showing titles matching "<?php echo htmlspecialchars($searchQuery); ?>"</span>
+        </div>
+        <div class="card-grid">
+            <?php if (!empty($searchResults)): ?>
+                <?php foreach ($searchResults as $pub): ?>
+                    <div class="card">
+                        <?php
+                        $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
+                        $imageSrc .= '?t=' . time(); // Cache busting
+                        ?>
+                        <img src="<?php echo htmlspecialchars($imageSrc); ?>" class="cover-img" alt="Publication cover">
+                        <div class="card-info">
+                            <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
+                            <div class="posted-by">
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                            </div>
+                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="card-actions">
+                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye"></i> Preview
+                                </button>
+                                <?php if (isset($_SESSION['studentID'])): ?>
+                                    <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-bookmark"></i> Save
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No publications found for that title.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Most Viewed Research -->
     <div class="category-box">
         <div class="category-header">
             <h3>Most Viewed Research</h3>
-            <a href="#">See all</a>
+            <a href="view_all.php?category=most_viewed">View all</a>
         </div>
         <div class="card-grid">
             <?php if (!empty($mostViewed)): ?>
@@ -110,7 +191,7 @@ include "../layout/layout.php";
     <div class="category-box">
         <div class="category-header">
             <h3>Newly Added</h3>
-            <a href="../publication/publication.php">See all</a>
+            <a href="view_all.php?category=newly_added">View all</a>
         </div>
         <div class="card-grid">
             <?php if (!empty($newlyAdded)): ?>
@@ -255,27 +336,27 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                         <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
                     </div>` : ''}
                     <div class="preview-details-container">
-                        <div class="publication-details">
-                            <div class="detail-row">
-                                <strong>Author:</strong> <span>${author}</span>
-                            </div>
-                            <div class="detail-row">
-                                <strong>Published:</strong> <span>${formattedDate}</span>
-                            </div>
-                            ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                            ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                        </div>
-                        ${abstract ? `<div class="abstract-section">
-                            <div class="abstract-label"><strong>Abstract:</strong></div>
-                            <div class="abstract-text">${abstract}</div>
-                        </div>` : ''}
+                <div class="publication-details">
+                    <div class="detail-row">
+                        <strong>Author:</strong> <span>${author}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong>Published:</strong> <span>${formattedDate}</span>
+                    </div>
+                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
+                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
+                </div>
+                <div class="abstract-section">
+                    <div class="abstract-label"><strong>Abstract:</strong></div>
+                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
+                </div>
                     </div>
                 </div>
                 <div class="preview-actions">
-                    <a href="${filePath}" target="_blank" class="btn btn-primary">
+                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> View Full Document
                     </a>
-                    <a href="${filePath}" download class="btn btn-secondary">
+                    <a href="../${filePath}" download class="btn btn-secondary">
                         <i class="fas fa-download"></i> Download
                     </a>
                 </div>

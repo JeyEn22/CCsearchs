@@ -9,6 +9,15 @@
                 window.location.reload();
             }
         });
+
+        // Global back handler
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = "../home/home.php";
+            }
+        }
     </script>
     <?php if (isset($additionalScripts) && is_array($additionalScripts)): ?>
         <?php foreach ($additionalScripts as $script): ?>

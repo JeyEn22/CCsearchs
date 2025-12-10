@@ -44,7 +44,7 @@ function deleteNotification(notificationID) {
     if (modal) {
         modal.style.display = 'flex';
         console.log('Modal should be visible now');
-    } else {
+            } else {
         console.error('Modal not found!');
         alert('Error: Modal not found. Please refresh the page.');
     }

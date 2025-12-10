@@ -866,7 +866,7 @@ body.dark-theme .no-authors p {
 }
 
 .abstract-text {
-    text-align: justify;
+    text-align: center;
     line-height: 1.4;
     padding-left: 80px;
     padding-right: 80px;

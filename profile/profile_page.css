@@ -1167,13 +1167,10 @@ body.dark-theme .empty-state h3 {
 }
 
 .abstract-text {
-    max-height: 100px;
-    overflow-y: auto;
     background: transparent;
     padding: 8px 0;
     border-radius: 0;
-    text-align: justify;
-    text-align-last: center;
+    text-align: center;
     border: none;
     margin-top: 4px;
     line-height: 1.4;

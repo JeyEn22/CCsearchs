@@ -19,6 +19,12 @@ $additionalCSS = ['authors_page.css'];
 
 // Fetch authors data
 include "../database/database.php";
+
+// Get filter parameters
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+$departmentFilter = isset($_GET['department']) ? $_GET['department'] : '';
+
+// Build the query with filters
 $authorsQuery = "
     SELECT
         r.studentID,
@@ -35,19 +41,55 @@ $authorsQuery = "
     FROM registration r
     LEFT JOIN user_profiles up ON r.studentID = up.studentID
     LEFT JOIN publications p ON r.studentID = p.studentID
-    WHERE r.studentID != '{$_SESSION['studentID']}'
-    GROUP BY r.studentID, r.firstName, r.lastName, r.emailAddress, r.contactNumber, r.currentAddress, r.department, up.profileImage, up.theme_preference, up.is_public
-    ORDER BY r.studentID
+    WHERE r.studentID != ?
 ";
 
-$authorsResult = $conn->query($authorsQuery);
-$authors = [];
-if ($authorsResult) {
+$params = [$_SESSION['studentID']];
+$paramTypes = 's';
+
+// Apply search filter
+if (!empty($searchQuery)) {
+    $authorsQuery .= " AND (r.firstName LIKE ? OR r.studentID LIKE ?)";
+    $searchParam = '%' . $searchQuery . '%';
+    $params[] = $searchParam;
+    $params[] = $searchParam;
+    $paramTypes .= 'ss';
+}
+
+// Apply department filter
+if (!empty($departmentFilter)) {
+    $authorsQuery .= " AND r.department = ?";
+    $params[] = $departmentFilter;
+    $paramTypes .= 's';
+}
+
+$authorsQuery .= " GROUP BY r.studentID, r.firstName, r.lastName, r.emailAddress, r.contactNumber, r.currentAddress, r.department, up.profileImage, up.theme_preference, up.is_public ORDER BY r.studentID";
+
+// Execute query with prepared statement
+$stmt = $conn->prepare($authorsQuery);
+if ($stmt) {
+    $stmt->bind_param($paramTypes, ...$params);
+    $stmt->execute();
+    $authorsResult = $stmt->get_result();
+    $authors = [];
     while ($row = $authorsResult->fetch_assoc()) {
         $authors[] = $row;
     }
-    $authorsResult->free();
+    $stmt->close();
+} else {
+    $authors = [];
 }
+
+// Get unique departments for filter dropdown
+$deptResult = $conn->query("SELECT DISTINCT department FROM registration WHERE department IS NOT NULL AND department != '' ORDER BY department");
+$departments = [];
+if ($deptResult) {
+    while ($row = $deptResult->fetch_assoc()) {
+        $departments[] = $row['department'];
+    }
+    $deptResult->free();
+}
+
 $conn->close();
 
 // Include layout header
@@ -59,22 +101,52 @@ include "../layout/layout.php";
     <h1>Authors</h1>
     <div class="header-actions">
         <div class="search-box">
-            <input type="text" placeholder="Search authors...">
+            <input type="text" id="searchInput" placeholder="Search by First Name or Student ID..." value="<?php echo htmlspecialchars($searchQuery); ?>">
             <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
-        <div class="filter-box">
+        <div class="filter-box" onclick="toggleFilterModal()">
             <img src="../icons/authors/filter.png" alt="Filter">
             <span>Filter</span>
         </div>
     </div>
 </div>
 
+<!-- Filter Modal -->
+<div id="filterModal" class="filter-modal">
+    <div class="filter-modal-content">
+        <div class="filter-modal-header">
+            <h3>Filter Authors</h3>
+            <span class="close-filter" onclick="toggleFilterModal()">&times;</span>
+        </div>
+        <div class="filter-modal-body">
+            <div class="filter-group">
+                <label>Department:</label>
+                <select id="departmentFilter" class="filter-select">
+                    <option value="">All Departments</option>
+                    <?php foreach ($departments as $dept): ?>
+                        <option value="<?php echo htmlspecialchars($dept); ?>" <?php echo $departmentFilter === $dept ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($dept); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="filter-modal-footer">
+            <button onclick="applyFilters()" class="btn btn-primary">Apply Filters</button>
+            <button onclick="clearFilters()" class="btn btn-secondary">Clear</button>
+        </div>
+    </div>
+</div>
+
 <!-- Content Box -->
 <div class="content-section">
-    <div class="authors-grid">
+    <div class="authors-grid" id="authorsGrid">
         <?php if (!empty($authors)): ?>
             <?php foreach ($authors as $author): ?>
-                <div class="author-card">
+                <div class="author-card" 
+                     data-firstname="<?php echo htmlspecialchars(strtolower($author['firstName'])); ?>"
+                     data-studentid="<?php echo htmlspecialchars(strtolower($author['studentID'])); ?>"
+                     data-department="<?php echo htmlspecialchars(strtolower($author['department'] ?? '')); ?>">
                     <img src="../icons/authors/card_bg.png" class="banner-img" alt="Author Banner">
                     <div class="profile-circle" style="background-image: url('<?php echo htmlspecialchars(!empty($author['profileImage']) ? '../' . $author['profileImage'] : '../uploads/profiles/profile.png'); ?>');"></div>
                     <h3><?php echo htmlspecialchars($author['firstName'] . ' ' . $author['lastName']); ?></h3>
@@ -149,8 +221,72 @@ function toggleFavorite(authorID, button) {
     });
 }
 
-// Initialize favorite states on page load
+// Filter modal functionality
+function toggleFilterModal() {
+    const modal = document.getElementById('filterModal');
+    if (modal.style.display === 'flex') {
+        modal.style.display = 'none';
+    } else {
+        modal.style.display = 'flex';
+    }
+}
+
+// Close filter modal when clicking outside
+window.onclick = function(event) {
+    const filterModal = document.getElementById('filterModal');
+    if (event.target === filterModal) {
+        filterModal.style.display = 'none';
+    }
+}
+
+// Apply filters
+function applyFilters() {
+    const searchQuery = document.getElementById('searchInput').value.trim();
+    const department = document.getElementById('departmentFilter').value;
+    
+    let url = 'authors.php?';
+    if (searchQuery) url += 'search=' + encodeURIComponent(searchQuery) + '&';
+    if (department) url += 'department=' + encodeURIComponent(department) + '&';
+    
+    // Remove trailing &
+    url = url.replace(/&$/, '');
+    
+    window.location.href = url;
+}
+
+// Clear filters
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('departmentFilter').value = '';
+    window.location.href = 'authors.php';
+}
+
+// Search functionality
 document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const departmentFilter = document.getElementById('departmentFilter');
+    
+    // Search on Enter key
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+        
+        // Filter authors on client side for instant feedback
+        searchInput.addEventListener('input', function() {
+            filterAuthors();
+        });
+    }
+    
+    // Filter on department change
+    if (departmentFilter) {
+        departmentFilter.addEventListener('change', function() {
+            filterAuthors();
+        });
+    }
+    
     // Load current favorite states
     fetch('get_favorite_authors.php')
     .then(response => response.json())
@@ -179,6 +315,46 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error loading favorites:', error);
     });
 });
+
+// Filter authors function
+function filterAuthors() {
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+    const departmentFilter = document.getElementById('departmentFilter').value.toLowerCase();
+    
+    const cards = document.querySelectorAll('#authorsGrid .author-card');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+        const firstName = card.getAttribute('data-firstname') || '';
+        const studentID = card.getAttribute('data-studentid') || '';
+        const department = card.getAttribute('data-department') || '';
+        
+        const matchesSearch = !searchQuery || 
+            firstName.includes(searchQuery) || 
+            studentID.includes(searchQuery);
+        
+        const matchesDepartment = !departmentFilter || department === departmentFilter;
+        
+        if (matchesSearch && matchesDepartment) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show empty state if no cards visible
+    let noAuthors = document.querySelector('.no-authors');
+    if (visibleCount === 0 && !noAuthors) {
+        const grid = document.getElementById('authorsGrid');
+        noAuthors = document.createElement('div');
+        noAuthors.className = 'no-authors';
+        noAuthors.innerHTML = '<p>No authors found.</p>';
+        grid.appendChild(noAuthors);
+    } else if (visibleCount > 0 && noAuthors) {
+        noAuthors.remove();
+    }
+}
 </script>
 
 <?php

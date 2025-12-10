@@ -37,7 +37,7 @@ $hashedPassword = $row['password'];
 if (password_verify($password, $hashedPassword)) {
     $_SESSION['studentID'] = $studentID;  // Store session
     $response['status'] = 'success';
-    $response['message'] = 'Login successful! Welcome back.';
+    $response['message'] = 'Let\'s go!';
     echo json_encode($response);
 } else {
     $response['message'] = 'Invalid Student ID or Password.';

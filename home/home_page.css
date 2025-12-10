@@ -29,9 +29,9 @@
     position: relative;
     z-index: 2;
     text-align: center;
-
     padding: 20px 30px;
     border-radius: 8px;
+    margin-top: 15px;
 }
 
 .welcome-content h2 {
@@ -537,13 +537,10 @@ body.dark-theme .modal-body p {
 }
 
 .abstract-text {
-    max-height: 100px;
-    overflow-y: auto;
     background: transparent;
     padding: 8px 0;
     border-radius: 0;
-    text-align: justify;
-    text-align-last: center;
+    text-align: center;
     border: none;
     margin-top: 4px;
     line-height: 1.4;

@@ -13,13 +13,20 @@
     border-radius: 10px;
     margin-bottom: 20px;
     color: white;
+    justify-content: space-between;
 }
 
 .top-bar h1 {
     font-size: 20px;
     color: #fff;
-    flex: 1;
-    text-align: right;
+    margin: 0;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
 }
 
 .top-bar .back {
@@ -934,13 +941,10 @@ body.dark-theme .modal-body p {
 }
 
 .abstract-text {
-    max-height: 100px;
-    overflow-y: auto;
     background: transparent;
     padding: 8px 0;
     border-radius: 0;
-    text-align: justify;
-    text-align-last: center;
+    text-align: center;
     border: none;
     margin-top: 4px;
     line-height: 1.4;

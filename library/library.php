@@ -48,7 +48,7 @@ include "../layout/layout.php";
         <h2>Welcome to CCSearch, Jelly! 👋</h2>
         <p>Where you can share credible knowledge and discover reliable sources — all in one place!</p>
         <div class="search-box">
-            <input type="text" placeholder="Search..." />
+            <input type="text" id="librarySearchInput" placeholder="Search titles, authors, student IDs..." />
             <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
     </div>
@@ -60,12 +60,12 @@ include "../layout/layout.php";
     <div class="category-box">
         <div class="category-header">
             <h3>My Books</h3>
-            <a href="#">View all →</a>
+            <a href="view_all.php?category=my_books">View all →</a>
         </div>
-        <div class="card-grid">
+        <div class="card-grid" id="myBooksGrid">
             <?php if (!empty($libraryPublications)): ?>
                 <?php foreach ($libraryPublications as $pub): ?>
-                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -104,9 +104,9 @@ include "../layout/layout.php";
     <div class="category-box">
         <div class="category-header">
             <h3>Saved Books</h3>
-            <a href="#">View all →</a>
+            <a href="view_all.php?category=saved_books">View all →</a>
         </div>
-        <div class="card-grid">
+    <div class="card-grid" id="savedBooksGrid">
             <?php
             // Fetch saved publications with full details
             $stmt2 = $conn->prepare("
@@ -132,7 +132,7 @@ include "../layout/layout.php";
             if (!empty($savedPublications)):
                 foreach ($savedPublications as $pub):
             ?>
-                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -171,7 +171,7 @@ include "../layout/layout.php";
             <h3>Favorite Authors</h3>
             <a href="../authors/authors.php">View all →</a>
         </div>
-        <div class="authors-grid">
+        <div class="authors-grid" id="favoriteAuthorsGrid">
             <?php
             // Fetch favorite authors with their info
             $favoriteAuthors = [];
@@ -217,7 +217,7 @@ include "../layout/layout.php";
             if (!empty($favoriteAuthors)):
                 foreach ($favoriteAuthors as $author):
             ?>
-                <div class="author-card">
+                <div class="author-card" data-name="<?php echo htmlspecialchars(strtolower($author['firstName'] . ' ' . $author['lastName'])); ?>" data-studentid="<?php echo htmlspecialchars(strtolower($author['studentID'])); ?>">
                     <img src="../icons/authors/card_bg.png" class="banner-img" alt="Author Banner">
                     <div class="profile-circle" style="background-image: url('<?php echo htmlspecialchars(isset($author['profileImage']) && !empty($author['profileImage']) ? '../' . $author['profileImage'] : '../uploads/profiles/profile.png'); ?>');"></div>
                     <h3><?php echo htmlspecialchars($author['firstName'] . ' ' . $author['lastName']); ?></h3>
@@ -387,6 +387,7 @@ window.onclick = function(event) {
     const deleteModal = document.getElementById('deleteModal');
     const unsaveModal = document.getElementById('unsaveModal');
     const previewModal = document.getElementById('previewModal');
+    const filterModal = document.getElementById('filterModal');
 
     if (event.target === deleteModal) {
         closeDeleteModal();
@@ -396,6 +397,9 @@ window.onclick = function(event) {
     }
     if (previewModal && event.target === previewModal) {
         closePreviewModal();
+    }
+    if (filterModal && event.target === filterModal) {
+        filterModal.style.display = 'none';
     }
 }
 
@@ -494,21 +498,19 @@ window.onclick = function(event) {
         html += '</div>';
 
         // Abstract section (separated from publication details)
-        if (abstract) {
-            html += '<div class="abstract-section">';
-            html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
-            html += '<div class="abstract-text">' + abstract + '</div>';
-            html += '</div>';
-        }
+        html += '<div class="abstract-section">';
+        html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
+        html += '<div class="abstract-text">' + (abstract || 'No abstract available.') + '</div>';
+        html += '</div>';
         html += '</div>'; // Close preview-details-container
         html += '</div>'; // Close preview-content-wrapper
 
         // Action buttons
         html += '<div class="preview-actions">';
-        html += '<a href="' + filePath + '" target="_blank" class="btn btn-primary">';
+        html += '<a href="../' + filePath + '" target="_blank" class="btn btn-primary">';
         html += '<i class="fas fa-external-link-alt"></i> View Full Document';
         html += '</a>';
-        html += '<a href="' + filePath + '" download class="btn btn-secondary">';
+        html += '<a href="../' + filePath + '" download class="btn btn-secondary">';
         html += '<i class="fas fa-download"></i> Download';
         html += '</a>';
         html += '</div>';
@@ -529,6 +531,58 @@ window.onclick = function(event) {
             modal.remove();
         }
     }
+
+// Library search and filter (titles, authors, student IDs across My Books, Saved Books, Favorite Authors)
+function filterLibrarySearch() {
+    const query = (document.getElementById('librarySearchInput')?.value || '').toLowerCase().trim();
+
+    const sections = [
+        { gridId: 'myBooksGrid', emptyClass: 'empty-state', emptyText: '<h3>Your library is empty</h3><p>Publications you upload will appear here.</p>' },
+        { gridId: 'savedBooksGrid', emptyClass: 'empty-state', emptyText: '<h3>No saved publications</h3><p>Publications you save will appear here.</p>' },
+        { gridId: 'favoriteAuthorsGrid', emptyClass: 'no-authors', emptyText: '<p>No favorite authors</p>' },
+    ];
+
+    sections.forEach(section => {
+        const grid = document.getElementById(section.gridId);
+        if (!grid) return;
+
+        const cards = grid.querySelectorAll('.card, .author-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const title = (card.getAttribute('data-title') || '').toLowerCase();
+            const author = (card.getAttribute('data-author') || card.getAttribute('data-name') || '').toLowerCase();
+            const studentId = (card.getAttribute('data-studentid') || '').toLowerCase();
+
+            const match = !query || title.includes(query) || author.includes(query) || studentId.includes(query);
+            card.style.display = match ? 'block' : 'none';
+            if (match) visible++;
+        });
+
+        let emptyState = grid.querySelector(`.${section.emptyClass}`);
+        if (visible === 0) {
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.className = section.emptyClass;
+                emptyState.innerHTML = section.emptyText;
+                grid.appendChild(emptyState);
+            }
+        } else if (emptyState) {
+            emptyState.remove();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('librarySearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterLibrarySearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+    }
+    filterLibrarySearch();
+});
 </script>
 
 <?php

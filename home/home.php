@@ -88,7 +88,7 @@ include "../layout/layout.php";
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
                                 <?php if (isset($_SESSION['studentID'])): ?>
@@ -128,7 +128,7 @@ include "../layout/layout.php";
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
                                 <?php if (isset($_SESSION['studentID'])): ?>
@@ -231,7 +231,7 @@ window.onclick = function(event) {
 }
 
 // Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type) {
+function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
     // Format the publication date
     const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -261,10 +261,9 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                     ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
                     ${abstract ? `<div class="detail-row"><strong>Abstract:</strong> <div class="abstract-text">${abstract}</div></div>` : ''}
                 </div>
-                <!-- File preview removed as requested -->
-                <!-- <div class="preview-iframe-container">
-                    <iframe src="${filePath}" width="100%" height="500px" style="border: none;"></iframe>
-                </div> -->
+                ${thumbnail ? `<div class="preview-thumbnail-container">
+                    <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
+                </div>` : ''}
                 <div class="preview-actions">
                     <a href="${filePath}" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> View Full Document

@@ -198,12 +198,15 @@
 }
 
 .form-group input {
-    padding: 10px;
+    width: 100%;
+    padding: 10px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
     background-color: #fff;
     transition: 0.2s;
+    min-height: 40px;
+    box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -219,18 +222,15 @@
 }
 
 .update {
-    background: #1c315e;
+    background-color: #27548a;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.update:hover {
-    background: #2f4363;
-    transform: scale(1.03);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 /* Fade-in animation */
@@ -274,6 +274,19 @@ input[readonly] {
     background-color: #f8f9fa !important;
     cursor: not-allowed;
     opacity: 0.8;
+}
+
+/* Utility classes: use these instead of inline styles */
+.empty-icon {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.danger-text {
+    color: #e74c3c;
+    font-weight: 500;
+    margin-top: 10px;
 }
 
 /* Update button styling */

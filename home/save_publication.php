@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../database/database.php";
+include "../database/notifications.php";
 
 // Prevent browser caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -59,6 +60,20 @@ try {
 
     if ($saveStmt->execute()) {
         $saveStmt->close();
+
+        // Create notification for the publication owner (if not saving own publication)
+        if ($publication['studentID'] !== $userID) {
+            // Get publication title
+            $titleStmt = $conn->prepare("SELECT title FROM publications WHERE publicationID = ?");
+            $titleStmt->bind_param("i", $publicationID);
+            $titleStmt->execute();
+            $titleResult = $titleStmt->get_result();
+            $pubData = $titleResult->fetch_assoc();
+            $titleStmt->close();
+
+            notifyPublicationSave($publication['studentID'], $userID, $pubData['title']);
+        }
+
         echo json_encode(['success' => true, 'message' => 'Publication saved successfully']);
     } else {
         $saveStmt->close();

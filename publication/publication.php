@@ -447,7 +447,7 @@ include "../layout/layout.php";
           echo '</div>';
           echo '<div class="posted-by">Published: ' . date("M d, Y", strtotime($row['published_datetime'])) . '</div>';
           echo '<div class="card-actions">';
-          echo '<button onclick="previewPublication(\'' . htmlspecialchars($row['file_path']) . '\', \'' . htmlspecialchars(addslashes($row['title'])) . '\', \'' . htmlspecialchars(addslashes($row['firstName'] . ' ' . $row['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['type'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
+          echo '<button onclick="previewPublication(\'' . htmlspecialchars($row['file_path']) . '\', \'' . htmlspecialchars(addslashes($row['title'])) . '\', \'' . htmlspecialchars(addslashes($row['firstName'] . ' ' . $row['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['type'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['thumbnail'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
           echo '<i class="fas fa-eye"></i> Preview';
           echo '</button>';
           echo '<button onclick="deletePublication(' . $row['publicationID'] . ', \'' . htmlspecialchars(addslashes($row['title'])) . '\')" class="btn btn-danger btn-sm">';
@@ -842,7 +842,7 @@ include "../layout/layout.php";
 }
 
 // Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type) {
+function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
     // Format the publication date
     const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -872,10 +872,9 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                     ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
                     ${abstract ? `<div class="detail-row"><strong>Abstract:</strong> <div class="abstract-text">${abstract}</div></div>` : ''}
                 </div>
-                <!-- File preview removed as requested -->
-                <!-- <div class="preview-iframe-container">
-                    <iframe src="${filePath}" width="100%" height="500px" style="border: none;"></iframe>
-                </div> -->
+                ${thumbnail ? `<div class="preview-thumbnail-container">
+                    <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
+                </div>` : ''}
                 <div class="preview-actions">
                     <a href="${filePath}" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> View Full Document

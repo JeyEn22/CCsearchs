@@ -65,7 +65,7 @@ include "../layout/layout.php";
         <div class="card-grid">
             <?php if (!empty($libraryPublications)): ?>
                 <?php foreach ($libraryPublications as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -74,15 +74,15 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
                                 <?php if (isset($_SESSION['studentID']) && $_SESSION['studentID'] === $pub['studentID']): ?>
-                                    <button onclick="deletePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
+                                    <button onclick="event.stopPropagation(); deletePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 <?php endif; ?>
@@ -132,7 +132,7 @@ include "../layout/layout.php";
             if (!empty($savedPublications)):
                 foreach ($savedPublications as $pub):
             ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -141,14 +141,14 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <button onclick="unsavePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
+                                <button onclick="event.stopPropagation(); unsavePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
                                     <i class="fas fa-times"></i> Unsave
                                 </button>
                             </div>
@@ -441,54 +441,75 @@ window.onclick = function(event) {
     }
 
     // Publication preview functionality
-    function previewPublication(filePath, title, author, publishDate, abstract, department, type) {
-        // Format the publication date
+    function previewPublication(element) {
+        const filePath = element.getAttribute('data-filepath');
+        const title = element.getAttribute('data-title');
+        const author = element.getAttribute('data-author');
+        const publishDate = element.getAttribute('data-date');
+        const abstract = element.getAttribute('data-abstract');
+        const department = element.getAttribute('data-department');
+        const type = element.getAttribute('data-type');
+        const thumbnail = element.getAttribute('data-thumbnail');
+
+        console.log('previewPublication called with:', {filePath, title, author, publishDate, abstract, department, type, thumbnail});
+
+        // Create modal with proper CSS classes
+        const modal = document.createElement('div');
+        modal.id = 'previewModal';
+        modal.className = 'modal';
+
         const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
 
-        // Create preview modal
-        const modal = document.createElement('div');
-        modal.id = 'previewModal';
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content preview-modal-content">
-                <div class="modal-header">
-                    <h3>${title}</h3>
-                    <span class="close-modal" onclick="closePreviewModal()">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="publication-details">
-                        <div class="detail-row">
-                            <strong>Author:</strong> <span>${author}</span>
-                        </div>
-                        <div class="detail-row">
-                            <strong>Published:</strong> <span>${formattedDate}</span>
-                        </div>
-                        ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                        ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                        ${abstract ? `<div class="detail-row"><strong>Abstract:</strong> <div class="abstract-text">${abstract}</div></div>` : ''}
-                    </div>
-                    <!-- File preview removed as requested -->
-                    <!-- <div class="preview-iframe-container">
-                        <iframe src="${filePath}" width="100%" height="500px" style="border: none;"></iframe>
-                    </div> -->
-                    <div class="preview-actions">
-                        <a href="${filePath}" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> View Full Document
-                        </a>
-                        <a href="${filePath}" download class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
+        let html = '<div class="modal-content preview-modal-content">';
+        html += '<div class="modal-header">';
+        html += '<h3>' + title + '</h3>';
+        html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
+        html += '</div>';
+        html += '<div class="modal-body">';
+
+        // Publication details section
+        html += '<div class="publication-details">';
+        html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
+        html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
+
+        if (department) {
+            html += '<div class="detail-row"><strong>Department:</strong> <span>' + department + '</span></div>';
+        }
+        if (type) {
+            html += '<div class="detail-row"><strong>Type:</strong> <span>' + type + '</span></div>';
+        }
+        html += '</div>';
+
+        // Abstract section (separated from publication details)
+        if (abstract) {
+            html += '<div class="abstract-section">';
+            html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
+            html += '<div class="abstract-text">' + abstract + '</div>';
+            html += '</div>';
+        }
+
+        // Action buttons
+        html += '<div class="preview-actions">';
+        html += '<a href="' + filePath + '" target="_blank" class="btn btn-primary">';
+        html += '<i class="fas fa-external-link-alt"></i> View Full Document';
+        html += '</a>';
+        html += '<a href="' + filePath + '" download class="btn btn-secondary">';
+        html += '<i class="fas fa-download"></i> Download';
+        html += '</a>';
+        html += '</div>';
+
+        html += '</div>';
+        html += '</div>';
+
+        modal.innerHTML = html;
 
         document.body.appendChild(modal);
         modal.style.display = 'flex';
+        console.log('Modal created and displayed:', modal);
     }
 
     function closePreviewModal() {

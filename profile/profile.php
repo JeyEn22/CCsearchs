@@ -251,7 +251,7 @@ include "../layout/layout.php";
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="empty-state">
-                        <i class="fas fa-book-open" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                        <i class="fas fa-book-open empty-icon"></i>
                         <h3>No publications yet</h3>
                         <p>This user hasn't uploaded any documents.</p>
                     </div>
@@ -302,7 +302,7 @@ include "../layout/layout.php";
                     <label for="confirmNewPassword">Confirm New Password</label>
                     <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
                 </div>
-                <div id="passwordValidation" class="password-rules" style="display: none;">
+                <div id="passwordValidation" class="password-rules">
                     <div id="lengthCheck" class="validation-item">
                         <i class="fas fa-times validation-icon"></i>
                         <span>At least 8 characters</span>
@@ -409,7 +409,7 @@ include "../layout/layout.php";
         </div>
         <div class="modal-body">
             <p>Are you sure you want to delete "<span id="deleteTitle"></span>"?</p>
-            <p style="color: #e74c3c; font-weight: 500; margin-top: 10px;">This action cannot be undone.</p>
+            <p class="danger-text">This action cannot be undone.</p>
         </div>
         <div class="modal-footer">
             <button onclick="closeDeleteModal()" class="btn btn-secondary">Cancel</button>

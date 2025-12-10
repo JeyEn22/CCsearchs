@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../database/database.php";
+include "../database/notifications.php";
 
 // Prevent browser caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -83,6 +84,10 @@ try {
 
         if ($addFavorite->execute()) {
             $addFavorite->close();
+
+            // Create notification for the favorited author
+            notifyFavorite($authorID, $userID);
+
             echo json_encode(['success' => true, 'message' => 'Author added to favorites']);
         } else {
             $addFavorite->close();

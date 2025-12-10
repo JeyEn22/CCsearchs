@@ -65,8 +65,11 @@ class ThemeManager {
         if (pathname.includes('/profile/')) {
             // We're already in the profile directory, use relative path
             return 'account_actions.php';
+        } else if (pathname.includes('/notification/') || pathname.includes('/home/') || pathname.includes('/library/') || pathname.includes('/authors/') || pathname.includes('/publication/')) {
+            // We're in a subdirectory, go up one level then to profile
+            return '../profile/account_actions.php';
         } else {
-            // We're in another directory, use profile/account_actions.php
+            // We're in the root or another directory, use profile/account_actions.php
             return 'profile/account_actions.php';
         }
     }

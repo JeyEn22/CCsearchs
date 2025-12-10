@@ -62,7 +62,17 @@
                         <img src="../icons/sidebar-icons/authors.png" alt=""> Authors
                     </a>
                     <a href="../notification/notification.php" class="<?php echo (isset($activeNav) && $activeNav === 'notification') ? 'active' : ''; ?>">
-                        <img src="../icons/sidebar-icons/notification.png" alt=""> Notification
+                        <img src="../icons/sidebar-icons/notification.png" alt="">
+                        Notification
+                        <?php
+                        if (isset($_SESSION['studentID'])) {
+                            include "../database/notifications.php";
+                            $unreadCount = getUnreadNotificationCount($_SESSION['studentID']);
+                            if ($unreadCount > 0) {
+                                echo '<span class="notification-badge">' . ($unreadCount > 99 ? '99+' : $unreadCount) . '</span>';
+                            }
+                        }
+                        ?>
                     </a>
                 </nav>
             </div>

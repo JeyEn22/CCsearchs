@@ -124,6 +124,23 @@ body {
     background-color: #1e3e68;
 }
 
+/* Notification Badge */
+.notification-badge {
+    background-color: #ff4444;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
 .logout {
     text-align: center;
     padding: 20px;

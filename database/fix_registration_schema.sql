@@ -64,3 +64,6 @@ WHERE LENGTH(studentID) < 10;
 -- Update registration table to match
 UPDATE registration SET studentID = CONCAT('2023-', LPAD(SUBSTRING(studentID, 6), 5, '0'))
 WHERE LENGTH(studentID) < 10;
+
+
+

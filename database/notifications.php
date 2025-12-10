@@ -181,6 +181,24 @@ function deleteNotification($notificationID, $userID) {
     global $conn;
 
     try {
+        // First verify the notification belongs to the user
+        $checkStmt = $conn->prepare("SELECT notificationID FROM notifications WHERE notificationID = ? AND recipientID = ?");
+        if (!$checkStmt) {
+            error_log("Failed to prepare check statement: " . $conn->error);
+            return false;
+        }
+        $checkStmt->bind_param("is", $notificationID, $userID);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            $checkStmt->close();
+            error_log("Notification not found or doesn't belong to user");
+            return false;
+        }
+        $checkStmt->close();
+        
+        // Now delete the notification
         $stmt = $conn->prepare("DELETE FROM notifications WHERE notificationID = ? AND recipientID = ?");
         
         if (!$stmt) {
@@ -190,9 +208,10 @@ function deleteNotification($notificationID, $userID) {
         
         $stmt->bind_param("is", $notificationID, $userID);
         $result = $stmt->execute();
+        $affectedRows = $conn->affected_rows;
         $stmt->close();
         
-        return $result;
+        return $affectedRows > 0;
     } catch (Exception $e) {
         error_log("Error in deleteNotification: " . $e->getMessage());
         return false;

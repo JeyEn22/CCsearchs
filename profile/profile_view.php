@@ -29,24 +29,86 @@ if (isset($_SESSION['studentID']) && $_SESSION['studentID'] !== $studentID) {
     notifyProfileVisit($studentID, $_SESSION['studentID']);
 }
 
+// Get uploaded documents count
+$uploadCount = 0;
+try {
+    $uploadStmt = $conn->prepare("SELECT COUNT(*) as upload_count FROM publications WHERE studentID = ?");
+    $uploadStmt->bind_param("s", $studentID);
+    $uploadStmt->execute();
+    $uploadResult = $uploadStmt->get_result();
+    $uploadRow = $uploadResult->fetch_assoc();
+    $uploadCount = $uploadRow['upload_count'];
+    $uploadStmt->close();
+} catch (Exception $e) {
+    error_log("Error getting upload count: " . $e->getMessage());
+}
+
+// Get favorites count (how many people favorited this user)
+$favoritesCount = 0;
+try {
+    $favStmt = $conn->prepare("SELECT COUNT(*) as fav_count FROM favorite_authors WHERE favorite_studentID = ?");
+    $favStmt->bind_param("s", $studentID);
+    $favStmt->execute();
+    $favResult = $favStmt->get_result();
+    $favRow = $favResult->fetch_assoc();
+    $favoritesCount = $favRow['fav_count'];
+    $favStmt->close();
+} catch (Exception $e) {
+    // Table might not exist yet, default to 0
+    $favoritesCount = 0;
+}
+
+// Get user's publications
+$userPublications = [];
+try {
+    $pubStmt = $conn->prepare("
+        SELECT p.*, r.firstName, r.lastName 
+        FROM publications p 
+        JOIN registration r ON p.studentID = r.studentID 
+        WHERE p.studentID = ? 
+        ORDER BY p.publicationID DESC
+    ");
+    $pubStmt->bind_param("s", $studentID);
+    $pubStmt->execute();
+    $pubResult = $pubStmt->get_result();
+    while ($pub = $pubResult->fetch_assoc()) {
+        $userPublications[] = $pub;
+    }
+    $pubStmt->close();
+} catch (Exception $e) {
+    error_log("Error getting user publications: " . $e->getMessage());
+}
+
 // Set layout variables
 $pageTitle = 'Publications by ' . htmlspecialchars($user['firstName'] . ' ' . $user['lastName']);
 $activeNav = 'publication';
-$additionalCSS = ['../profile/profile_page.css', '../home/home_page.css', '../publication/publication_page.css'];
+$additionalCSS = ['../profile/profile_page.css', '../publication/publication_page.css'];
+$additionalScripts = ['../profile/profile.js'];
 
 // Include layout header
 include "../layout/layout.php";
 ?>
-<!-- Personal Info Section Consistent with Profile -->
-<div class="content" style="max-width:1200px;margin:auto">
+
+<!-- Profile Banner Background -->
+<div class="profile-banner"></div>
+
+<!-- Main Section with Background -->
+<section class="content">
     <div class="profile-card">
         <div class="profile-image">
             <img src="<?php echo htmlspecialchars(isset($user['profileImage']) && !empty($user['profileImage']) ? '../' . $user['profileImage'] : '../uploads/profile.png'); ?>" alt="User" id="profilePic">
         </div>
+
         <h3><?php echo htmlspecialchars((isset($user['firstName']) ? $user['firstName'] : 'Unknown') . ' ' . (isset($user['lastName']) ? $user['lastName'] : 'User')); ?></h3>
+        <p>Uploaded Documents: <strong><?php echo $uploadCount; ?></strong></p>
+        <p>Favorites by: <strong><?php echo $favoritesCount; ?></strong></p>
     </div>
     <div class="info-section">
-        <div class="tabs"><button class="tab active" data-tab="personal">Personal Information</button></div>
+        <div class="tabs">
+            <button class="tab active" data-tab="personal">Personal Information</button>
+            <button class="tab" data-tab="uploaded">Uploaded Documents</button>
+        </div>
+
         <div class="tab-content" id="personal">
             <div class="form-grid">
                 <div class="form-group">
@@ -75,96 +137,48 @@ include "../layout/layout.php";
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- End Personal Info Section -->
 
-<!-- Author Publications Header -->
-<div class="welcome-header">
-    <img src="../image/home_images/welcome-header.png" class="welcome-image" alt="Welcome Header">
-    <div class="welcome-content">
-        <h2>Publications by <?php echo htmlspecialchars($user['firstName'] . ' ' . $user['lastName']); ?></h2>
-
-        <?php if (!empty($user['department'])): ?>
-            <p><strong>Department:</strong> <?php echo htmlspecialchars($user['department']); ?></p>
-        <?php endif; ?>
-
-        <div class="author-stats">
-            <?php
-            // Get publication count
-            $countSql = "SELECT COUNT(*) as pub_count FROM publications WHERE studentID = ?";
-            $countStmt = $conn->prepare($countSql);
-            $countStmt->bind_param("s", $studentID);
-            $countStmt->execute();
-            $countResult = $countStmt->get_result();
-            $countRow = $countResult->fetch_assoc();
-            $pubCount = $countRow['pub_count'];
-            $countStmt->close();
-            ?>
-
-            <span class="stat-item">
-                <strong><?php echo $pubCount; ?></strong> Publication<?php echo $pubCount != 1 ? 's' : ''; ?>
-            </span>
-        </div>
-    </div>
-</div>
-
-<!-- Publications Content -->
-<div class="content-section">
-
-    <?php if ($pubCount > 0): ?>
-        <div class="category-box">
-
-            <?php
-            // Fetch user's publications
-            $pubSql = "SELECT p.*, r.firstName, r.lastName 
-                       FROM publications p 
-                       JOIN registration r ON p.studentID = r.studentID 
-                       WHERE p.studentID = ? 
-                       ORDER BY p.publicationID DESC";
-
-            $pubStmt = $conn->prepare($pubSql);
-            $pubStmt->bind_param("s", $studentID);
-            $pubStmt->execute();
-            $pubResult = $pubStmt->get_result();
-
-            if ($pubResult->num_rows > 0):
-                while ($pub = $pubResult->fetch_assoc()):
-            ?>
-
-                    <div class="card">
-                        <?php
-                        $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
-                        $imageSrc .= '?t=' . time(); // Cache busting
-                        ?>
-                        <img src="<?php echo htmlspecialchars($imageSrc); ?>" class="cover-img" alt="Publication cover">
-                        <div class="card-info">
-                            <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
-                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
-                            <a href="<?php echo htmlspecialchars($pub['file_path']); ?>" target="_blank">View Document</a>
+        <div class="tab-content hidden" id="uploaded">
+            <div class="card-grid">
+                <?php if (!empty($userPublications)): ?>
+                    <?php foreach ($userPublications as $pub): ?>
+                        <div class="card" 
+                             data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" 
+                             data-title="<?php echo htmlspecialchars($pub['title']); ?>" 
+                             data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" 
+                             data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" 
+                             data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" 
+                             data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" 
+                             data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" 
+                             data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>"
+                             onclick="previewPublication(this)">
+                            <?php
+                            $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
+                            $imageSrc .= '?t=' . time(); // Cache busting
+                            ?>
+                            <img src="<?php echo htmlspecialchars($imageSrc); ?>" class="cover-img" alt="Publication cover">
+                            <div class="card-info">
+                                <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
+                                <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                                <div class="card-actions">
+                                    <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Preview
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <i class="fas fa-book-open empty-icon"></i>
+                        <h3>No publications yet</h3>
+                        <p>This user hasn't uploaded any documents.</p>
                     </div>
-
-            <?php
-                endwhile;
-            endif;
-            ?>
-
-            <?php $pubStmt->close(); ?>
-
-        </div> <!-- END category-box -->
-
-    <?php else: ?>
-
-        <div class="empty-state">
-            <i class="fas fa-book-open empty-icon"></i>
-            <h3>No publications yet</h3>
-            <p>This author hasn't published any documents.</p>
+                <?php endif; ?>
+            </div>
         </div>
-
-    <?php endif; ?>
-
-</div> <!-- END content-section -->
+    </div>
+</section>
 
 <?php
 $conn->close();
@@ -172,3 +186,95 @@ $conn->close();
 // Include layout footer
 include "../layout/layout_footer.php";
 ?>
+
+<script>
+    // Publication preview functionality
+    function previewPublication(element) {
+        const filePath = element.getAttribute('data-filepath');
+        const title = element.getAttribute('data-title');
+        const author = element.getAttribute('data-author');
+        const publishDate = element.getAttribute('data-date');
+        const abstract = element.getAttribute('data-abstract');
+        const department = element.getAttribute('data-department');
+        const type = element.getAttribute('data-type');
+        const thumbnail = element.getAttribute('data-thumbnail');
+
+        console.log('previewPublication called with:', {filePath, title, author, publishDate, abstract, department, type, thumbnail});
+
+        // Create modal with proper CSS classes
+        const modal = document.createElement('div');
+        modal.id = 'previewModal';
+        modal.className = 'modal';
+
+        const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        let html = '<div class="modal-content preview-modal-content">';
+        html += '<div class="modal-header">';
+        html += '<h3>' + title + '</h3>';
+        html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
+        html += '</div>';
+        html += '<div class="modal-body">';
+        html += '<div class="preview-content-wrapper">';
+
+        // Thumbnail on left side
+        if (thumbnail) {
+            html += '<div class="preview-thumbnail-container">';
+            html += '<img src="../' + thumbnail + '?t=' + Date.now() + '" alt="Document preview" class="preview-thumbnail">';
+            html += '</div>';
+        }
+
+        // Publication details on right side
+        html += '<div class="preview-details-container">';
+        html += '<div class="publication-details">';
+        html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
+        html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
+
+        if (department) {
+            html += '<div class="detail-row"><strong>Department:</strong> <span>' + department + '</span></div>';
+        }
+        if (type) {
+            html += '<div class="detail-row"><strong>Type:</strong> <span>' + type + '</span></div>';
+        }
+        html += '</div>';
+
+        // Abstract section (separated from publication details)
+        if (abstract) {
+            html += '<div class="abstract-section">';
+            html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
+            html += '<div class="abstract-text">' + abstract + '</div>';
+            html += '</div>';
+        }
+        html += '</div>'; // Close preview-details-container
+        html += '</div>'; // Close preview-content-wrapper
+
+        // Action buttons (fixed at bottom)
+        html += '<div class="preview-actions">';
+        html += '<a href="' + filePath + '" target="_blank" class="btn btn-primary">';
+        html += '<i class="fas fa-external-link-alt"></i> View Full Document';
+        html += '</a>';
+        html += '<a href="' + filePath + '" download class="btn btn-secondary">';
+        html += '<i class="fas fa-download"></i> Download';
+        html += '</a>';
+        html += '</div>';
+
+        html += '</div>';
+        html += '</div>';
+
+        modal.innerHTML = html;
+
+        document.body.appendChild(modal);
+        modal.style.display = 'flex';
+        console.log('Modal created and displayed:', modal);
+    }
+
+    function closePreviewModal() {
+        const modal = document.getElementById('previewModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+</script>

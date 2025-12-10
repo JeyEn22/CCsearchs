@@ -470,8 +470,17 @@ window.onclick = function(event) {
         html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
         html += '</div>';
         html += '<div class="modal-body">';
+        html += '<div class="preview-content-wrapper">';
 
-        // Publication details section
+        // Thumbnail on left side
+        if (thumbnail) {
+            html += '<div class="preview-thumbnail-container">';
+            html += '<img src="../' + thumbnail + '?t=' + Date.now() + '" alt="Document preview" class="preview-thumbnail">';
+            html += '</div>';
+        }
+
+        // Publication details on right side
+        html += '<div class="preview-details-container">';
         html += '<div class="publication-details">';
         html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
         html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
@@ -491,6 +500,8 @@ window.onclick = function(event) {
             html += '<div class="abstract-text">' + abstract + '</div>';
             html += '</div>';
         }
+        html += '</div>'; // Close preview-details-container
+        html += '</div>'; // Close preview-content-wrapper
 
         // Action buttons
         html += '<div class="preview-actions">';

@@ -102,7 +102,10 @@ foreach ($notifications as $notification) {
 $pageTitle = 'Notification';
 $activeNav = 'notification';
 $additionalCSS = ['notification_page.css'];
-$additionalJS = ['../js/notifications.js'];
+$additionalScripts = ['../js/notifications.js'];
+
+// Also include script in head to ensure it loads early
+$pageScripts = '<script src="../js/notifications.js"></script>';
 
 // Include layout header
 include "../layout/layout.php";
@@ -267,7 +270,26 @@ include "../layout/layout.php";
     <?php endif; ?>
 </div>
 
+<!-- MODAL: Delete Notification Confirmation -->
+<div id="deleteNotificationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Delete Notification</h3>
+            <span class="close-modal" id="closeDeleteNotifModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this notification?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelDeleteNotifBtn" class="modal-btn cancel-btn">Cancel</button>
+            <button id="confirmDeleteNotifBtn" class="modal-btn danger-btn">Delete</button>
+        </div>
+    </div>
+</div>
+
 <?php
 // Include layout footer
 include "../layout/layout_footer.php";
 ?>
+

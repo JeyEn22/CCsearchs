@@ -250,20 +250,27 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                 <span class="close-modal" onclick="closePreviewModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="publication-details">
-                    <div class="detail-row">
-                        <strong>Author:</strong> <span>${author}</span>
+                <div class="preview-content-wrapper">
+                    ${thumbnail ? `<div class="preview-thumbnail-container">
+                        <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
+                    </div>` : ''}
+                    <div class="preview-details-container">
+                        <div class="publication-details">
+                            <div class="detail-row">
+                                <strong>Author:</strong> <span>${author}</span>
+                            </div>
+                            <div class="detail-row">
+                                <strong>Published:</strong> <span>${formattedDate}</span>
+                            </div>
+                            ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
+                            ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
+                        </div>
+                        ${abstract ? `<div class="abstract-section">
+                            <div class="abstract-label"><strong>Abstract:</strong></div>
+                            <div class="abstract-text">${abstract}</div>
+                        </div>` : ''}
                     </div>
-                    <div class="detail-row">
-                        <strong>Published:</strong> <span>${formattedDate}</span>
-                    </div>
-                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                    ${abstract ? `<div class="detail-row"><strong>Abstract:</strong> <div class="abstract-text">${abstract}</div></div>` : ''}
                 </div>
-                ${thumbnail ? `<div class="preview-thumbnail-container">
-                    <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
-                </div>` : ''}
                 <div class="preview-actions">
                     <a href="${filePath}" target="_blank" class="btn btn-primary">
                         <i class="fas fa-external-link-alt"></i> View Full Document

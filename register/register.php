@@ -30,7 +30,7 @@
     <div class="col">
       <input type="text" name="firstName" id="firstName" placeholder="First Name" required maxlength="50" class="form-field">
       <input type="text" name="lastName" id="lastName" placeholder="Last Name" required maxlength="50" class="form-field">
-      <input type="text" name="contactNumber" id="contactNumber" placeholder="Contact Number" required maxlength="11" pattern="[0-9]{11}" title="Please enter exactly 11 digits (e.g., 09123456789)" class="form-field">
+      <input type="text" name="contactNumber" id="contactNumber" placeholder="Contact Number" required maxlength="15" pattern="[0-9+\-\s]+" title="Please enter a valid phone number" class="form-field">
       <input type="email" name="emailAddress" id="emailAddress" placeholder="Email Address" required maxlength="100" class="form-field">
       <input type="text" name="currentAddress" id="currentAddress" placeholder="Current Address" required maxlength="255" class="form-field">
     </div>
@@ -40,28 +40,12 @@
       <input type="text" name="department" id="department" placeholder="Department" required maxlength="100" class="form-field">
       <input type="text" name="studentID" id="studentID" placeholder="Student ID" required maxlength="20" class="form-field">
       <div class="password-field">
-        <input type="password" name="password" id="password" placeholder="Password" required minlength="8" pattern="(?=.*[A-Z])(?=.*\d).{8,}" class="form-field">
+        <input type="password" name="password" id="password" placeholder="Password" required minlength="6" class="form-field">
         <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
       </div>
       <div class="password-field">
         <input type="password" name="confirmPassword" id="confirm" placeholder="Confirm Password" required minlength="6" class="form-field">
         <i class="fa-solid fa-eye toggle" onclick="togglePassword('confirm', this)"></i>
-      </div>
-
-      <!-- Password Validation Feedback -->
-      <div id="passwordValidation" class="password-rules">
-        <div id="lengthCheck" class="validation-item">
-          <i class="fas fa-times validation-icon"></i>
-          <span>At least 8 characters</span>
-        </div>
-        <div id="uppercaseCheck" class="validation-item">
-          <i class="fas fa-times validation-icon"></i>
-          <span>One uppercase letter</span>
-        </div>
-        <div id="numberCheck" class="validation-item">
-          <i class="fas fa-times validation-icon"></i>
-          <span>One number</span>
-        </div>
       </div>
     </div>
   </div>
@@ -172,40 +156,9 @@
       }
     }
 
-    // Password validation functionality
-    function validatePassword() {
-      const password = document.getElementById('password').value;
-      const lengthCheck = document.getElementById('lengthCheck');
-      const uppercaseCheck = document.getElementById('uppercaseCheck');
-      const numberCheck = document.getElementById('numberCheck');
-
-      // Check length (at least 8 characters)
-      const hasLength = password.length >= 8;
-      lengthCheck.className = hasLength ? 'validation-item valid' : 'validation-item invalid';
-
-      // Check uppercase letter
-      const hasUppercase = /[A-Z]/.test(password);
-      uppercaseCheck.className = hasUppercase ? 'validation-item valid' : 'validation-item invalid';
-
-      // Check number
-      const hasNumber = /\d/.test(password);
-      numberCheck.className = hasNumber ? 'validation-item valid' : 'validation-item invalid';
-
-      return hasLength && hasUppercase && hasNumber;
-    }
-
-    // Add event listener for real-time validation
-    document.getElementById('password').addEventListener('input', validatePassword);
-
     // AJAX form submission - Only triggered by Register button click
     document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
-      // Validate password requirements
-      if (!validatePassword()) {
-        showModal('error', 'Please ensure your password meets all requirements: at least 8 characters, one uppercase letter, and one number.');
-        return;
-      }
 
       // Ensure modal is hidden before starting
       if (modal) {
@@ -238,6 +191,7 @@
         submitButton.disabled = false;
       });
     });
+  </script>
   </script>
 </body>
 

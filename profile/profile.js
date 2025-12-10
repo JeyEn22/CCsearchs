@@ -28,6 +28,18 @@ document.addEventListener('DOMContentLoaded', function () {
   } else {
     console.log('Private view detected');
   }
+
+  // Check for URL hash to activate specific tab
+  const hash = window.location.hash.substring(1); // Remove the '#'
+  if (hash) {
+    console.log('URL hash detected:', hash);
+    const targetTab = document.querySelector(`[data-tab="${hash}"]`);
+    if (targetTab) {
+      console.log('Activating tab:', hash);
+      // Simulate click on the target tab
+      targetTab.click();
+    }
+  }
 });
 
 // Tab switch

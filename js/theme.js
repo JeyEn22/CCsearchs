@@ -59,6 +59,18 @@ class ThemeManager {
         }
     }
 
+    getAccountActionsPath() {
+        // Determine the correct path to account_actions.php based on current location
+        const pathname = window.location.pathname;
+        if (pathname.includes('/profile/')) {
+            // We're already in the profile directory, use relative path
+            return 'account_actions.php';
+        } else {
+            // We're in another directory, use profile/account_actions.php
+            return 'profile/account_actions.php';
+        }
+    }
+
     async loadThemePreference() {
         // Try localStorage first
         const localTheme = localStorage.getItem('userTheme');
@@ -69,7 +81,8 @@ class ThemeManager {
 
         // Try to load from database if user is logged in
         try {
-            const response = await fetch('profile/account_actions.php?action=get_theme', {
+            const accountActionsPath = this.getAccountActionsPath();
+            const response = await fetch(accountActionsPath + '?action=get_theme', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +114,8 @@ class ThemeManager {
 
     async saveToDatabase(theme) {
         try {
-            const response = await fetch('profile/account_actions.php?action=save_theme', {
+            const accountActionsPath = this.getAccountActionsPath();
+            const response = await fetch(accountActionsPath + '?action=save_theme', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

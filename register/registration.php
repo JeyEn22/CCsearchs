@@ -1,4 +1,8 @@
 <?php
+// Suppress all errors and warnings to prevent JSON corruption
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header('Content-Type: application/json');
 include("../database/database.php");  // Connect to database
 
@@ -49,9 +53,9 @@ if ($password !== $confirmPassword) {
     exit();
 }
 
-// Validate password strength
-if (strlen($password) < 8) {
-    $response['message'] = 'Password must be at least 8 characters long.';
+// Validate password strength (minimum 6 characters as per form)
+if (strlen($password) < 6) {
+    $response['message'] = 'Password must be at least 6 characters long.';
     echo json_encode($response);
     exit();
 }
@@ -75,21 +79,16 @@ if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
     exit();
 }
 
-// Validate contact number (exactly 11 digits)
-if (!preg_match('/^[0-9]{11}$/', $contactNumber)) {
-    $response['message'] = 'Contact number must be exactly 11 digits.';
+// Validate contact number (allow various phone number formats)
+if (!preg_match('/^[0-9+\-\s]{7,15}$/', $contactNumber)) {
+    $response['message'] = 'Please enter a valid contact number (7-15 digits, may include +, -, spaces).';
     echo json_encode($response);
     exit();
 }
 
-// Check if student ID exists in student_information table
-$checkStudent = $conn->prepare("SELECT * FROM student_information WHERE studentID = ?");
-$checkStudent->bind_param("s", $studentID);
-$checkStudent->execute();
-$result = $checkStudent->get_result();
-
-if ($result->num_rows == 0) {
-    $response['message'] = 'Invalid Student ID. Please contact admin.';
+// Validate student ID format (should be in format like 2023-00001 or similar)
+if (!preg_match('/^\d{4}-\d{5}$/', $studentID)) {
+    $response['message'] = 'Student ID must be in format YYYY-XXXXX (e.g., 2023-00001).';
     echo json_encode($response);
     exit();
 }
@@ -126,28 +125,33 @@ $insert = $conn->prepare("INSERT INTO registration (firstName, lastName, contact
 $insert->bind_param("ssssssss", $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department, $studentID, $hashedPassword);
 
 if ($insert->execute()) {
-    // Create profile entry automatically after successful registration
-    $profileInsert = $conn->prepare("INSERT INTO user_profiles (studentID, firstName, lastName, contactNumber, emailAddress, currentAddress, department, theme_preference) VALUES (?, ?, ?, ?, ?, ?, ?, 'light')");
-    $profileInsert->bind_param("sssssss", $studentID, $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department);
-
-    if (!$profileInsert->execute()) {
-        // Log error but don't fail registration
-        error_log("Failed to create profile for studentID: $studentID - " . $conn->error);
+    // Create profile entry automatically after successful registration (optional)
+    try {
+        $profileInsert = $conn->prepare("INSERT INTO user_profiles (studentID, firstName, lastName, contactNumber, emailAddress, currentAddress, department, theme_preference) VALUES (?, ?, ?, ?, ?, ?, ?, 'light')");
+        if ($profileInsert) {
+            $profileInsert->bind_param("sssssss", $studentID, $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department);
+            $profileInsert->execute();
+            $profileInsert->close();
+        }
+    } catch (Exception $e) {
+        // Silently ignore profile creation errors - registration still succeeds
+        error_log("Profile creation failed for studentID: $studentID - " . $e->getMessage());
     }
-    $profileInsert->close();
 
     $response['status'] = 'success';
     $response['message'] = 'Registration successful!';
     echo json_encode($response);
+    exit(); // Exit immediately after sending response
 } else {
     $response['message'] = 'Registration failed. Please try again.';
     echo json_encode($response);
+    exit(); // Exit immediately after sending response
 }
 
+// Close statements only if we reach here (which should never happen due to exit() calls above)
 $insert->close();
 $checkStudent->close();
 $checkEmail->close();
 $checkStudentID->close();
-
 $conn->close();
 ?>

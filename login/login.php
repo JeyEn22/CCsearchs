@@ -15,7 +15,7 @@
 
     <!-- LEFT SIDE -->
     <div class="left-section">
-      <div class="back-btn" onclick="window.location.href='/landing/landing.html'">
+      <div class="back-btn" onclick="window.location.href='../landing/landing.php'">
         <span>&larr;</span>
       </div>
 

@@ -19,6 +19,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : 'CCSearch'; ?></title>
     <link rel="stylesheet" href="../layout/layout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <?php if (isset($additionalCSS) && is_array($additionalCSS)): ?>
         <?php foreach ($additionalCSS as $css): ?>
             <link rel="stylesheet" href="<?php echo htmlspecialchars($css); ?>">

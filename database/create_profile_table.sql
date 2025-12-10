@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     emailAddress VARCHAR(100) NOT NULL,
     currentAddress VARCHAR(255) NOT NULL,
     department VARCHAR(100) NOT NULL,
-    profileImage VARCHAR(255) DEFAULT '../image/profile.png',
+    profileImage VARCHAR(255) DEFAULT 'uploads/profile.png',
     theme_preference VARCHAR(10) DEFAULT 'light',
     is_public BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

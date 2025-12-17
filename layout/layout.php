@@ -34,6 +34,8 @@
 
     <!-- Global Theme System -->
     <script src="../js/theme.js"></script>
+    <!-- Real-time Session Checker -->
+    <script src="../js/session_checker.js"></script>
 </head>
 <body>
     <div class="layout-wrapper">

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../includes/session_validator.php"; // Validate session
 
 // Redirect to login if user is not logged in
 if (!isset($_SESSION['studentID'])) {
@@ -598,3 +599,131 @@ console.log('Is public view:', <?php echo $isPublicView ? 'true' : 'false'; ?>);
 console.log('Update button exists:', !!document.getElementById('updateProfile'));
 console.log('Body has public-view class:', document.body.classList.contains('public-view'));
 </script>
+<!-- Real-time Session Checker Modal -->
+<div id="loginModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-icon">
+        <i id="modalIcon" class="fas"></i>
+      </div>
+      <h3 id="modalTitle">Session Status</h3>
+      <p id="modalMessage"></p>
+    </div>
+    <div class="modal-footer">
+      <button id="modalButton" class="modal-btn">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add modal styles for session checker -->
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 350px;
+    height: auto;
+    min-height: 280px;
+    position: relative;
+    pointer-events: auto;
+    margin: auto;
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-header {
+    padding: 12px 20px 0;
+    text-align: right;
+  }
+
+  .close-modal {
+    font-size: 20px;
+    font-weight: 500;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .close-modal:hover {
+    color: #000;
+  }
+
+  .modal-body {
+    padding: 20px 24px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .modal-icon {
+    margin-bottom: 16px;
+  }
+
+  .modal-icon .fas {
+    font-size: 48px;
+    color: #dc2626;
+  }
+
+  .modal-body h3 {
+    margin: 12px 0 8px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .modal-body p {
+    margin: 12px 0;
+    color: #555;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  .modal-footer {
+    padding: 16px 24px 24px;
+    text-align: center;
+  }
+
+  .modal-btn {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+  }
+
+  .modal-btn:hover {
+    background-color: #b91c1c;
+  }
+</style>
+
+<script src="../js/session_checker.js"></script>

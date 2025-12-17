@@ -15,7 +15,7 @@
 
     <!-- LEFT SECTION -->
     <div class="left-section">
-      <div class="back-btn" onclick="window.location.href='/login/login.html'">
+      <div class="back-btn" onclick="window.location.href='../landing/landing.php'">
         <span>&larr;</span>
       </div>
 
@@ -104,9 +104,10 @@
     function showModal(status, message) {
       // Set modal type and content
       modal.className = 'modal ' + status;
-      modalTitle.textContent = status === 'success' ? 'Success!' : 'Error!';
+      modalTitle.textContent = status === 'success' ? 'Registration Successful!' : 'Registration Failed';
       modalMessage.textContent = message;
       modalIcon.className = 'fas ' + (status === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle');
+      modalIcon.style.color = status === 'success' ? '#10b981' : '#ef4444';
 
       // Show modal with flexbox for centering
       modal.style.display = 'flex';
@@ -116,12 +117,14 @@
 
       // Set button text and action
       if (status === 'success') {
-        modalButton.textContent = 'Go to Login';
+        modalButton.textContent = 'Login Now';
+        modalButton.style.backgroundColor = '#10b981';
         modalButton.onclick = () => {
           window.location.href = '../login/login.php';
         };
       } else {
         modalButton.textContent = 'Try Again';
+        modalButton.style.backgroundColor = '#ef4444';
         modalButton.onclick = hideModal;
       }
     }

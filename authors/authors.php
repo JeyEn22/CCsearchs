@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../includes/session_validator.php"; // Validate session
 
 // Redirect to login if user is not logged in
 if (!isset($_SESSION['studentID'])) {

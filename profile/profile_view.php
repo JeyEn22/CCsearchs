@@ -171,9 +171,15 @@ $conn->close();
 ?>
 
 <!-- Back Button -->
-<div class="back-btn" onclick="window.history.back()" style="margin-top: 10px; margin-left: 0px; margin-bottom: 20px; font-size: 14px; cursor: pointer; width: fit-content; color: #333; transition: opacity 0.3s ease;">
+<div class="back-btn" onclick="window.history.back()" style="margin-top: 10px; margin-left: 0px; margin-bottom: 20px; font-size: 14px; cursor: pointer; width: fit-content; color: #333; transition: opacity 0.3s ease; display: inline-block; padding: 8px 12px; border-radius: 4px;">
     <span>&larr; Back</span>
 </div>
+<style>
+  .back-btn:hover {
+    background-color: #f0f0f0;
+    opacity: 0.8;
+  }
+</style>
 
 <!-- Preview publication modal functionality -->
 <script>

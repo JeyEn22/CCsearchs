@@ -121,10 +121,13 @@ $checkEmail->execute();
 $emailResult = $checkEmail->get_result();
 
 if ($emailResult->num_rows > 0) {
-    $response['message'] = 'Email is already registered.';
+    $response['status'] = 'error';
+    $response['message'] = 'Email is already registered. Please use a different email or login to your existing account.';
+    $checkEmail->close();
     echo json_encode($response);
     exit();
 }
+$checkEmail->close();
 
 // Check if studentID is already registered
 $checkStudentID = $conn->prepare("SELECT studentID FROM registration WHERE studentID = ?");
@@ -133,10 +136,13 @@ $checkStudentID->execute();
 $studentResult = $checkStudentID->get_result();
 
 if ($studentResult->num_rows > 0) {
-    $response['message'] = 'Student ID is already registered.';
+    $response['status'] = 'error';
+    $response['message'] = 'Student ID is already registered. Please contact support if you need help accessing your account.';
+    $checkStudentID->close();
     echo json_encode($response);
     exit();
 }
+$checkStudentID->close();
 
 // Hash password
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -145,6 +151,7 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $insert = $conn->prepare("INSERT INTO registration (firstName, lastName, contactNumber, emailAddress, currentAddress, department, studentID, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
 if (!$insert) {
+    $response['status'] = 'error';
     $response['message'] = 'Prepare failed: ' . $conn->error;
     echo json_encode($response);
     exit();
@@ -163,10 +170,11 @@ if ($insert->execute()) {
     }
 
     $response['status'] = 'success';
-    $response['message'] = 'Registration successful!';
+    $response['message'] = 'Registration successful! Redirecting to login...';
     echo json_encode($response);
     exit();
 } else {
+    $response['status'] = 'error';
     $response['message'] = 'Registration failed. Error: ' . $insert->error;
     echo json_encode($response);
     exit();

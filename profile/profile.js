@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const editButton = document.getElementById("editProfile");
   const updateButton = document.getElementById("updateProfile");
   const personalInputs = document.querySelectorAll('#personal input');
+  const cameraIcon = document.querySelector('.camera-icon');
   
   let isEditMode = false;
 
@@ -92,6 +93,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         editButton.style.display = 'none';
         updateButton.style.display = 'inline-block';
+        
+        // Show camera icon when in edit mode
+        if (cameraIcon) {
+          cameraIcon.style.display = 'block';
+        }
       } else {
         // Disable all inputs
         personalInputs.forEach(input => {
@@ -99,6 +105,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         editButton.style.display = 'inline-block';
         updateButton.style.display = 'none';
+        
+        // Hide camera icon when not in edit mode
+        if (cameraIcon) {
+          cameraIcon.style.display = 'none';
+        }
       }
     });
   }
@@ -332,7 +343,7 @@ window.addEventListener("pageshow", function (event) {
 
 // Account Settings Functionality
 document.addEventListener('DOMContentLoaded', function () {
-  // Modal functionality
+  // Simple modal open/close functions
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -349,89 +360,74 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Close modal when clicking outside or on close button
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal')) {
-      const modalId = e.target.id;
-      closeModal(modalId);
-    } else if (e.target.classList.contains('close-modal')) {
-      const modalId = e.target.getAttribute('data-modal');
-      closeModal(modalId);
-    } else if (e.target.classList.contains('cancel-btn')) {
-      const modalId = e.target.getAttribute('data-modal');
-      closeModal(modalId);
-    }
+  // Close modals when clicking on background
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal(this.id);
+      }
+    });
   });
 
-  // Account Settings Buttons
+  // Close buttons
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const modalId = this.getAttribute('data-modal');
+      closeModal(modalId);
+    });
+  });
+
+  // Cancel buttons
+  document.querySelectorAll('.cancel-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const modalId = this.getAttribute('data-modal');
+      closeModal(modalId);
+    });
+  });
+
+  // ===== CHANGE PASSWORD BUTTON =====
   const changePasswordBtn = document.getElementById('changePasswordBtn');
-  const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-  const themeBtn = document.getElementById('themeBtn');
-
   if (changePasswordBtn) {
-    changePasswordBtn.addEventListener('click', () => openModal('changePasswordModal'));
-  }
-
-  if (deleteAccountBtn) {
-    deleteAccountBtn.addEventListener('click', () => openModal('deleteAccountModal'));
-  }
-
-  if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      openModal('themeModal');
-      loadCurrentTheme();
+    changePasswordBtn.addEventListener('click', function() {
+      openModal('changePasswordModal');
     });
   }
 
-  // Change Password Functionality
+  // Change password form submission
   const changePasswordForm = document.getElementById('changePasswordForm');
-  const newPasswordInput = document.getElementById('newPassword');
-  const confirmPasswordInput = document.getElementById('confirmNewPassword');
-
-  function validatePassword() {
-    const password = newPasswordInput.value;
-    const lengthCheck = document.getElementById('lengthCheck');
-    const uppercaseCheck = document.getElementById('uppercaseCheck');
-    const numberCheck = document.getElementById('numberCheck');
-    const matchCheck = document.getElementById('matchCheck');
-    const confirmPassword = confirmPasswordInput.value;
-
-    // Check length
-    const hasLength = password.length >= 8;
-    lengthCheck.className = hasLength ? 'validation-item valid' : 'validation-item invalid';
-
-    // Check uppercase
-    const hasUppercase = /[A-Z]/.test(password);
-    uppercaseCheck.className = hasUppercase ? 'validation-item valid' : 'validation-item invalid';
-
-    // Check number
-    const hasNumber = /\d/.test(password);
-    numberCheck.className = hasNumber ? 'validation-item valid' : 'validation-item invalid';
-
-    // Check match
-    const matches = password === confirmPassword && password.length > 0;
-    matchCheck.className = matches ? 'validation-item valid' : 'validation-item invalid';
-
-    return hasLength && hasUppercase && hasNumber && matches;
-  }
-
-  if (newPasswordInput) {
-    newPasswordInput.addEventListener('input', function () {
-      document.getElementById('passwordValidation').style.display = 'block';
-      validatePassword();
-    });
-  }
-
-  if (confirmPasswordInput) {
-    confirmPasswordInput.addEventListener('input', validatePassword);
-  }
-
   if (changePasswordForm) {
-    changePasswordForm.addEventListener('submit', function (e) {
+    // Show validation rules when user starts typing
+    const newPasswordInput = document.getElementById('newPassword');
+    if (newPasswordInput) {
+      newPasswordInput.addEventListener('input', function() {
+        const validationContainer = document.getElementById('passwordValidation');
+        if (validationContainer) {
+          validationContainer.style.display = 'block';
+        }
+      });
+    }
+
+    changePasswordForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      if (!validatePassword()) {
-        showNotification('Please ensure all password requirements are met.', 'error');
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+      // Validate password requirements
+      if (newPassword.length < 8) {
+        showNotification('Password must be at least 8 characters long.', 'error');
+        return;
+      }
+      if (!/[A-Z]/.test(newPassword)) {
+        showNotification('Password must contain at least one uppercase letter.', 'error');
+        return;
+      }
+      if (!/\d/.test(newPassword)) {
+        showNotification('Password must contain at least one number.', 'error');
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showNotification('Passwords do not match.', 'error');
         return;
       }
 
@@ -444,12 +440,15 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            showNotification(data.message, 'success');
-            closeModal('changePasswordModal');
+            showNotification('Password changed successfully!', 'success');
             changePasswordForm.reset();
-            document.getElementById('passwordValidation').style.display = 'none';
+            const validationContainer = document.getElementById('passwordValidation');
+            if (validationContainer) {
+              validationContainer.style.display = 'none';
+            }
+            closeModal('changePasswordModal');
           } else {
-            showNotification(data.message, 'error');
+            showNotification(data.message || 'Error changing password.', 'error');
           }
         })
         .catch(error => {
@@ -459,78 +458,80 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Delete Account Functionality
+  // ===== THEME BUTTON =====
+  const themeBtn = document.getElementById('themeBtn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      const currentTheme = window.themeManager ? window.themeManager.getCurrentTheme() : 'light';
+      document.querySelector(`input[name="theme"][value="${currentTheme}"]`).checked = true;
+      openModal('themeModal');
+    });
+  }
+
+  // Theme option selection
+  document.querySelectorAll('.theme-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const theme = this.getAttribute('data-theme');
+      document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
+      document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+    });
+  });
+
+  // Apply theme button
+  const applyThemeBtn = document.getElementById('applyThemeBtn');
+  if (applyThemeBtn) {
+    applyThemeBtn.addEventListener('click', function() {
+      const selectedTheme = document.querySelector('input[name="theme"]:checked');
+      if (selectedTheme) {
+        const theme = selectedTheme.value;
+        if (window.themeManager) {
+          window.themeManager.applyTheme(theme);
+        }
+        closeModal('themeModal');
+        showNotification(`Theme changed to ${theme === 'dark' ? 'Dark' : 'Light'} Mode`, 'success');
+      }
+    });
+  }
+
+  // ===== DELETE ACCOUNT BUTTON =====
+  const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', function() {
+      openModal('deleteAccountModal');
+    });
+  }
+
+  // Delete account confirmation
   const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const deleteConfirmationInput = document.getElementById('deleteConfirmation');
-
   if (confirmDeleteBtn) {
-    confirmDeleteBtn.addEventListener('click', function () {
-      const confirmation = deleteConfirmationInput.value.trim();
-
-      if (confirmation !== 'DELETE') {
-        showNotification('Please type "DELETE" to confirm account deletion.', 'error');
+    confirmDeleteBtn.addEventListener('click', function() {
+      const deleteInput = document.getElementById('deleteConfirmation');
+      if (!deleteInput || deleteInput.value.trim() !== 'DELETE') {
+        showNotification('Please type "DELETE" to confirm.', 'error');
         return;
       }
 
-      if (confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+      if (confirm('Are you absolutely sure? This cannot be undone.')) {
         fetch('account_actions.php?action=delete_account', {
           method: 'POST'
         })
           .then(response => response.json())
           .then(data => {
             if (data.status === 'success') {
-              showNotification('Account deleted successfully. Redirecting...', 'success');
+              showNotification('Account deleted. Redirecting...', 'success');
               setTimeout(() => {
                 window.location.href = '../login/login.php';
               }, 2000);
             } else {
-              showNotification(data.message, 'error');
+              showNotification(data.message || 'Error deleting account.', 'error');
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            showNotification('An error occurred. Please try again.', 'error');
+            showNotification('An error occurred.', 'error');
           });
       }
     });
   }
-
-  // Theme Selection Functionality
-  function loadCurrentTheme() {
-    const currentTheme = window.themeManager ? window.themeManager.getCurrentTheme() : 'light';
-    document.querySelector(`input[name="theme"][value="${currentTheme}"]`).checked = true;
-  }
-
-  // Theme option selection
-  document.querySelectorAll('.theme-option').forEach(option => {
-    option.addEventListener('click', function () {
-      const theme = this.getAttribute('data-theme');
-      document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
-
-      // Update selected state
-      document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
-      this.classList.add('selected');
-    });
-  });
-
-  const applyThemeBtn = document.getElementById('applyThemeBtn');
-  if (applyThemeBtn) {
-    applyThemeBtn.addEventListener('click', function () {
-      const selectedTheme = document.querySelector('input[name="theme"]:checked');
-      if (selectedTheme) {
-        const theme = selectedTheme.value;
-        // Use global theme manager
-        if (window.themeManager) {
-          window.themeManager.applyTheme(theme);
-        }
-        closeModal('themeModal');
-        showNotification(`Theme changed to ${theme === 'dark' ? 'Dark' : 'Light'} Mode`, 'success');
-      } else {
-        showNotification('Please select a theme.', 'error');
-      }
-    });
-  }
-
-  // Load theme on page load (theme manager handles this globally)
-  loadCurrentTheme();
 });

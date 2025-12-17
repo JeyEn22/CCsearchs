@@ -85,7 +85,7 @@
     border-radius: 50%;
     width: 26px;
     height: 26px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -779,9 +779,9 @@ body.dark-theme .form-group label {
 }
 
 body.dark-theme .form-group input {
-    background-color: #1E1E1E;
-    color: #FFFFFF;
-    border: 1px solid #505050;
+    background-color: #1E1E1E !important;
+    color: #FFFFFF !important;
+    border: 1px solid #555555 !important;
 }
 
 body.dark-theme .form-group input:focus {

@@ -251,12 +251,15 @@ button:hover {
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   width: 90%;
-  max-width: 210px;
-  height: 200px;
+  max-width: 350px;
+  height: auto;
+  min-height: 280px;
   position: relative;
   pointer-events: auto;
   margin: auto;
   transform: translateY(0);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -277,47 +280,54 @@ button:hover {
 }
 
 .modal-body {
-  padding: 8px 12px;
+  padding: 16px 20px;
   text-align: center;
+  flex: 1;
 }
 
 .modal-icon {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .modal-icon .fas {
-  font-size: 32px;
+  font-size: 40px;
 }
 
 .modal-body h3 {
-  margin: 5px 0;
+  margin: 8px 0;
   color: #333;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .modal-body p {
-  margin: 5px 0 8px;
-  color: #666;
-  line-height: 1.4;
-  font-size: 12px;
+  margin: 10px 0 12px;
+  color: #555;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .modal-footer {
-  padding: 0 12px 12px;
+  padding: 12px 20px 20px;
   text-align: center;
 }
 
 .modal-btn {
   background-color: #0066cc;
   color: white;
-  margin-top: -5px;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.modal-btn:hover {
+  background-color: #0052a3;
+}
   transition: background-color 0.3s ease;
   width: 65%;
 }

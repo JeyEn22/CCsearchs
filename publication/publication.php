@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../database/database.php";
+include "../includes/session_validator.php"; // Validate session
 
 // Redirect to login if not logged in
 if (!isset($_SESSION['studentID'])) {
@@ -858,6 +859,18 @@ include "../layout/layout.php";
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchPublicationInput');
     if (searchInput) {
+        // Support both Enter key and real-time input filtering
+        searchInput.addEventListener('input', () => {
+            // Real-time filtering of displayed results
+            const query = searchInput.value.toLowerCase().trim();
+            const titles = document.querySelectorAll('[data-publication-title]');
+            
+            titles.forEach(title => {
+                const titleText = title.getAttribute('data-publication-title').toLowerCase();
+                title.style.display = titleText.includes(query) ? 'block' : 'none';
+            });
+        });
+        
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const q = searchInput.value.trim();

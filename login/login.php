@@ -183,6 +183,22 @@
       }
     });
 
+    // Check if user was kicked out due to another login
+    window.addEventListener("load", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reason = urlParams.get('reason');
+      
+      if (reason === 'kicked_out') {
+        showModal('error', 'Someone logged into your account from another location. Your session has been ended. Please login again.');
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (reason === 'session_expired') {
+        showModal('error', 'Your session has expired. Please login again.');
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+
   </script>
 </body>
 

@@ -206,12 +206,16 @@ button:hover {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   width: 90%;
   max-width: 420px;
+  height: auto;
+  min-height: 300px;
   position: relative;
   /* Allow interaction with modal content */
   pointer-events: auto;
   /* Ensure modal content is perfectly centered */
   margin: auto;
   transform: translateY(0);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -234,6 +238,10 @@ button:hover {
 .modal-body {
   padding: 20px;
   text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .modal-icon {
@@ -255,6 +263,7 @@ button:hover {
   margin: 10px 0 20px;
   color: #666;
   line-height: 1.5;
+  font-size: 14px;
 }
 
 .modal-footer {
@@ -269,9 +278,10 @@ button:hover {
   padding: 12px 30px;
   border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .modal-btn:hover {
@@ -280,28 +290,28 @@ button:hover {
 
 /* Success Modal */
 .modal.success .modal-icon .fas {
-  color: #28a745;
+  color: #10b981;
 }
 
 .modal.success .modal-btn {
-  background-color: #28a745;
+  background-color: #10b981;
 }
 
 .modal.success .modal-btn:hover {
-  background-color: #218838;
+  background-color: #059669;
 }
 
 /* Error Modal */
 .modal.error .modal-icon .fas {
-  color: #dc3545;
+  color: #ef4444;
 }
 
 .modal.error .modal-btn {
-  background-color: #dc3545;
+  background-color: #ef4444;
 }
 
 .modal.error .modal-btn:hover {
-  background-color: #c82333;
+  background-color: #dc2626;
 }
 
 /* Mobile Modal */

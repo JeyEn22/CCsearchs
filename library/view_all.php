@@ -24,6 +24,14 @@ if ($category === 'saved_books') {
               JOIN publications p ON sp.publicationID = p.publicationID
               JOIN registration r ON p.studentID = r.studentID
               WHERE sp.studentID = ?";
+} elseif ($category === 'favorite_authors') {
+    // Fetch publications from favorite authors
+    $query = "SELECT p.*, r.firstName, r.lastName 
+              FROM publications p
+              JOIN registration r ON p.studentID = r.studentID
+              WHERE p.studentID IN (
+                SELECT favorite_studentID FROM favorite_authors WHERE studentID = ?
+              )";
 } else {
     // Fetch user's own publications
     $query = "SELECT p.*, r.firstName, r.lastName 
@@ -63,6 +71,8 @@ if (!empty($typeFilter)) {
 // Order by
 if ($category === 'saved_books') {
     $query .= " ORDER BY sp.savedID DESC";
+} elseif ($category === 'favorite_authors') {
+    $query .= " ORDER BY p.publicationID DESC";
 } else {
     $query .= " ORDER BY p.publicationID DESC";
 }
@@ -100,7 +110,7 @@ if ($typeResult) {
 }
 
 // Set layout variables
-$pageTitle = $category === 'saved_books' ? 'View All Saved Books' : 'View All My Books';
+$pageTitle = $category === 'saved_books' ? 'View All Saved Books' : ($category === 'favorite_authors' ? 'View All Favorite Authors' : 'View All My Books');
 $activeNav = 'library';
 $additionalCSS = ['view_all_page.css'];
 $additionalExternalCSS = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'];
@@ -112,13 +122,22 @@ include "../layout/layout.php";
 <!-- Top Bar -->
 <div class="top-bar">
   <span class="back" onclick="goBack()">&larr; Back</span>
-  <h1><?php echo $category === 'saved_books' ? 'View All Saved Books' : 'View All My Books'; ?></h1>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search" value="<?php echo htmlspecialchars($searchQuery); ?>">
-    <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+  <div class="top-bar-right">
+    <h1><?php 
+      if ($category === 'saved_books') {
+        echo 'View All Saved Books';
+      } elseif ($category === 'favorite_authors') {
+        echo 'View All Favorite Authors';
+      } else {
+        echo 'View All My Books';
+      }
+    ?></h1>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search" value="<?php echo htmlspecialchars($searchQuery); ?>">
+      <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+    </div>
+    <i class="fa fa-filter filter-icon" onclick="toggleFilterModal()"></i>
   </div>
-  <i class="fa fa-filter filter-icon" onclick="toggleFilterModal()"></i>
-  <i class="fa fa-bars menu-icon"></i>
 </div>
 
 <!-- Filter Modal -->

@@ -1,11 +1,9 @@
 /**
  * CCSEARCH - Unified Layout Stylesheet
  * 
- * This stylesheet provides a FIXED layout structure optimized for 1440x900 resolution.
- * All pages using this layout will have IDENTICAL dimensions to prevent layout shifts.
- * 
- * SIDEBAR: Fixed 240px width, 100vh height
- * MAIN CONTENT: Fixed width, 100vh height with internal scrolling
+ * This stylesheet provides a responsive layout structure that adapts to all device sizes.
+ * SIDEBAR: Responsive (collapsible on mobile), fixed on desktop
+ * MAIN CONTENT: Full-width responsive with proper scaling
  */
 
 /* ============================
@@ -28,13 +26,13 @@ body {
 
 /* ============================
    LAYOUT WRAPPER
-   Fixed dimensions for 1440x900
+   Responsive dimensions
 ============================ */
 .layout-wrapper {
     display: flex;
     height: 100vh;
     width: 100vw;
-    max-width: 1440px;
+    max-width: 100%;
     margin: 0 auto;
     background-color: #f3f6fc;
     position: relative;
@@ -42,8 +40,7 @@ body {
 
 /* ============================
    FIXED SIDEBAR
-   EXACTLY 240px width, 100vh height
-   Same on EVERY page
+   Desktop: 240px, Tablet: 60px (icon-only), Mobile: Hidden
 ============================ */
 .sidebar {
     width: 240px;
@@ -63,6 +60,7 @@ body {
     z-index: 1000;
     overflow-y: auto;
     overflow-x: hidden;
+    transition: width 0.3s ease;
 }
 
 .sidebar-content {
@@ -772,4 +770,260 @@ body.dark-theme .border-left {
 
 body.dark-theme .border-right {
     border-right-color: #2A2A2A !important;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   Mobile, Tablet, and Desktop
+============================ */
+
+/* TABLET LAYOUT (768px - 1023px) */
+@media (max-width: 1023px) {
+    /* Sidebar collapses to icon-only */
+    .sidebar {
+        width: 70px;
+        min-width: 70px;
+        max-width: 70px;
+    }
+
+    .logo-container {
+        padding: 15px 0;
+    }
+
+    .logo-container img {
+        height: 60px;
+    }
+
+    .logo-container h2 {
+        display: none;
+    }
+
+    .nav-menu li a span {
+        display: none;
+    }
+
+    .nav-menu li a i {
+        margin-right: 0;
+    }
+
+    /* Main content adjusts for narrower sidebar */
+    .main-content {
+        margin-left: 70px;
+        width: calc(100vw - 70px);
+    }
+
+    /* Font sizes reduce slightly */
+    .content-container {
+        padding: 15px;
+    }
+
+    /* Sidebar menu items center-align */
+    .nav-menu li a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+    }
+}
+
+/* MOBILE LAYOUT (Below 768px) */
+@media (max-width: 767px) {
+    /* Sidebar becomes a slide-out drawer */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: auto;
+        border-top: 2px solid #1e3e68;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .sidebar-content {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .logo-container {
+        display: none;
+    }
+
+    .nav-menu {
+        margin-top: 0;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .nav-menu li {
+        flex: 0 1 auto;
+    }
+
+    .nav-menu li a {
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .nav-menu li a span {
+        display: block;
+        font-size: 10px;
+    }
+
+    .nav-menu li a i {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    /* Main content full width */
+    .main-content {
+        margin-left: 0;
+        width: 100vw;
+        height: calc(100vh - 80px);
+        margin-bottom: 80px;
+    }
+
+    .layout-wrapper {
+        flex-direction: column;
+    }
+
+    /* Sidebar at bottom */
+    .sidebar {
+        order: 2;
+        width: 100vw;
+        min-height: 80px;
+        max-height: 80px;
+        height: 80px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    /* Content container adjustments */
+    .content-container {
+        padding: 10px;
+    }
+
+    /* Responsive fonts */
+    body {
+        font-size: 14px;
+    }
+
+    .content-section {
+        padding: 15px;
+        margin: 10px 0;
+    }
+
+    /* Reduce modal sizes on mobile */
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    /* Adjust grid layouts */
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    /* Responsive top bar */
+    .top-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .top-bar h1 {
+        font-size: 14px;
+    }
+
+    .top-bar .search-box {
+        width: 100%;
+        flex: 1;
+    }
+
+    /* Reduce padding on sections */
+    .welcome-header.library-header {
+        padding: 15px;
+    }
+
+    /* Sidebar toggle for mobile */
+    .sidebar-toggle {
+        display: flex;
+    }
+}
+
+/* SMALL MOBILE (Below 480px) */
+@media (max-width: 479px) {
+    .sidebar {
+        min-height: 70px;
+        max-height: 70px;
+        height: 70px;
+    }
+
+    .main-content {
+        height: calc(100vh - 70px);
+        margin-bottom: 70px;
+    }
+
+    .nav-menu li a {
+        padding: 8px 8px;
+        font-size: 9px;
+    }
+
+    .nav-menu li a i {
+        font-size: 16px;
+    }
+
+    .nav-menu li a span {
+        display: none;
+    }
+
+    .content-container {
+        padding: 8px;
+    }
+
+    .content-section {
+        padding: 10px;
+        margin: 5px 0;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        gap: 5px;
+        padding: 8px;
+    }
+
+    .top-bar .back {
+        min-width: auto;
+    }
+
+    .top-bar h1 {
+        font-size: 12px;
+    }
+
+    .top-bar-right {
+        gap: 8px;
+    }
+
+    .top-bar .search-box {
+        width: 100%;
+        flex: 1;
+    }
 }

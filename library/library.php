@@ -186,7 +186,7 @@ include "../layout/layout.php";
     <div class="category-box favorite-authors-box">
         <div class="category-header">
             <h3>Favorite Authors</h3>
-            <a href="../authors/authors.php">View all →</a>
+            <a href="view_all_authors.php">View all →</a>
         </div>
         <div class="authors-grid" id="favoriteAuthorsGrid">
             <?php

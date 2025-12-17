@@ -343,11 +343,18 @@ window.addEventListener("pageshow", function (event) {
 
 // Account Settings Functionality
 document.addEventListener('DOMContentLoaded', function () {
-  // Simple modal open/close functions
+  // Modal open/close with fade animations
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+      // Set display immediately
       modal.style.display = 'flex';
+      // Allow pointer events
+      modal.style.pointerEvents = 'auto';
+      // Trigger animation by adding active class
+      setTimeout(() => {
+        modal.classList.add('modal-active');
+      }, 10);
       document.body.style.overflow = 'hidden';
     }
   }
@@ -355,7 +362,15 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-      modal.style.display = 'none';
+      // Start fade-out animation
+      modal.classList.remove('modal-active');
+      
+      // Wait for animation to complete before hiding
+      setTimeout(() => {
+        modal.style.display = 'none';
+        modal.style.pointerEvents = 'none';
+      }, 300); // Match CSS animation duration
+      
       document.body.style.overflow = 'auto';
     }
   }
@@ -363,15 +378,25 @@ document.addEventListener('DOMContentLoaded', function () {
   // Close modals when clicking on background
   document.querySelectorAll('.modal').forEach(modal => {
     modal.addEventListener('click', function(e) {
+      // Only close if clicking directly on the modal background, not on modal-content
       if (e.target === this) {
         closeModal(this.id);
       }
     });
+    
+    // Prevent clicks inside modal-content from bubbling to the modal
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
   });
 
   // Close buttons
   document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
       const modalId = this.getAttribute('data-modal');
       closeModal(modalId);
     });
@@ -379,7 +404,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Cancel buttons
   document.querySelectorAll('.cancel-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
       const modalId = this.getAttribute('data-modal');
       closeModal(modalId);
     });
@@ -396,22 +422,77 @@ document.addEventListener('DOMContentLoaded', function () {
   // Change password form submission
   const changePasswordForm = document.getElementById('changePasswordForm');
   if (changePasswordForm) {
-    // Show validation rules when user starts typing
     const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmNewPassword');
+    
+    // Function to update validation indicators
+    function updatePasswordValidation() {
+      const password = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      // Length check (8+ characters)
+      const lengthCheck = document.getElementById('lengthCheck');
+      const hasLength = password.length >= 8;
+      updateValidationItem(lengthCheck, hasLength);
+
+      // Uppercase check
+      const uppercaseCheck = document.getElementById('uppercaseCheck');
+      const hasUppercase = /[A-Z]/.test(password);
+      updateValidationItem(uppercaseCheck, hasUppercase);
+
+      // Number check
+      const numberCheck = document.getElementById('numberCheck');
+      const hasNumber = /\d/.test(password);
+      updateValidationItem(numberCheck, hasNumber);
+
+      // Match check
+      const matchCheck = document.getElementById('matchCheck');
+      const matches = password === confirmPassword && password.length > 0;
+      updateValidationItem(matchCheck, matches);
+    }
+
+    // Helper function to update validation item appearance
+    function updateValidationItem(element, isValid) {
+      if (!element) return;
+      
+      const icon = element.querySelector('.validation-icon');
+      if (isValid) {
+        element.classList.add('valid');
+        element.classList.remove('invalid');
+        if (icon) {
+          icon.className = 'fas fa-check validation-icon';
+        }
+      } else {
+        element.classList.add('invalid');
+        element.classList.remove('valid');
+        if (icon) {
+          icon.className = 'fas fa-times validation-icon';
+        }
+      }
+    }
+
+    // Show validation rules and update on input
     if (newPasswordInput) {
       newPasswordInput.addEventListener('input', function() {
         const validationContainer = document.getElementById('passwordValidation');
         if (validationContainer) {
           validationContainer.style.display = 'block';
         }
+        updatePasswordValidation();
+      });
+    }
+
+    if (confirmPasswordInput) {
+      confirmPasswordInput.addEventListener('input', function() {
+        updatePasswordValidation();
       });
     }
 
     changePasswordForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmNewPassword').value;
+      const newPassword = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
 
       // Validate password requirements
       if (newPassword.length < 8) {
@@ -446,6 +527,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (validationContainer) {
               validationContainer.style.display = 'none';
             }
+            // Reset validation indicators
+            document.querySelectorAll('#passwordValidation .validation-item').forEach(item => {
+              item.classList.remove('valid');
+              item.classList.add('invalid');
+              const icon = item.querySelector('.validation-icon');
+              if (icon) {
+                icon.className = 'fas fa-times validation-icon';
+              }
+            });
             closeModal('changePasswordModal');
           } else {
             showNotification(data.message || 'Error changing password.', 'error');

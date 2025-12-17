@@ -682,3 +682,296 @@ body.dark-theme .preview-actions {
     background: rgba(30, 30, 30, 0.95);
     border-color: #4a5568;
 }
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+    .welcome-header.home-header {
+        height: 140px;
+        padding: 15px;
+    }
+
+    .section-container {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .cover-img {
+        height: 180px;
+    }
+
+    .modal-content {
+        max-width: 85%;
+    }
+
+    .preview-modal-content {
+        width: 85vw;
+        height: 85vh;
+    }
+}
+
+@media (max-width: 767px) {
+    .welcome-header.home-header {
+        height: 120px;
+        padding: 10px;
+    }
+
+    .header-content h1 {
+        font-size: 18px;
+    }
+
+    .header-content p {
+        font-size: 12px;
+    }
+
+    .section-container {
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    .section-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .section-title i {
+        font-size: 16px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .cover-img {
+        height: 150px;
+    }
+
+    .card-title {
+        font-size: 12px;
+    }
+
+    .card-info small {
+        font-size: 10px;
+    }
+
+    .posted-by {
+        font-size: 10px;
+    }
+
+    .card-actions {
+        gap: 5px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .btn i {
+        font-size: 12px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        max-height: 85vh;
+        padding: 15px;
+    }
+
+    .modal-header {
+        padding: 12px;
+    }
+
+    .modal-header h3 {
+        font-size: 14px;
+    }
+
+    .modal-body {
+        padding: 12px;
+        font-size: 12px;
+    }
+
+    .modal-footer {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .preview-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .preview-content-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .preview-thumbnail-container {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .preview-thumbnail {
+        max-height: 300px;
+    }
+
+    .publication-details {
+        font-size: 11px;
+        padding: 10px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        margin-bottom: 6px;
+    }
+
+    .detail-row strong {
+        min-width: auto;
+        margin-bottom: 3px;
+    }
+
+    .preview-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+        bottom: 10px;
+        width: 95%;
+        padding: 10px;
+    }
+
+    .preview-actions .btn {
+        flex: 1;
+        min-width: 70px;
+        font-size: 10px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 479px) {
+    .welcome-header.home-header {
+        height: 100px;
+        padding: 8px;
+    }
+
+    .header-content h1 {
+        font-size: 14px;
+    }
+
+    .header-content p {
+        font-size: 10px;
+    }
+
+    .section-container {
+        padding: 8px;
+        margin: 8px 0;
+    }
+
+    .section-title {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .section-title i {
+        font-size: 14px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+    }
+
+    .card {
+        padding: 8px;
+    }
+
+    .cover-img {
+        height: 120px;
+    }
+
+    .card-title {
+        font-size: 10px;
+    }
+
+    .card-info small {
+        font-size: 9px;
+    }
+
+    .posted-by {
+        font-size: 9px;
+    }
+
+    .card-actions {
+        gap: 3px;
+    }
+
+    .btn {
+        padding: 5px 8px;
+        font-size: 9px;
+    }
+
+    .modal-content {
+        width: 98%;
+        padding: 10px;
+    }
+
+    .modal-header {
+        padding: 10px;
+    }
+
+    .modal-header h3 {
+        font-size: 12px;
+    }
+
+    .modal-body {
+        padding: 10px;
+        font-size: 11px;
+    }
+
+    .modal-footer {
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .preview-modal-content {
+        width: 98%;
+        max-height: 80vh;
+    }
+
+    .preview-thumbnail {
+        max-height: 200px;
+    }
+
+    .publication-details {
+        font-size: 10px;
+        padding: 8px;
+    }
+
+    .preview-actions {
+        bottom: 8px;
+        width: 94%;
+        padding: 8px;
+        gap: 5px;
+    }
+
+    .preview-actions .btn {
+        font-size: 8px;
+        padding: 6px 4px;
+        min-width: 50px;
+    }
+
+    .preview-actions .btn i {
+        font-size: 10px;
+    }
+}

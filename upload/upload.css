@@ -125,3 +125,123 @@
     background-color: #545b62;
 }
 
+/* Responsive Design */
+@media (max-width: 1023px) {
+    .upload-form {
+        max-width: 90%;
+    }
+
+    .form-row {
+        gap: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 767px) {
+    .upload-form {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"],
+    .form-group textarea {
+        padding: 10px;
+        font-size: 13px;
+        border-width: 1px;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+    }
+
+    .form-group small {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .alert {
+        padding: 12px;
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .alert i {
+        margin-right: 5px;
+    }
+}
+
+@media (max-width: 479px) {
+    .upload-form {
+        padding: 8px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"],
+    .form-group textarea {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .form-group textarea {
+        min-height: 80px;
+    }
+
+    .form-group small {
+        font-size: 10px;
+    }
+
+    .form-actions {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 11px;
+    }
+
+    .alert {
+        padding: 10px;
+        font-size: 11px;
+    }
+
+    .required {
+        font-size: 11px;
+    }
+}

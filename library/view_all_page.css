@@ -7,44 +7,72 @@
 .top-bar {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 15px 20px;
-    background: #475d79;
-    border-radius: 10px;
+    justify-content: space-between;
+    padding: 20px;
+    background: #27548a;
+    border-bottom: 1px solid #1e3e68;
+    gap: 15px;
     margin-bottom: 20px;
-    color: white;
-}
-
-.top-bar h1 {
-    font-size: 20px;
-    color: #fff;
-    flex: 1;
-    text-align: right;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 8px;
 }
 
 .top-bar .back {
-    font-size: 14px;
-    cursor: pointer;
-    color: #fff;
-    transition: opacity 0.3s ease;
-}
-
-.top-bar .back:hover {
-    opacity: 0.8;
-}
-
-.filter-icon,
-.menu-icon {
     font-size: 18px;
-    margin-left: 15px;
     cursor: pointer;
-    color: #fff;
-    transition: opacity 0.3s ease;
+    color: white;
+    font-weight: 600;
+    min-width: 60px;
+    flex-shrink: 0;
 }
 
-.filter-icon:hover,
-.menu-icon:hover {
-    opacity: 0.8;
+.top-bar h1 {
+    font-size: 18px;
+    margin: 0;
+    color: white;
+    white-space: nowrap;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.top-bar .search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    width: 300px;
+    background: white;
+    flex-shrink: 0;
+}
+
+.top-bar .search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.top-bar .search-icon,
+.top-bar .filter-icon,
+.top-bar .menu-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+}
+
+.top-bar .search-icon:hover,
+.top-bar .filter-icon:hover {
+    color: #ddd;
 }
 
 /* Scroll Area */
@@ -56,7 +84,7 @@
 
 /* Sections */
 .section-box {
-    background: #eef1f4;
+    background: transparent;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 10px;
@@ -600,5 +628,178 @@ body.dark-theme .empty-state p {
 body.dark-theme .warning-text {
     color: #ff6b6b;
 }
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+    .top-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .top-bar h1 {
+        font-size: 16px;
+    }
+
+    .top-bar .search-box {
+        width: 200px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .section-box {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .top-bar .back {
+        width: 100%;
+    }
+
+    .top-bar h1 {
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .top-bar-right {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .top-bar .search-box {
+        flex: 1;
+        width: auto;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .cover-img {
+        height: 200px;
+    }
+
+    .card-title {
+        font-size: 14px;
+    }
+
+    .posted-by {
+        font-size: 11px;
+    }
+
+    .card-actions {
+        gap: 5px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .section-box {
+        padding: 10px;
+    }
+
+    .section-box h2 {
+        font-size: 16px;
+    }
+
+    .scroll-area {
+        gap: 10px;
+    }
+
+    .preview-modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .filter-modal-content {
+        width: 95%;
+    }
+}
+
+@media (max-width: 479px) {
+    .top-bar {
+        padding: 8px;
+    }
+
+    .top-bar h1 {
+        font-size: 12px;
+    }
+
+    .top-bar .search-box {
+        font-size: 12px;
+        padding: 6px 10px;
+        width: 100%;
+    }
+
+    .top-bar .search-icon {
+        font-size: 16px;
+    }
+
+    .top-bar .filter-icon {
+        font-size: 16px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .card {
+        padding: 8px;
+    }
+
+    .cover-img {
+        height: 150px;
+    }
+
+    .card-title {
+        font-size: 12px;
+    }
+
+    .posted-by {
+        font-size: 10px;
+    }
+
+    .card-actions {
+        gap: 3px;
+    }
+
+    .btn {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    .section-box {
+        padding: 8px;
+    }
+
+    .section-box h2 {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .scroll-area {
+        gap: 8px;
+    }
+}
+
 
 

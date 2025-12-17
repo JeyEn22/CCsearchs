@@ -100,6 +100,10 @@ include "../layout/layout.php";
     <div class="welcome-content">
         <h2>Welcome to CCSearch <?php echo htmlspecialchars($userFirstName); ?></h2>
         <p>Discover and explore the best research works</p>
+        <div class="search-box">
+            <input type="text" id="homeSearchInput" placeholder="Search titles" />
+            <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+        </div>
     </div>
 </div>
 
@@ -153,10 +157,10 @@ include "../layout/layout.php";
             <h3>Most Viewed Research</h3>
             <a href="view_all.php?category=most_viewed">View all</a>
         </div>
-        <div class="card-grid">
+        <div class="card-grid" id="mostViewedGrid">
             <?php if (!empty($mostViewed)): ?>
                 <?php foreach ($mostViewed as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -165,15 +169,15 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
                                 <?php if (isset($_SESSION['studentID'])): ?>
-                                    <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                    <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
                                         <i class="fas fa-bookmark"></i> Save
                                     </button>
                                 <?php endif; ?>
@@ -193,10 +197,10 @@ include "../layout/layout.php";
             <h3>Newly Added</h3>
             <a href="view_all.php?category=newly_added">View all</a>
         </div>
-        <div class="card-grid">
+        <div class="card-grid" id="newlyAddedGrid">
             <?php if (!empty($newlyAdded)): ?>
                 <?php foreach ($newlyAdded as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -205,15 +209,15 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
                             <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
                                 <?php if (isset($_SESSION['studentID'])): ?>
-                                    <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                    <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
                                         <i class="fas fa-bookmark"></i> Save
                                     </button>
                                 <?php endif; ?>
@@ -312,9 +316,28 @@ window.onclick = function(event) {
 }
 
 // Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
+function previewPublication(elementOrFilePath, title, author, publishDate, abstract, department, type, thumbnail) {
+    // Support both element-based (from data attributes) and parameter-based calls
+    let filePath, formattedDate;
+    
+    if (elementOrFilePath && typeof elementOrFilePath === 'object' && elementOrFilePath.getAttribute) {
+        // Element-based call (from data attributes)
+        const element = elementOrFilePath;
+        filePath = element.getAttribute('data-filepath');
+        title = element.getAttribute('data-title');
+        author = element.getAttribute('data-author');
+        publishDate = element.getAttribute('data-date');
+        abstract = element.getAttribute('data-abstract');
+        department = element.getAttribute('data-department');
+        type = element.getAttribute('data-type');
+        thumbnail = element.getAttribute('data-thumbnail');
+    } else {
+        // Parameter-based call (legacy)
+        filePath = elementOrFilePath;
+    }
+    
     // Format the publication date
-    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
+    formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -345,9 +368,9 @@ function previewPublication(filePath, title, author, publishDate, abstract, depa
                     </div>
                     ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
                     ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                </div>
+                        </div>
                 <div class="abstract-section">
-                    <div class="abstract-label"><strong>Abstract:</strong></div>
+                            <div class="abstract-label"><strong>Abstract:</strong></div>
                     <div class="abstract-text">${abstract || 'No abstract available.'}</div>
                 </div>
                     </div>
@@ -374,6 +397,57 @@ function closePreviewModal() {
         modal.remove();
     }
 }
+
+// Home search and filter (titles, authors, student IDs across Newly Added and Most Viewed)
+function filterHomeSearch() {
+    const query = (document.getElementById('homeSearchInput')?.value || '').toLowerCase().trim();
+
+    const sections = [
+        { gridId: 'newlyAddedGrid', emptyClass: 'empty-state', emptyText: '<h3>No publications found</h3><p>Try adjusting your search.</p>' },
+        { gridId: 'mostViewedGrid', emptyClass: 'empty-state', emptyText: '<h3>No publications found</h3><p>Try adjusting your search.</p>' },
+    ];
+
+    sections.forEach(section => {
+        const grid = document.getElementById(section.gridId);
+        if (!grid) return;
+
+        const cards = grid.querySelectorAll('.card, .author-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const title = (card.getAttribute('data-title') || '').toLowerCase();
+            const author = (card.getAttribute('data-author') || card.getAttribute('data-name') || '').toLowerCase();
+            const studentId = (card.getAttribute('data-studentid') || '').toLowerCase();
+
+            const match = !query || title.includes(query) || author.includes(query) || studentId.includes(query);
+            card.style.display = match ? 'block' : 'none';
+            if (match) visible++;
+        });
+
+        let emptyState = grid.querySelector(`.${section.emptyClass}`);
+        if (visible === 0) {
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.className = section.emptyClass;
+                emptyState.innerHTML = section.emptyText;
+                grid.appendChild(emptyState);
+            }
+        } else if (emptyState) {
+            emptyState.remove();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('homeSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterHomeSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+    }
+    filterHomeSearch();
+});
 </script>
 
 <?php

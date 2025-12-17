@@ -191,12 +191,12 @@ body.dark-theme .welcome-header {
 }
 
 body.dark-theme .welcome-content h2 {
-    color: #FFFFFF;
+    color: #000000;
     /* Headings */
 }
 
 body.dark-theme .welcome-content p {
-    color: #E0E0E0;
+    color: #000000;
     /* Primary text */
 }
 

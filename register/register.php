@@ -28,7 +28,7 @@
   <div class="form-grid">
     <!-- Left Column: Personal Information -->
     <div class="col">
-      <input type="text" name="firstName" id="firstName" placeholder="First Name" required maxlength="50" class="form-field">
+      <input type="text" name="studentID" id="studentID" placeholder="Student ID" required maxlength="20" class="form-field">
       <input type="text" name="lastName" id="lastName" placeholder="Last Name" required maxlength="50" class="form-field">
       <input type="text" name="contactNumber" id="contactNumber" placeholder="Contact Number" required maxlength="15" pattern="[0-9+\-\s]+" title="Please enter a valid phone number" class="form-field">
       <input type="email" name="emailAddress" id="emailAddress" placeholder="Email Address" required maxlength="100" class="form-field">
@@ -38,7 +38,7 @@
     <!-- Right Column: Account Information -->
     <div class="col">
       <input type="text" name="department" id="department" placeholder="Department" required maxlength="100" class="form-field">
-      <input type="text" name="studentID" id="studentID" placeholder="Student ID" required maxlength="20" class="form-field">
+      <input type="text" name="firstName" id="firstName" placeholder="First Name" required maxlength="50" class="form-field">
       <div class="password-field">
         <input type="password" name="password" id="password" placeholder="Password" required minlength="6" class="form-field">
         <i class="fa-solid fa-eye toggle" onclick="togglePassword('password', this)"></i>
@@ -155,6 +155,43 @@
         el.classList.replace("fa-eye-slash", "fa-eye");
       }
     }
+
+    // Auto-populate student information when Student ID is entered (real-time)
+    document.getElementById("studentID").addEventListener("input", function() {
+      const studentID = this.value.trim();
+      
+      if (studentID === "") {
+        // Clear all fields if input is empty
+        document.getElementById("firstName").value = '';
+        document.getElementById("lastName").value = '';
+        document.getElementById("contactNumber").value = '';
+        document.getElementById("currentAddress").value = '';
+        document.getElementById("department").value = '';
+        return;
+      }
+
+      fetch(`get_student_info.php?studentID=${encodeURIComponent(studentID)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById("firstName").value = data.data.firstName || '';
+            document.getElementById("lastName").value = data.data.lastName || '';
+            document.getElementById("contactNumber").value = data.data.contactNumber || '';
+            document.getElementById("currentAddress").value = data.data.currentAddress || '';
+            document.getElementById("department").value = data.data.department || '';
+          } else {
+            // Clear fields if student not found
+            document.getElementById("firstName").value = '';
+            document.getElementById("lastName").value = '';
+            document.getElementById("contactNumber").value = '';
+            document.getElementById("currentAddress").value = '';
+            document.getElementById("department").value = '';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
 
     // AJAX form submission - Only triggered by Register button click
     document.getElementById("registerForm").addEventListener("submit", function(e) {

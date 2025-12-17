@@ -1,10 +1,18 @@
 <?php
-// Suppress all errors and warnings to prevent JSON corruption
-error_reporting(0);
+// Enable error reporting to help debug
+error_reporting(E_ALL);
 ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 header('Content-Type: application/json');
 include("../database/database.php");  // Connect to database
+
+// Check database connection
+if (!$conn) {
+    $response = array('status' => 'error', 'message' => 'Database connection error');
+    echo json_encode($response);
+    exit();
+}
 
 // Initialize response
 $response = array('status' => 'error', 'message' => 'Unknown error');
@@ -93,6 +101,19 @@ if (!preg_match('/^\d{4}-\d{5}$/', $studentID)) {
     exit();
 }
 
+// Check if studentID exists in student_information table
+$checkStudentExists = $conn->prepare("SELECT studentID FROM student_information WHERE studentID = ?");
+$checkStudentExists->bind_param("s", $studentID);
+$checkStudentExists->execute();
+$studentExistsResult = $checkStudentExists->get_result();
+
+if ($studentExistsResult->num_rows === 0) {
+    $response['message'] = 'Student ID not found in the system. Please contact your administrator.';
+    echo json_encode($response);
+    exit();
+}
+$checkStudentExists->close();
+
 // Check if email is already registered
 $checkEmail = $conn->prepare("SELECT emailAddress FROM registration WHERE emailAddress = ?");
 $checkEmail->bind_param("s", $emailAddress);
@@ -122,36 +143,32 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 // Insert into registration table with all fields
 $insert = $conn->prepare("INSERT INTO registration (firstName, lastName, contactNumber, emailAddress, currentAddress, department, studentID, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+if (!$insert) {
+    $response['message'] = 'Prepare failed: ' . $conn->error;
+    echo json_encode($response);
+    exit();
+}
+
 $insert->bind_param("ssssssss", $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department, $studentID, $hashedPassword);
 
 if ($insert->execute()) {
-    // Create profile entry automatically after successful registration (optional)
-    try {
-        $profileInsert = $conn->prepare("INSERT INTO user_profiles (studentID, firstName, lastName, contactNumber, emailAddress, currentAddress, department, theme_preference) VALUES (?, ?, ?, ?, ?, ?, ?, 'light')");
-        if ($profileInsert) {
-            $profileInsert->bind_param("sssssss", $studentID, $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department);
-            $profileInsert->execute();
-            $profileInsert->close();
-        }
-    } catch (Exception $e) {
-        // Silently ignore profile creation errors - registration still succeeds
-        error_log("Profile creation failed for studentID: $studentID - " . $e->getMessage());
+    // Create profile entry automatically after successful registration
+    // If this fails, registration still succeeds
+    $profileInsert = $conn->prepare("INSERT INTO user_profiles (studentID, firstName, lastName, contactNumber, emailAddress, currentAddress, department, theme_preference) VALUES (?, ?, ?, ?, ?, ?, ?, 'light')");
+    if ($profileInsert) {
+        $profileInsert->bind_param("sssssss", $studentID, $firstName, $lastName, $contactNumber, $emailAddress, $currentAddress, $department);
+        $profileInsert->execute();
+        $profileInsert->close();
     }
 
     $response['status'] = 'success';
     $response['message'] = 'Registration successful!';
     echo json_encode($response);
-    exit(); // Exit immediately after sending response
+    exit();
 } else {
-    $response['message'] = 'Registration failed. Please try again.';
+    $response['message'] = 'Registration failed. Error: ' . $insert->error;
     echo json_encode($response);
-    exit(); // Exit immediately after sending response
+    exit();
 }
-
-// Close statements only if we reach here (which should never happen due to exit() calls above)
-$insert->close();
-$checkStudent->close();
-$checkEmail->close();
-$checkStudentID->close();
-$conn->close();
 ?>

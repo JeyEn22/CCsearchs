@@ -107,6 +107,20 @@ try {
     $favoritesCount = 0;
 }
 
+// Get profile visit count
+$visitCount = 0;
+try {
+    $visitStmt = $conn->prepare("SELECT COUNT(DISTINCT visitorID) as visit_count FROM profile_visits WHERE profileOwnerID = ?");
+    $visitStmt->bind_param("s", $studentID);
+    $visitStmt->execute();
+    $visitResult = $visitStmt->get_result();
+    $visitRow = $visitResult->fetch_assoc();
+    $visitCount = $visitRow['visit_count'];
+    $visitStmt->close();
+} catch (Exception $e) {
+    $visitCount = 0;
+}
+
 // Get user's publications for public view
 $userPublications = [];
 $canDeletePublications = false;
@@ -172,59 +186,61 @@ include "../layout/layout.php";
         <?php else: ?>
         <button id="viewPublic" onclick="window.location.href='profile.php'">View as Private</button>
         <?php endif; ?>
+        <p style="margin-top: 15px; font-size: 14px; color: #666;">Profile Views: <strong><?php echo $visitCount; ?></strong></p>
     </div>
 
     <!-- Information Section -->
     <div class="info-section">
         <div class="tabs">
+            <?php if (!$isPublicView): ?>
             <button class="tab active" data-tab="personal">Personal Information</button>
-            <?php if ($isPublicView): ?>
-            <button class="tab" data-tab="uploaded">Uploaded Documents</button>
-            <?php elseif (!$isPublicView): ?>
             <button class="tab" data-tab="account">Account Settings</button>
+            <?php else: ?>
+            <button class="tab active" data-tab="uploaded">Uploaded Documents</button>
             <?php endif; ?>
         </div>
 
+        <?php if (!$isPublicView): ?>
         <div class="tab-content" id="personal">
             <div class="form-grid">
                 <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" name="lastName" value="<?php echo htmlspecialchars(isset($userProfile['lastName']) ? $userProfile['lastName'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="text" name="lastName" value="<?php echo htmlspecialchars(isset($userProfile['lastName']) ? $userProfile['lastName'] : ''); ?>" readonly />
                 </div>
                 <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" name="firstName" value="<?php echo htmlspecialchars(isset($userProfile['firstName']) ? $userProfile['firstName'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="text" name="firstName" value="<?php echo htmlspecialchars(isset($userProfile['firstName']) ? $userProfile['firstName'] : ''); ?>" readonly />
                 </div>
                 <div class="form-group">
                     <label>Contact Number</label>
-                    <input type="text" name="contactNumber" value="<?php echo htmlspecialchars(isset($userProfile['contactNumber']) ? $userProfile['contactNumber'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="text" name="contactNumber" value="<?php echo htmlspecialchars(isset($userProfile['contactNumber']) ? $userProfile['contactNumber'] : ''); ?>" readonly />
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" name="emailAddress" value="<?php echo htmlspecialchars(isset($userProfile['emailAddress']) ? $userProfile['emailAddress'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="email" name="emailAddress" value="<?php echo htmlspecialchars(isset($userProfile['emailAddress']) ? $userProfile['emailAddress'] : ''); ?>" readonly />
                 </div>
                 <div class="form-group">
                     <label>Current Address</label>
-                    <input type="text" name="currentAddress" value="<?php echo htmlspecialchars(isset($userProfile['currentAddress']) ? $userProfile['currentAddress'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="text" name="currentAddress" value="<?php echo htmlspecialchars(isset($userProfile['currentAddress']) ? $userProfile['currentAddress'] : ''); ?>" readonly />
                 </div>
                 <div class="form-group">
                     <label>Department</label>
-                    <input type="text" name="department" value="<?php echo htmlspecialchars(isset($userProfile['department']) ? $userProfile['department'] : ''); ?>" <?php echo $isPublicView ? 'readonly' : ''; ?> />
+                    <input type="text" name="department" value="<?php echo htmlspecialchars(isset($userProfile['department']) ? $userProfile['department'] : ''); ?>" readonly />
                 </div>
             </div>
-            <?php if (!$isPublicView): ?>
             <div class="button-container">
-                <button class="update" id="updateProfile">Update</button>
+                <button class="update" id="editProfile">Edit</button>
+                <button class="update" id="updateProfile" style="display: none;">Update</button>
             </div>
-            <?php endif; ?>
         </div>
+        <?php endif; ?>
 
         <?php if ($isPublicView): ?>
-        <div class="tab-content hidden" id="uploaded">
+        <div class="tab-content" id="uploaded">
             <div class="card-grid">
                 <?php if (!empty($userPublications)): ?>
                     <?php foreach ($userPublications as $pub): ?>
-                        <div class="card">
+                        <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                             <?php
                             $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                             $imageSrc .= '?t=' . time(); // Cache busting
@@ -233,16 +249,16 @@ include "../layout/layout.php";
                             <div class="card-info">
                                 <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                                 <div class="posted-by">
-                                    Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                    Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                                 </div>
                                 <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                                 <div class="card-actions">
-                                    <button onclick="window.open('<?php echo htmlspecialchars($pub['file_path']); ?>', '_blank')" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View Document
+                                    <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Preview
                                     </button>
                                     <?php if ($canDeletePublications): ?>
-                                        <button onclick="deletePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
+                                        <button onclick="event.stopPropagation(); deletePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Delete
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -423,6 +439,101 @@ $additionalScripts = ['profile.js'];
 // Include layout footer
 include "../layout/layout_footer.php";
 ?>
+
+<!-- Preview publication modal functionality -->
+<script>
+function previewPublication(element) {
+    const filePath = element.getAttribute('data-filepath');
+    const title = element.getAttribute('data-title');
+    const author = element.getAttribute('data-author');
+    const publishDate = element.getAttribute('data-date');
+    const abstract = element.getAttribute('data-abstract');
+    const department = element.getAttribute('data-department');
+    const type = element.getAttribute('data-type');
+    const thumbnail = element.getAttribute('data-thumbnail');
+
+    console.log('previewPublication called with:', {filePath, title, author, publishDate, abstract, department, type, thumbnail});
+
+    // Create modal with proper CSS classes
+    const modal = document.createElement('div');
+    modal.id = 'previewModal';
+    modal.className = 'modal';
+
+    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    let html = '<div class="modal-content preview-modal-content">';
+    html += '<div class="modal-header">';
+    html += '<h3>' + title + '</h3>';
+    html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
+    html += '</div>';
+    html += '<div class="modal-body">';
+    html += '<div class="preview-content-wrapper">';
+
+    // Thumbnail on left side
+    if (thumbnail) {
+        html += '<div class="preview-thumbnail-container">';
+        html += '<img src="../' + thumbnail + '?t=' + Date.now() + '" alt="Document preview" class="preview-thumbnail">';
+        html += '</div>';
+    }
+
+    // Publication details on right side
+    html += '<div class="preview-details-container">';
+    html += '<div class="publication-details">';
+    html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
+    html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
+
+    if (department) {
+        html += '<div class="detail-row"><strong>Department:</strong> <span>' + department + '</span></div>';
+    }
+    if (type) {
+        html += '<div class="detail-row"><strong>Type:</strong> <span>' + type + '</span></div>';
+    }
+    html += '</div>';
+
+    // Abstract section (separated from publication details)
+    html += '<div class="abstract-section">';
+    html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
+    html += '<div class="abstract-text">' + (abstract || 'No abstract available.') + '</div>';
+    html += '</div>';
+    html += '</div>'; // Close preview-details-container
+    html += '</div>'; // Close preview-content-wrapper
+
+    // Action buttons
+    html += '<div class="preview-actions">';
+    html += '<a href="../' + filePath + '" target="_blank" class="btn btn-primary">';
+    html += '<i class="fas fa-external-link-alt"></i> View Full Document';
+    html += '</a>';
+    html += '<a href="../' + filePath + '" download class="btn btn-secondary">';
+    html += '<i class="fas fa-download"></i> Download';
+    html += '</a>';
+    html += '</div>';
+
+    html += '</div>';
+    html += '</div>';
+
+    modal.innerHTML = html;
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+
+    // Close modal when clicking outside the modal content
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closePreviewModal();
+        }
+    });
+}
+
+function closePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+</script>
 
 <!-- Publication deletion functionality -->
 <script>

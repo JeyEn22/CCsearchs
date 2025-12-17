@@ -167,8 +167,7 @@ CREATE TABLE `user_profiles` (
   PRIMARY KEY (`profileID`),
   UNIQUE KEY `studentID` (`studentID`),
   KEY `idx_studentID` (`studentID`),
-  KEY `idx_is_public` (`is_public`),
-  CONSTRAINT `user_profiles_ibfk_1` FOREIGN KEY (`studentID`) REFERENCES `registration` (`studentID`) ON DELETE CASCADE
+  KEY `idx_is_public` (`is_public`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --

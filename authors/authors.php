@@ -71,7 +71,7 @@ if ($stmt) {
     $stmt->bind_param($paramTypes, ...$params);
     $stmt->execute();
     $authorsResult = $stmt->get_result();
-    $authors = [];
+$authors = [];
     while ($row = $authorsResult->fetch_assoc()) {
         $authors[] = $row;
     }

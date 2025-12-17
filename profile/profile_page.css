@@ -398,13 +398,15 @@ input[readonly] {
     left: 0;
     top: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
     animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
     background-color: white;
-    margin: 10% auto;
     padding: 0;
     border-radius: 10px;
     width: 90%;
@@ -774,6 +776,18 @@ body.dark-theme .tabs button.active {
 
 body.dark-theme .form-group label {
     color: #E0E0E0;
+}
+
+body.dark-theme .form-group input {
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+    border: 1px solid #505050;
+}
+
+body.dark-theme .form-group input:focus {
+    outline: none;
+    border-color: #5A7FBF;
+    box-shadow: 0 0 0 2px rgba(90, 127, 191, 0.15);
 }
 
 /* Password validation in dark mode */

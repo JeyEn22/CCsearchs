@@ -15,6 +15,22 @@ header("Pragma: no-cache");
 
 $studentID = $_SESSION['studentID'];
 
+// Get current user's first name for greeting
+$userFirstName = 'User';
+if (isset($_SESSION['studentID'])) {
+    $stmtUser = $conn->prepare("SELECT firstName FROM registration WHERE studentID = ? LIMIT 1");
+    if ($stmtUser) {
+        $stmtUser->bind_param("s", $_SESSION['studentID']);
+        if ($stmtUser->execute()) {
+            $resUser = $stmtUser->get_result();
+            if ($rowUser = $resUser->fetch_assoc()) {
+                $userFirstName = $rowUser['firstName'];
+            }
+        }
+        $stmtUser->close();
+    }
+}
+
 // Fetch publications in student's library
 $stmt = $conn->prepare("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID WHERE p.studentID = ? ORDER BY p.publicationID DESC");
 if ($stmt) {
@@ -45,10 +61,10 @@ include "../layout/layout.php";
   
     <img src="../image/home_images/welcome-header.png" alt="Wavy blue background" class="banner-background" />
     <div class="welcome-content">
-        <h2>Welcome to CCSearch, Jelly! 👋</h2>
+        <h2>Welcome to CCSearch, <?php echo htmlspecialchars($userFirstName); ?>! 👋</h2>
         <p>Where you can share credible knowledge and discover reliable sources — all in one place!</p>
         <div class="search-box">
-            <input type="text" id="librarySearchInput" placeholder="Search titles, authors, student IDs..." />
+            <input type="text" id="librarySearchInput" placeholder="Search titles" />
             <img src="../icons/authors/search.png" class="search-icon" alt="Search">
         </div>
     </div>
@@ -498,10 +514,10 @@ window.onclick = function(event) {
         html += '</div>';
 
         // Abstract section (separated from publication details)
-        html += '<div class="abstract-section">';
-        html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
+            html += '<div class="abstract-section">';
+            html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
         html += '<div class="abstract-text">' + (abstract || 'No abstract available.') + '</div>';
-        html += '</div>';
+            html += '</div>';
         html += '</div>'; // Close preview-details-container
         html += '</div>'; // Close preview-content-wrapper
 

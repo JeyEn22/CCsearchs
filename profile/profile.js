@@ -72,6 +72,38 @@ tabs.forEach(tab => {
 // Button action for public/private view toggle is handled inline in HTML
 // The onclick attribute in the HTML handles the navigation
 
+// Edit/Update toggle functionality
+document.addEventListener('DOMContentLoaded', function () {
+  const editButton = document.getElementById("editProfile");
+  const updateButton = document.getElementById("updateProfile");
+  const personalInputs = document.querySelectorAll('#personal input');
+  
+  let isEditMode = false;
+
+  if (editButton) {
+    editButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      isEditMode = !isEditMode;
+
+      if (isEditMode) {
+        // Enable all inputs
+        personalInputs.forEach(input => {
+          input.removeAttribute('readonly');
+        });
+        editButton.style.display = 'none';
+        updateButton.style.display = 'inline-block';
+      } else {
+        // Disable all inputs
+        personalInputs.forEach(input => {
+          input.setAttribute('readonly', 'readonly');
+        });
+        editButton.style.display = 'inline-block';
+        updateButton.style.display = 'none';
+      }
+    });
+  }
+});
+
 // Profile update functionality
 document.addEventListener('DOMContentLoaded', function () {
   const updateButton = document.getElementById("updateProfile");
@@ -304,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-      modal.style.display = 'block';
+      modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
   }

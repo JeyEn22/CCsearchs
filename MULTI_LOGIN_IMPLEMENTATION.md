@@ -12,6 +12,7 @@ When someone tries to login to an account that's already logged in from another 
 ## User Experience
 
 ### For the person already logged in:
+
 - While browsing any page, their session token is validated
 - If another user logs in with their account, the database is updated with a new token
 - The validation detects the token mismatch and:
@@ -21,6 +22,7 @@ When someone tries to login to an account that's already logged in from another 
 - They also receive a security notification with details
 
 ### For the new person logging in:
+
 - Login succeeds immediately
 - They can access the account
 - They see a success message
@@ -30,18 +32,21 @@ When someone tries to login to an account that's already logged in from another 
 ### Files Modified:
 
 1. **login_auth.php** - Updated login logic
+
    - Checks for existing sessions for the student ID
    - If found, deletes the old session from database
    - Creates new session record with new token
    - Sends security notification to the old user
 
 2. **session_validator.php** (NEW) - Session validation script
+
    - Included at the top of all authenticated pages
    - On each page load, validates that the session token matches the database
    - If tokens don't match, logs out and redirects with "kicked_out" reason
    - Destroys the old session completely
 
 3. **login.php** - Updated with kicked-out modal
+
    - Checks URL parameter for "reason=kicked_out"
    - Shows appropriate modal message when user is kicked out
    - Cleans up URL history
@@ -58,6 +63,7 @@ When someone tries to login to an account that's already logged in from another 
 ## Database Changes
 
 The existing `login_sessions` table tracks:
+
 - `sessionID` - Unique session identifier
 - `studentID` - Who's logged in
 - `sessionToken` - Unique token for this session

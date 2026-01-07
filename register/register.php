@@ -15,7 +15,7 @@
 
     <!-- LEFT SECTION -->
     <div class="left-section">
-      <div class="back-btn" onclick="window.location.href='../landing/landing.php'">
+      <div class="back-btn" onclick="goBack()">
         <span>&larr;</span>
       </div>
 
@@ -129,6 +129,8 @@
       }
     }
 
+
+
     function hideModal() {
       modal.style.opacity = '0';
       // Wait for transition to complete before hiding
@@ -231,6 +233,24 @@
         submitButton.disabled = false;
       });
     });
+
+      if (typeof window.goBack !== 'function') {
+    window.goBack = function(fallback) {
+        try {
+            if (window.history && window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+        } catch (e) {}
+        try {
+            if (document.referrer) {
+                window.location.href = document.referrer;
+                return;
+            }
+        } catch (e) {}
+        window.location.href = fallback || '../home/home.php';
+    };
+}
   </script>
   </script>
 </body>

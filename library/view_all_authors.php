@@ -163,7 +163,7 @@ include "../layout/layout.php";
 // Back button functionality
 function goBack() {
   window.history.back();
-}
+} 
 
 // Toggle filter modal
 function toggleFilterModal() {

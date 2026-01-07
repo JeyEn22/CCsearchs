@@ -15,7 +15,7 @@
 
     <!-- LEFT SIDE -->
     <div class="left-section">
-      <div class="back-btn" onclick="window.location.href='../landing/landing.php'">
+      <div class="back-btn" onclick="goBack()">
         <span>&larr;</span>
       </div>
 
@@ -118,6 +118,8 @@
       }, 300);
     }
 
+
+
     // Event listeners
     closeModal.onclick = hideModal;
 
@@ -198,6 +200,24 @@
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     });
+
+    if (typeof window.goBack !== 'function') {
+    window.goBack = function(fallback) {
+        try {
+            if (window.history && window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+        } catch (e) {}
+        try {
+            if (document.referrer) {
+                window.location.href = document.referrer;
+                return;
+            }
+        } catch (e) {}
+        window.location.href = fallback || '../home/home.php';
+    };
+}
 
   </script>
 </body>

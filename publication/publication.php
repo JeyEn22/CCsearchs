@@ -947,6 +947,25 @@ function closePreviewModal() {
         modal.remove();
     }
 }
+
+// Ensure a goBack function exists for Back links (history-first, then referrer, then fallback)
+if (typeof window.goBack !== 'function') {
+    window.goBack = function(fallback) {
+        try {
+            if (window.history && window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+        } catch (e) {}
+        try {
+            if (document.referrer) {
+                window.location.href = document.referrer;
+                return;
+            }
+        } catch (e) {}
+        window.location.href = fallback || '../home/home.php';
+    };
+}
 </script>
 
 

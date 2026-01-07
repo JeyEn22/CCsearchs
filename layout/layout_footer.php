@@ -10,13 +10,25 @@
             }
         });
 
-        // Global back handler
+        // Global back handler — prefer navigating the browser history to return to the previous page
         function goBack() {
-            if (document.referrer) {
-                window.history.back();
-            } else {
-                window.location.href = "../home/home.php";
+            try {
+                if (window.history && window.history.length > 1) {
+                    window.history.back();
+                    return;
+                }
+            } catch (e) {
+                // ignore
             }
+            // If no history entry, try referrer as a fallback
+            try {
+                if (document.referrer) {
+                    window.location.href = document.referrer;
+                    return;
+                }
+            } catch (e) {}
+            // Final fallback
+            window.location.href = "../home/home.php";
         }
     </script>
     <?php if (isset($additionalScripts) && is_array($additionalScripts)): ?>

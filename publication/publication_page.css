@@ -3,15 +3,15 @@
  * Works with unified layout.css
  */
 
-/* Top Bar */
+/* --- 1. Top Bar & Section Layout --- */
 .top-bar {
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 15px 20px;
+    padding: 15px 25px;
     background: #475d79;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: white;
     justify-content: space-between;
 }
@@ -62,12 +62,12 @@
     gap: 20px;
 }
 
-/* Sections */
 .section-box {
     background: #eef1f4;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .section-box h2 {
@@ -216,6 +216,7 @@
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -352,88 +353,9 @@
     color: #666;
 }
 
-/* Modal Styles for Save/Delete */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
+/* Modal styles are now centralized in layout.css */
 
-.modal-content {
-    background-color: #fff;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.modal-header h3 {
-    margin: 0;
-    color: #333;
-    font-size: 18px;
-}
-
-.close-modal {
-    font-size: 24px;
-    cursor: pointer;
-    color: #666;
-    transition: color 0.2s ease;
-}
-
-.close-modal:hover {
-    color: #333;
-}
-
-.modal-body {
-    padding: 20px;
-    text-align: center;
-}
-
-.modal-body p {
-    margin: 0 0 10px 0;
-    color: #666;
-}
-
-.warning-text {
-    color: #dc3545 !important;
-    font-weight: 500;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 20px;
-    border-top: 1px solid #e0e0e0;
-}
+/* Modal component styles are now centralized in layout.css */
 
 .caption {
     margin-top: 10px;
@@ -479,16 +401,15 @@
     color: black;
 }
 
-/* White Box Form */
+/* --- 2. Upload "White Box" Form --- */
 .white-box {
-    background: #f3f6fc;
-    padding: 20px 30px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
     display: grid;
     grid-template-columns: 260px 1fr;
-    gap: 20px;
-    align-items: stretch;
+    gap: 30px;
+    align-items: start;
 }
 
 .left-section {
@@ -518,18 +439,15 @@
 
 .preview-placeholder {
     width: 100%;
-    height: 100%;
+    height: 320px;
     background: #f8f9fa;
-    border: 2px dashed #dee2e6;
+    border: 2px dashed #cbd5e0;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #6c757d;
-    text-align: center;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #718096;
 }
 
 .preview-placeholder i {
@@ -617,19 +535,18 @@
 
 .form-group {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 15px;
+    margin-bottom: 15px;
     width: 100%;
 }
 
 .form-group label {
-    font-size: 14px;
-    font-weight: normal;
-    color: #333;
-    min-width: 130px;
+    min-width: 120px;
+    font-weight: 500;
     text-align: right;
+    color: #2d3748;
+    font-size: 14px;
     margin-bottom: 0;
 }
 
@@ -744,18 +661,28 @@ body.dark-theme .caption {
     /* Secondary text */
 }
 
-body.dark-theme .modal-content {
-    background-color: #1A1A1A;
-    /* Modals/overlays */
-    color: #E0E0E0;
-}
+/* Dark theme modal styles are now centralized in layout.css */
 
-body.dark-theme .white-box {
+/* --- 4. Dark Mode Refinements --- */
+body.dark-theme .white-box,
+body.dark-theme .section-box {
     background: #1E1E1E;
+    color: #E0E0E0;
 }
 
 body.dark-theme .form-group label {
     color: #E0E0E0;
+}
+
+body.dark-theme .abstract-text {
+    background: #121212 !important;
+    border-color: #333 !important;
+    color: #B0B0B0 !important;
+}
+
+body.dark-theme .publish-btn {
+    background: #BB86FC;
+    color: #121212;
 }
 
 body.dark-theme .form-group input,
@@ -884,20 +811,47 @@ body.dark-theme .detail-row span {
     color: #f7fafc;
 }
 
-body.dark-theme .abstract-text {
-    background: transparent;
-    border: none;
-    color: #e2e8f0;
+/* --- 3. The "Abstract Center" Modal Rule --- */
+.preview-modal-content .modal-body {
+    padding: 25px 35px !important;
 }
 
-.abstract-section {
-    text-align: center;
-    margin: 20px 0;
+/* Metadata remains left-aligned */
+.publication-details .detail-row {
+    display: grid !important;
+    grid-template-columns: 110px 1fr !important;
+    gap: 10px;
+    text-align: left !important;
+    margin-bottom: 10px;
 }
 
-.abstract-label {
-    margin-bottom: 8px;
-    text-align: center;
+/* Abstract Label and Box are Forced Center */
+.abstract-section, 
+.abstract-label,
+.detail-row:has(.abstract-text) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  
+}
+
+.preview-details-container {
+    flex: 1; /* Allows metadata to take remaining space */
+    background: #f8f9fa; /* The light gray box from your screenshot */
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.abstract-text {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+
+    border-radius: 8px !important;
+    width: 95%;
+    line-height: 1.6;
 }
 
 .abstract-label strong {
@@ -945,11 +899,22 @@ body.dark-theme .preview-actions {
         font-size: 13px;
     }
 
-    .modal-content {
-        max-width: 85%;
-    }
 
     /* Preview modal responsive styles are now in layout.css */
+}
+
+/* --- 5. Responsive Fix for Upload Form --- */
+@media (max-width: 768px) {
+    .white-box {
+        grid-template-columns: 1fr;
+    }
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .form-group label {
+        text-align: left;
+    }
 }
 
 @media (max-width: 767px) {
@@ -1028,25 +993,7 @@ body.dark-theme .preview-actions {
         font-size: 12px;
     }
 
-    .modal-content {
-        width: 95%;
-        max-height: 85vh;
-        padding: 15px;
-    }
-
-    .modal-header h3 {
-        font-size: 14px;
-    }
-
-    .modal-body {
-        padding: 12px;
-        font-size: 12px;
-    }
-
-    .modal-footer {
-        padding: 12px;
-        gap: 8px;
-    }
+    /* Modal responsive styles are now centralized in layout.css */
 
     /* Preview modal responsive styles are now in layout.css */
 

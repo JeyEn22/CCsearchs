@@ -163,10 +163,16 @@ include "../layout/layout.php";
       <?php if (!empty($allPublications)): ?>
         <?php foreach ($allPublications as $pub): ?>
           <div class="card" 
-               data-title="<?php echo htmlspecialchars(strtolower($pub['title'])); ?>"
-               data-author="<?php echo htmlspecialchars(strtolower($pub['firstName'] . ' ' . $pub['lastName'])); ?>"
-               data-department="<?php echo htmlspecialchars(strtolower($pub['department'] ?? '')); ?>"
-               data-type="<?php echo htmlspecialchars(strtolower($pub['type'] ?? '')); ?>">
+               data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>"
+               data-title="<?php echo htmlspecialchars($pub['title']); ?>"
+               data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>"
+               data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>"
+               data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>"
+               data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>"
+               data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>"
+               data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>"
+               data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>"
+               onclick="previewPublication(this)">
             <?php
             $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
             $imageSrc .= '?t=' . time();
@@ -175,7 +181,7 @@ include "../layout/layout.php";
             <div class="card-info">
               <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
               <div class="posted-by">
-                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
               </div>
               <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
               <?php if (!empty($pub['department'])): ?>
@@ -185,11 +191,11 @@ include "../layout/layout.php";
                 <div class="posted-by">Type: <?php echo htmlspecialchars($pub['type']); ?></div>
               <?php endif; ?>
               <div class="card-actions">
-                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                     <i class="fas fa-eye"></i> Preview
                 </button>
                 <?php if (isset($_SESSION['studentID'])): ?>
-                  <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm" style="margin-left:6px;">
+                  <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm" style="margin-left:6px;">
                     <i class="fas fa-bookmark"></i> Save
                   </button>
                 <?php endif; ?>

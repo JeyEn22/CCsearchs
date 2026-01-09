@@ -233,7 +233,7 @@ include "../layout/layout.php";
     <h1>Publication</h1>
     <div class="search-box">
       <input type="text" id="searchPublicationInput" placeholder="Search titles..." value="<?php echo htmlspecialchars($searchQuery); ?>">
-      <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+      <img src="../icons/authors/search.png" class="search-icon" alt="Search" id="publicationSearchIcon" style="cursor: pointer;">
     </div>
   </div>
 </div>
@@ -261,21 +261,21 @@ include "../layout/layout.php";
   $result = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID $where ORDER BY p.published_datetime DESC");
       if ($result) {
         while ($row = $result->fetch_assoc()) {
-          echo '<div class="card">';
+          echo '<div class="card" data-filepath="' . htmlspecialchars($row['file_path']) . '" data-title="' . htmlspecialchars($row['title']) . '" data-author="' . htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) . '" data-studentid="' . htmlspecialchars($row['studentID']) . '" data-date="' . htmlspecialchars($row['published_datetime']) . '" data-abstract="' . htmlspecialchars($row['abstract'] ?? '') . '" data-department="' . htmlspecialchars($row['department'] ?? '') . '" data-type="' . htmlspecialchars($row['type'] ?? '') . '" data-thumbnail="' . htmlspecialchars($row['thumbnail'] ?? '') . '" onclick="previewPublication(this)">';
           $imageSrc = isset($row['thumbnail']) && !empty($row['thumbnail']) ? '../' . $row['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
           $imageSrc .= '?t=' . time(); // Cache busting
           echo '<img src="' . htmlspecialchars($imageSrc) . '" class="cover-img" alt="Publication cover">';
           echo '<div class="card-info">';
           echo '<h4 class="card-title">' . htmlspecialchars($row['title']) . '</h4>';
           echo '<div class="posted-by">';
-          echo 'Posted by: <a href="../profile/profile_view.php?studentID=' . htmlspecialchars($row['studentID']) . '">' . htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) . '</a>';
+          echo 'Posted by: <a href="../profile/profile_view.php?studentID=' . htmlspecialchars($row['studentID']) . '" onclick="event.stopPropagation()">' . htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) . '</a>';
           echo '</div>';
           echo '<div class="posted-by">Published: ' . date("M d, Y", strtotime($row['published_datetime'])) . '</div>';
           echo '<div class="card-actions">';
-          echo '<button onclick="previewPublication(\'' . htmlspecialchars($row['file_path']) . '\', \'' . htmlspecialchars(addslashes($row['title'])) . '\', \'' . htmlspecialchars(addslashes($row['firstName'] . ' ' . $row['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['type'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row['thumbnail'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
+          echo '<button onclick="event.stopPropagation(); previewPublication(this.closest(\'.card\'))" class="btn btn-primary btn-sm">';
           echo '<i class="fas fa-eye"></i> Preview';
           echo '</button>';
-          echo '<button onclick="deletePublication(' . $row['publicationID'] . ', \'' . htmlspecialchars(addslashes($row['title'])) . '\')" class="btn btn-danger btn-sm">';
+          echo '<button onclick="event.stopPropagation(); deletePublication(' . $row['publicationID'] . ', \'' . htmlspecialchars(addslashes($row['title'])) . '\')" class="btn btn-danger btn-sm">';
           echo '<i class="fas fa-trash"></i>';
           echo '</button>';
           echo '</div>';
@@ -300,21 +300,21 @@ include "../layout/layout.php";
       $result2 = $conn->query("SELECT p.*, r.firstName, r.lastName FROM publications p JOIN registration r ON p.studentID = r.studentID $where2 ORDER BY p.published_datetime DESC");
       if ($result2) {
         while ($row2 = $result2->fetch_assoc()) {
-          echo '<div class="card">';
+          echo '<div class="card" data-filepath="' . htmlspecialchars($row2['file_path']) . '" data-title="' . htmlspecialchars($row2['title']) . '" data-author="' . htmlspecialchars($row2['firstName'] . ' ' . $row2['lastName']) . '" data-studentid="' . htmlspecialchars($row2['studentID']) . '" data-date="' . htmlspecialchars($row2['published_datetime']) . '" data-abstract="' . htmlspecialchars($row2['abstract'] ?? '') . '" data-department="' . htmlspecialchars($row2['department'] ?? '') . '" data-type="' . htmlspecialchars($row2['type'] ?? '') . '" data-thumbnail="' . htmlspecialchars($row2['thumbnail'] ?? '') . '" onclick="previewPublication(this)">';
           $imageSrc = isset($row2['thumbnail']) && !empty($row2['thumbnail']) ? '../' . $row2['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
           $imageSrc .= '?t=' . time(); // Cache busting
           echo '<img src="' . htmlspecialchars($imageSrc) . '" class="cover-img" alt="Publication cover">';
           echo '<div class="card-info">';
           echo '<h4 class="card-title">' . htmlspecialchars($row2['title']) . '</h4>';
           echo '<div class="posted-by">';
-          echo 'Posted by: <a href="../profile/profile_view.php?studentID=' . htmlspecialchars($row2['studentID']) . '">' . htmlspecialchars($row2['firstName'] . ' ' . $row2['lastName']) . '</a>';
+          echo 'Posted by: <a href="../profile/profile_view.php?studentID=' . htmlspecialchars($row2['studentID']) . '" onclick="event.stopPropagation()">' . htmlspecialchars($row2['firstName'] . ' ' . $row2['lastName']) . '</a>';
           echo '</div>';
-          echo '<div class="posted-by">' . date("M d, Y", strtotime($row2['published_datetime'])) . '</div>';
+          echo '<div class="posted-by">Published: ' . date("M d, Y", strtotime($row2['published_datetime'])) . '</div>';
           echo '<div class="card-actions">';
-           echo '<button onclick="previewPublication(\'' . htmlspecialchars($row2['file_path']) . '\', \'' . htmlspecialchars(addslashes($row2['title'])) . '\', \'' . htmlspecialchars(addslashes($row2['firstName'] . ' ' . $row2['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row2['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row2['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['type'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['thumbnail'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
+          echo '<button onclick="event.stopPropagation(); previewPublication(this.closest(\'.card\'))" class="btn btn-primary btn-sm">';
           echo '<i class="fas fa-eye"></i> Preview';
           echo '</button>';
-          echo '<button onclick="savePublication(' . $row2['publicationID'] . ', \'' . htmlspecialchars(addslashes($row2['title'])) . '\')" class="btn btn-success btn-sm">';
+          echo '<button onclick="event.stopPropagation(); savePublication(' . $row2['publicationID'] . ', \'' . htmlspecialchars(addslashes($row2['title'])) . '\')" class="btn btn-success btn-sm">';
           echo '<i class="fas fa-bookmark"></i> Save';
           echo '</button>';
           echo '</div>';
@@ -671,28 +671,44 @@ include "../layout/layout.php";
 // Publication search (titles)
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchPublicationInput');
+    const searchIcon = document.getElementById('publicationSearchIcon');
+    
+    function performSearch() {
+        const q = searchInput.value.trim();
+        if (q) {
+            window.location.href = 'publication.php?search=' + encodeURIComponent(q);
+        } else {
+            window.location.href = 'publication.php';
+        }
+    }
+    
     if (searchInput) {
-        // Support both Enter key and real-time input filtering
+        // Real-time filtering of displayed results (client-side)
         searchInput.addEventListener('input', () => {
-            // Real-time filtering of displayed results
             const query = searchInput.value.toLowerCase().trim();
-            const titles = document.querySelectorAll('[data-publication-title]');
+            const cards = document.querySelectorAll('.card-grid .card');
             
-            titles.forEach(title => {
-                const titleText = title.getAttribute('data-publication-title').toLowerCase();
-                title.style.display = titleText.includes(query) ? 'block' : 'none';
+            cards.forEach(card => {
+                const titleElement = card.querySelector('.card-title');
+                if (titleElement) {
+                    const titleText = titleElement.textContent.toLowerCase();
+                    card.style.display = titleText.includes(query) ? 'block' : 'none';
+                }
             });
         });
         
+        // Enter key search (server-side)
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const q = searchInput.value.trim();
-                if (q) {
-                    window.location.href = 'publication.php?search=' + encodeURIComponent(q);
-                } else {
-                    window.location.href = 'publication.php';
-                }
+                performSearch();
             }
+        });
+    }
+    
+    // Search icon click
+    if (searchIcon) {
+        searchIcon.addEventListener('click', () => {
+            performSearch();
         });
     }
 });

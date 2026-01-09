@@ -889,6 +889,7 @@ body:has(.public-view) .tabs .tab:not([data-tab="personal"]) {
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -1076,6 +1077,11 @@ body.dark-theme .empty-state h3 {
 }
 
 /* Preview modal styles are centralized in layout/layout.css to ensure a single source of truth for the preview modal (see layout/layout.css). Duplicate page-level preview styles removed. */
+.abstract-label {
+    font-weight: 700 !important;
+    color: #333 !important;
+    font-size: 16px !important;
+}
 
 .abstract-text {
     background: transparent;
@@ -1094,17 +1100,15 @@ body.dark-theme .empty-state h3 {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    
 }
 
 .detail-row:has(.abstract-text) strong {
     margin-bottom: 8px;
+    
 }
 
 /* Other publication detail styles are centralized in layout.css */
-
-.preview-actions {
-    /* Style inherited from layout.css */
-}
 
 /* Profile-specific dark mode overrides */
 @media (max-width: 1023px) {
@@ -1128,7 +1132,8 @@ body.dark-theme .empty-state h3 {
         height: 150px;
     }
 
-    .modal-content {
+    /* Exclude preview modals from the max-width constraint */
+    .modal-content:not(.preview-modal-content) {
         max-width: 90%;
     }
 
@@ -1324,7 +1329,7 @@ body.dark-theme .empty-state h3 {
     /* Preview modal responsive styles are now in layout.css */
 
     .publication-details {
-        font-size: 11px;
+        font-size: 50px;
         padding: 10px;
     }
 
@@ -1340,3 +1345,198 @@ body.dark-theme .empty-state h3 {
         min-width: 70px;
     }
 }
+/* Modal base styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000 !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.modal-active,
+.modal[style*="display: flex"] {
+    display: flex !important;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.28s ease-out;
+    overflow: hidden;
+    position: relative;
+    z-index: 10001;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h3 { 
+    margin: 0; 
+    color: #222; 
+    font-size: 18px; 
+}
+
+.modal-body { 
+    padding: 18px 20px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
+/* Modal footer */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.close-modal { font-size: 26px; cursor: pointer; color: #666; transition: color 0.2s ease; }
+.close-modal:hover { color: #222; }
+
+.modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+
+/* Preview-specific */
+.preview-modal-content { max-width: 90vw; max-height: 90vh; width: 90vw; height: 90vh; display: flex; flex-direction: column; }
+
+.preview-modal-content .modal-body { overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+
+.preview-modal-content .modal-header { text-align: center; }
+
+.preview-modal-content .modal-header h3 { text-align: center; margin: 0; width: 100%; }
+
+.publication-details { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e9ecef; flex-shrink: 0; }
+
+.detail-row { display: flex; margin-bottom: 8px; align-items: flex-start; }
+
+.preview-content-wrapper { display: flex; gap: 16px; align-items: flex-start; }
+
+.preview-thumbnail-container { width: 220px; flex-shrink: 0; display: flex; align-items: stretch; }
+.preview-thumbnail { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+
+.preview-details-container { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+.abstract-section { display: flex; flex-direction: column; gap: 6px; }
+.abstract-text { max-height: 38vh; overflow: auto; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #e9ecef; }
+
+.preview-actions { display: flex; gap: 10px; margin-top: 12px; justify-content: flex-end; }
+
+/* Unified Preview Modal - Matching Library.php */
+.preview-modal-content {
+    max-width: 1000px !important; /* Ensure it is wide enough like the library */
+    width: 90% !important;
+    height: auto;
+    max-height: 90vh;
+}
+
+.preview-modal-content .modal-body {
+    padding: 20px 30px !important; /* Standardized padding */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Two-Column Layout Sync */
+.preview-content-wrapper {
+    display: flex;
+    gap: 25px; /* Space between image and details */
+    align-items: flex-start;
+}
+
+.preview-thumbnail-container {
+    width: 250px; /* Fixed width for the PDF preview image */
+    flex-shrink: 0;
+}
+
+.preview-details-container {
+    flex: 1; /* Allows metadata to take remaining space */
+    background: #f8f9fa; /* The light gray box from your screenshot */
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Metadata Text Alignment */
+.detail-row {
+    display: grid;
+    grid-template-columns: 120px 1fr; /* Aligns labels and values perfectly */
+    margin-bottom: 10px;
+}
+
+/* Fix for labels and values being too far apart */
+.publication-details .detail-row {
+    display: grid;
+    grid-template-columns: 100px 1fr; /* Fixed width for labels brings values closer */
+    gap: 10px;
+    text-align: left;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.publication-details .detail-row strong {
+    color: #333;
+    font-weight: 700;
+    /* This ensures all colons (:) align vertically */
+    display: inline-block;
+}
+
+/* Override the centering rule that is pushing them away */
+.detail-row:has(.abstract-text) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-top: 15px;
+}
+
+/* Abstract box (Centered at bottom) */
+.abstract-section {
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.abstract-text {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    border-radius: 6px;
+    min-height: 60px;
+    text-align: center;
+}
+
+/* Dark theme compatibility */
+body.dark-theme .modal-content { background: #121212; color: #e0e0e0; }
+body.dark-theme .close-modal { color: #B0B0B0; }
+body.dark-theme .close-modal:hover { color: #FFFFFF; }
+body.dark-theme .modal-body p { color: #B0B0B0; }
+
+/* small screens */
+@media (max-width: 700px) {
+    .preview-content-wrapper { flex-direction: column; }
+    .preview-thumbnail-container { width: 100%; height: 200px; }
+    .preview-modal-content { width: 95vw; height: 80vh; }
+}
+

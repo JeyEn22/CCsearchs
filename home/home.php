@@ -102,8 +102,8 @@ include "../layout/layout.php";
         <h2>Welcome to CCSearch <?php echo htmlspecialchars($userFirstName); ?></h2>
         <p>Discover and explore the best research works</p>
         <div class="search-box">
-            <input type="text" id="homeSearchInput" placeholder="Search titles" />
-            <img src="../icons/authors/search.png" class="search-icon" alt="Search">
+            <input type="text" id="homeSearchInput" placeholder="Search titles" value="<?php echo htmlspecialchars($searchQuery); ?>" />
+            <img src="../icons/authors/search.png" class="search-icon" alt="Search" id="homeSearchIcon" style="cursor: pointer;">
         </div>
     </div>
 </div>
@@ -120,7 +120,7 @@ include "../layout/layout.php";
         <div class="card-grid">
             <?php if (!empty($searchResults)): ?>
                 <?php foreach ($searchResults as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -129,14 +129,14 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
                                     <i class="fas fa-bookmark"></i> Save
                                 </button>
                             </div>
@@ -159,7 +159,7 @@ include "../layout/layout.php";
         <div class="card-grid" id="mostViewedGrid">
             <?php if (!empty($mostViewed)): ?>
                 <?php foreach ($mostViewed as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -168,14 +168,14 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
                                     <i class="fas fa-bookmark"></i> Save
                                 </button>
                             </div>
@@ -197,7 +197,7 @@ include "../layout/layout.php";
         <div class="card-grid" id="newlyAddedGrid">
             <?php if (!empty($newlyAdded)): ?>
                 <?php foreach ($newlyAdded as $pub): ?>
-                    <div class="card">
+                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>" onclick="previewPublication(this)">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -206,14 +206,14 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])) ; ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
+                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
                                     <i class="fas fa-bookmark"></i> Save
                                 </button>
                             </div>
@@ -307,20 +307,81 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// Home search functionality (server-side like publication page)
+// Home search functionality with real-time filtering
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('homeSearchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const q = searchInput.value.trim();
-                if (q) {
-                    window.location.href = 'home.php?search=' + encodeURIComponent(q);
+    const searchIcon = document.getElementById('homeSearchIcon');
+    
+    function performSearch() {
+        const q = searchInput.value.trim();
+        if (q) {
+            window.location.href = 'home.php?search=' + encodeURIComponent(q);
+        } else {
+            window.location.href = 'home.php';
+        }
+    }
+    
+    function filterCardsRealTime() {
+        const query = searchInput.value.toLowerCase().trim();
+        const allCards = document.querySelectorAll('.card-grid .card');
+        
+        allCards.forEach(card => {
+            const titleElement = card.querySelector('.card-title');
+            if (titleElement) {
+                const titleText = titleElement.textContent.toLowerCase();
+                const authorElement = card.querySelector('.posted-by');
+                let authorText = '';
+                if (authorElement) {
+                    authorText = authorElement.textContent.toLowerCase();
+                }
+                
+                // Show card if title or author matches the search query
+                if (titleText.includes(query) || authorText.includes(query)) {
+                    card.style.display = 'block';
                 } else {
-                    window.location.href = 'home.php';
+                    card.style.display = 'none';
                 }
             }
         });
+        
+        // Update section visibility if all cards in a section are hidden
+        document.querySelectorAll('.category-box').forEach(section => {
+            const visibleCards = section.querySelectorAll('.card-grid .card[style*="display: block"], .card-grid .card:not([style*="display: none"])');
+            const allCardsInSection = section.querySelectorAll('.card-grid .card');
+            
+            // If there are cards and none are visible, hide the section
+            if (allCardsInSection.length > 0 && visibleCards.length === 0 && query !== '') {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+            }
+        });
+    }
+    
+    if (searchInput) {
+        // Real-time filtering as user types
+        searchInput.addEventListener('input', () => {
+            filterCardsRealTime();
+        });
+        
+        // Enter key search (server-side)
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    // Search icon click (server-side)
+    if (searchIcon) {
+        searchIcon.addEventListener('click', () => {
+            performSearch();
+        });
+    }
+    
+    // Apply real-time filter on page load if there's a search query
+    if (searchInput && searchInput.value.trim() !== '') {
+        filterCardsRealTime();
     }
 });
 </script>
@@ -345,112 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- Add modal styles for session checker -->
-<style>
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 10000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-  }
 
-  .modal-content {
-    background-color: #fff;
-    padding: 0;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 350px;
-    height: auto;
-    min-height: 280px;
-    position: relative;
-    pointer-events: auto;
-    margin: auto;
-    transform: translateY(0);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .modal-header {
-    padding: 12px 20px 0;
-    text-align: right;
-  }
-
-  .close-modal {
-    font-size: 20px;
-    font-weight: 500;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-
-  .close-modal:hover {
-    color: #000;
-  }
-
-  .modal-body {
-    padding: 20px 24px;
-    text-align: center;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .modal-icon {
-    margin-bottom: 16px;
-  }
-
-  .modal-icon .fas {
-    font-size: 48px;
-    color: #dc2626;
-  }
-
-  .modal-body h3 {
-    margin: 12px 0 8px;
-    color: #333;
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .modal-body p {
-    margin: 12px 0;
-    color: #555;
-    line-height: 1.6;
-    font-size: 14px;
-  }
-
-  .modal-footer {
-    padding: 16px 24px 24px;
-    text-align: center;
-  }
-
-  .modal-btn {
-    background-color: #dc2626;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.2s ease;
-  }
-
-  .modal-btn:hover {
-    background-color: #b91c1c;
-  }
-</style>
 
 <script src="../js/session_checker.js"></script>
 <script src="../assets/js/preview.js"></script>

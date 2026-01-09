@@ -347,8 +347,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+      console.log('Opening modal:', modalId);
       // Set display immediately
       modal.style.display = 'flex';
+      modal.style.visibility = 'visible';
+      modal.style.opacity = '1';
       // Allow pointer events
       modal.style.pointerEvents = 'auto';
       // Trigger animation by adding active class
@@ -356,21 +359,20 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('modal-active');
       }, 10);
       document.body.style.overflow = 'hidden';
+    } else {
+      console.error('Modal not found:', modalId);
     }
   }
 
   function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-      // Start fade-out animation
+      // Close immediately without delay
       modal.classList.remove('modal-active');
-      
-      // Wait for animation to complete before hiding
-      setTimeout(() => {
-        modal.style.display = 'none';
-        modal.style.pointerEvents = 'none';
-      }, 300); // Match CSS animation duration
-      
+      modal.style.display = 'none';
+      modal.style.pointerEvents = 'none';
+      modal.style.visibility = 'hidden';
+      modal.style.opacity = '0';
       document.body.style.overflow = 'auto';
     }
   }
@@ -414,9 +416,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // ===== CHANGE PASSWORD BUTTON =====
   const changePasswordBtn = document.getElementById('changePasswordBtn');
   if (changePasswordBtn) {
-    changePasswordBtn.addEventListener('click', function() {
+    changePasswordBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Change Password button clicked');
       openModal('changePasswordModal');
     });
+  } else {
+    console.error('Change Password button not found');
   }
 
   // Change password form submission
@@ -551,11 +558,28 @@ document.addEventListener('DOMContentLoaded', function () {
   // ===== THEME BUTTON =====
   const themeBtn = document.getElementById('themeBtn');
   if (themeBtn) {
-    themeBtn.addEventListener('click', function() {
-      const currentTheme = window.themeManager ? window.themeManager.getCurrentTheme() : 'light';
-      document.querySelector(`input[name="theme"][value="${currentTheme}"]`).checked = true;
+    themeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Theme button clicked');
       openModal('themeModal');
+      // Wait for modal to open before setting radio button
+      setTimeout(() => {
+        const currentTheme = window.themeManager ? window.themeManager.getCurrentTheme() : 'light';
+        const radioButton = document.querySelector(`input[name="theme"][value="${currentTheme}"]`);
+        if (radioButton) {
+          radioButton.checked = true;
+          // Also update the visual selection
+          const themeOption = document.querySelector(`.theme-option[data-theme="${currentTheme}"]`);
+          if (themeOption) {
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
+            themeOption.classList.add('selected');
+          }
+        }
+      }, 100);
     });
+  } else {
+    console.error('Theme button not found');
   }
 
   // Theme option selection
@@ -578,8 +602,30 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.themeManager) {
           window.themeManager.applyTheme(theme);
         }
-        closeModal('themeModal');
-        showNotification(`Theme changed to ${theme === 'dark' ? 'Dark' : 'Light'} Mode`, 'success');
+        
+        // Save theme preference to database
+        fetch('account_actions.php?action=save_theme', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ theme: theme })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              closeModal('themeModal');
+              showNotification(`Theme changed to ${theme === 'dark' ? 'Dark' : 'Light'} Mode`, 'success');
+            } else {
+              showNotification(data.message || 'Failed to save theme preference', 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error saving theme:', error);
+            showNotification('An error occurred while saving theme preference.', 'error');
+          });
+      } else {
+        showNotification('Please select a theme', 'error');
       }
     });
   }
@@ -587,9 +633,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // ===== DELETE ACCOUNT BUTTON =====
   const deleteAccountBtn = document.getElementById('deleteAccountBtn');
   if (deleteAccountBtn) {
-    deleteAccountBtn.addEventListener('click', function() {
+    deleteAccountBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Delete Account button clicked');
       openModal('deleteAccountModal');
     });
+  } else {
+    console.error('Delete Account button not found');
   }
 
   // Delete account confirmation

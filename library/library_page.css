@@ -768,6 +768,15 @@ body.dark-theme .no-authors p {
 
 /* Preview thumbnail styles are now in layout.css */
 
+.preview-details-container {
+    flex: 1; /* Allows metadata to take remaining space */
+    background: #f8f9fa; /* The light gray box from your screenshot */
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    
+}
+
 /* Preview actions layout centralized in layout/layout.css to ensure consistent preview modal styling across the site. */
 
 .preview-actions .btn {

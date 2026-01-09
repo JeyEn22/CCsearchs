@@ -152,6 +152,7 @@
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -369,129 +370,11 @@ body.dark-theme .posted-by a {
     cursor: not-allowed;
 }
 
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
+/* Modal styles are now centralized in layout.css */
 
-.modal-content {
-    background-color: #fff;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: modalFadeIn 0.3s ease-out;
-}
+/* Modal styles are now centralized in layout.css */
 
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Preview modal specific content styling */
-.modal .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 1000px;
-    position: relative;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.modal-header h3 {
-    margin: 0;
-    color: #333;
-    font-size: 18px;
-}
-
-.close-modal {
-    font-size: 24px;
-    cursor: pointer;
-    color: #666;
-    transition: color 0.2s ease;
-}
-
-.close-modal:hover {
-    color: #333;
-}
-
-.modal-body {
-    padding: 20px;
-    text-align: center;
-}
-
-.modal-body p {
-    margin: 0 0 10px 0;
-    color: #666;
-}
-
-.warning-text {
-    color: #dc3545 !important;
-    font-weight: 500;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 20px;
-    border-top: 1px solid #e0e0e0;
-}
-
-/* Dark mode for modal */
-body.dark-theme .modal-content {
-    background-color: #1E1E1E;
-    color: #E0E0E0;
-}
-
-body.dark-theme .modal-header {
-    border-color: #2A2A2A;
-}
-
-body.dark-theme .modal-footer {
-    border-color: #2A2A2A;
-}
-
-body.dark-theme .modal-header h3 {
-    color: #FFFFFF;
-}
-
-body.dark-theme .close-modal {
-    color: #B0B0B0;
-}
-
-body.dark-theme .close-modal:hover {
-    color: #FFFFFF;
-}
-
-body.dark-theme .modal-body p {
-    color: #B0B0B0;
-}
+/* Dark theme modal styles are now centralized in layout.css */
 
 /* Preview modal styles are now centralized in layout.css */
 
@@ -539,22 +422,135 @@ body.dark-theme .detail-row span {
     justify-content: center;
 }
 
-body.dark-theme .abstract-text {
-    background: transparent;
-    border: none;
-    color: #e2e8f0;
+/* --- Preview Modal: Match Library.php "My Books" Layout --- */
+/* This matches the exact structure used in library.php which uses preview.js */
+
+/* 1. Modal body should be column (contains preview-content-wrapper and preview-actions) */
+.preview-modal-content .modal-body {
+    padding: 20px 30px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    overflow: hidden !important;
+    flex: 1 !important;
 }
 
+/* --- 1. Main Modal Content Wrapper (Horizontal Layout) --- */
+.preview-content-wrapper {
+    display: flex !important;
+    gap: 25px !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+/* --- 2. Left Side Thumbnail --- */
+.preview-thumbnail-container {
+    width: 250px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+.preview-thumbnail {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 6px !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12) !important;
+}
+
+/* --- 3. Right Side Details (Vertical Stack) --- */
+.preview-details-container {
+    flex: 1 !important; /* Allows metadata to take remaining space */
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important; /* Uniform spacing between top info and abstract */
+    background: #f8f9fa !important; /* The light gray box from your screenshot */
+    padding: 20px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+}
+
+/* --- 4. Top Information Box (Left Aligned) --- */
+.publication-details {
+    background: #f8f9fa !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+    text-align: left !important; /* Keeps Author/Date/etc. on the left */
+}
+
+.detail-row {
+    display: flex !important;
+    margin-bottom: 8px !important;
+}
+
+.detail-row strong {
+    min-width: 100px !important; /* Ensures labels align perfectly */
+    color: #333 !important;
+    font-weight: 600 !important;
+}
+
+/* --- 5. Abstract Section (Forced Center Layout) --- */
 .abstract-section {
-    text-align: center;
-    margin: 20px 0;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Centers the "Abstract:" text label */
+    text-align: center !important;
+    width: 100% !important;
+    gap: 10px !important;
 }
 
 .abstract-label {
-    margin-bottom: 8px;
-    text-align: center;
+    font-weight: 700 !important;
+    color: #333 !important;
+    font-size: 16px !important;
 }
 
+.abstract-text {
+    width: 100% !important;
+    min-height: 50px !important;
+    padding: 12px !important;
+    background: #ffffff !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    justify-content: center !important; /* Centers text horizontally inside box */
+    align-items: center !important;     /* Centers text vertically inside box */
+    color: #333 !important;
+    max-height: 38vh !important;
+    overflow: auto !important;
+}
+
+/* 8. Preview Actions - Buttons (matches library) */
+.preview-actions {
+    display: flex !important;
+    gap: 10px !important;
+    margin-top: 12px !important;
+    justify-content: flex-end !important;
+}
+
+/* 9. Dark Theme (matches library) */
+body.dark-theme .publication-details {
+    background: #2d3748 !important;
+    border-color: #4a5568 !important;
+}
+
+body.dark-theme .detail-row strong {
+    color: #e2e8f0 !important;
+}
+
+body.dark-theme .abstract-text {
+    background: #1a202c !important;
+    border-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-theme .abstract-label {
+    color: #FFFFFF !important;
+}
+
+/* Abstract label strong styling */
 .abstract-label strong {
     color: #495057;
     font-weight: 600;
@@ -571,6 +567,70 @@ body.dark-theme .preview-iframe-container iframe {
 body.dark-theme .preview-actions {
     background: rgba(30, 30, 30, 0.95);
     border-color: #4a5568;
+}
+
+/* --- UPDATED: Modal Footer and Button Styling --- */
+
+/* 1. Container for the buttons (Right-aligned) */
+.modal-footer, 
+.preview-actions {
+    display: flex !important;
+    flex-direction: row !important; /* Force side-by-side */
+    justify-content: flex-end !important; /* Align to the right */
+    gap: 12px !important; /* Space between buttons */
+    padding: 15px 25px 25px !important;
+    border-top: none !important; /* Clean look without top border */
+    background: transparent !important;
+}
+
+/* 2. Common Button Base Styling */
+.modal-footer .btn, 
+.preview-actions .btn {
+    padding: 8px 18px !important;
+    border-radius: 5px !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+}
+
+/* 3. "View Full Document" Button (Blue) */
+.btn-primary, 
+.btn-view-document,
+[onclick*="viewFullDocument"] {
+    background-color: #27548a !important; /* Dark Blue match */
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    background-color: #1e3e68 !important;
+    box-shadow: 0 4px 8px rgba(39, 84, 138, 0.3) !important;
+}
+
+/* 4. "Download" Button (Grey) */
+.btn-secondary, 
+.btn-download,
+[onclick*="download"] {
+    background-color: #6c757d !important; /* Grey match */
+    color: #ffffff !important;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268 !important;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* 5. Icon styling inside buttons */
+.btn i, .btn img {
+    font-size: 14px !important;
+}
+
+/* Ensure Dark Mode buttons stay consistent */
+body.dark-theme .btn-secondary {
+    background-color: #4a5568 !important;
 }
 
 /* Responsive Design */
@@ -598,9 +658,6 @@ body.dark-theme .preview-actions {
         height: 180px;
     }
 
-    .modal-content {
-        max-width: 85%;
-    }
 
     /* Preview modal responsive styles are now in layout.css */
 }
@@ -671,30 +728,7 @@ body.dark-theme .preview-actions {
         font-size: 12px;
     }
 
-    .modal-content {
-        width: 95%;
-        max-width: 95%;
-        max-height: 85vh;
-        padding: 15px;
-    }
-
-    .modal-header {
-        padding: 12px;
-    }
-
-    .modal-header h3 {
-        font-size: 14px;
-    }
-
-    .modal-body {
-        padding: 12px;
-        font-size: 12px;
-    }
-
-    .modal-footer {
-        padding: 12px;
-        gap: 8px;
-    }
+    /* Modal responsive styles are now centralized in layout.css */
 
     /* Preview modal responsive styles are now in layout.css */
 }
@@ -761,30 +795,22 @@ body.dark-theme .preview-actions {
         font-size: 9px;
     }
 
-    .modal-content {
-        width: 98%;
-        padding: 10px;
-    }
+    /* Modal responsive styles are now centralized in layout.css */
 
-    .modal-header {
-        padding: 10px;
+    /* Preview modal responsive styles - match library */
+    .preview-content-wrapper {
+        flex-direction: column !important;
     }
-
-    .modal-header h3 {
-        font-size: 12px;
+    
+    .preview-thumbnail-container {
+        width: 100% !important;
+        height: 200px !important;
     }
-
-    .modal-body {
-        padding: 10px;
-        font-size: 11px;
+    
+    .preview-modal-content {
+        width: 95vw !important;
+        height: 80vh !important;
     }
-
-    .modal-footer {
-        padding: 10px;
-        gap: 5px;
-    }
-
-    /* Preview modal responsive styles are now in layout.css */
 
     .preview-actions {
         bottom: 8px;

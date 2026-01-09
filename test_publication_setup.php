@@ -28,14 +28,24 @@ $size = $exists ? filesize($defaultCover) : 0;
 echo "<p><strong>Default cover:</strong> " . ($exists ? '✅ Exists' : '❌ Missing');
 echo " | Size: " . number_format($size) . " bytes</p>\n";
 
-echo "<h2>PHP Extensions Check</h2>\n";
+echo "<h2>PHP Extensions Check (Informational)</h2>\n";
 $extensions = ['imagick', 'gd'];
 foreach ($extensions as $ext) {
     $loaded = extension_loaded($ext);
     echo "<p><strong>$ext:</strong> " . ($loaded ? '✅ Loaded' : '❌ Not loaded') . "</p>\n";
 }
 
-echo "<h2>Command Line Tools Check</h2>\n";
+// Check preview API configuration
+echo "<h2>Preview Service Check</h2>\n";
+$apiKey = getenv('PDF_API_KEY');
+$apiBase = getenv('PDF_API_BASE') ?: 'https://api.pdf.co/v1';
+if ($apiKey) {
+    echo "<p>Preview API key is <strong>set</strong>. API base: " . htmlspecialchars($apiBase) . "</p>\n";
+} else {
+    echo "<p>Preview API key is <strong>NOT set</strong>. Set environment variable <code>PDF_API_KEY</code> to enable remote PDF→image conversion.</p>\n";
+}
+
+echo "<h2>Command Line Tools Check (Informational)</h2>\n";
 $tools = ['gswin64c', 'convert', 'pdftoppm'];
 foreach ($tools as $tool) {
     $available = false;

@@ -36,6 +36,8 @@
     <script src="../js/theme.js"></script>
     <!-- Real-time Session Checker -->
     <script src="../js/session_checker.js"></script>
+    <!-- Centralized Preview functionality (Publication preview) -->
+    <script src="../assets/js/preview.js"></script>
 </head>
 <body>
     <div class="layout-wrapper">

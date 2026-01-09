@@ -131,16 +131,14 @@ include "../layout/layout.php";
                             <div class="posted-by">
                                 Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
                                 <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <?php if (isset($_SESSION['studentID'])): ?>
-                                    <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
-                                        <i class="fas fa-bookmark"></i> Save
-                                    </button>
-                                <?php endif; ?>
+                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                    <i class="fas fa-bookmark"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -161,7 +159,7 @@ include "../layout/layout.php";
         <div class="card-grid" id="mostViewedGrid">
             <?php if (!empty($mostViewed)): ?>
                 <?php foreach ($mostViewed as $pub): ?>
-                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>">
+                    <div class="card">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -170,18 +168,16 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
+                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <?php if (isset($_SESSION['studentID'])): ?>
-                                    <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
-                                        <i class="fas fa-bookmark"></i> Save
-                                    </button>
-                                <?php endif; ?>
+                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                    <i class="fas fa-bookmark"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -201,7 +197,7 @@ include "../layout/layout.php";
         <div class="card-grid" id="newlyAddedGrid">
             <?php if (!empty($newlyAdded)): ?>
                 <?php foreach ($newlyAdded as $pub): ?>
-                    <div class="card" data-filepath="<?php echo htmlspecialchars($pub['file_path']); ?>" data-title="<?php echo htmlspecialchars($pub['title']); ?>" data-author="<?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?>" data-studentid="<?php echo htmlspecialchars($pub['studentID']); ?>" data-date="<?php echo htmlspecialchars($pub['published_datetime']); ?>" data-abstract="<?php echo htmlspecialchars($pub['abstract'] ?? ''); ?>" data-department="<?php echo htmlspecialchars($pub['department'] ?? ''); ?>" data-type="<?php echo htmlspecialchars($pub['type'] ?? ''); ?>" data-thumbnail="<?php echo htmlspecialchars($pub['thumbnail'] ?? ''); ?>">
+                    <div class="card">
                         <?php
                         $imageSrc = isset($pub['thumbnail']) && !empty($pub['thumbnail']) ? '../' . $pub['thumbnail'] : '../uploads/publications/covers/default_cover.jpg';
                         $imageSrc .= '?t=' . time(); // Cache busting
@@ -210,18 +206,16 @@ include "../layout/layout.php";
                         <div class="card-info">
                             <h4 class="card-title"><?php echo htmlspecialchars($pub['title']); ?></h4>
                             <div class="posted-by">
-                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>" onclick="event.stopPropagation()"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
+                                Posted by: <a href="../profile/profile_view.php?studentID=<?php echo htmlspecialchars($pub['studentID']); ?>"><?php echo htmlspecialchars($pub['firstName'] . ' ' . $pub['lastName']); ?></a>
                             </div>
-                            <div class="posted-by">Published: <?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
+                            <div class="posted-by"><?php echo date("M d, Y", strtotime($pub['published_datetime'])); ?></div>
                             <div class="card-actions">
-                                <button onclick="event.stopPropagation(); previewPublication(this.closest('.card'))" class="btn btn-primary btn-sm">
+                                <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])) ; ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
                                     <i class="fas fa-eye"></i> Preview
                                 </button>
-                                <?php if (isset($_SESSION['studentID'])): ?>
-                                    <button onclick="event.stopPropagation(); savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
-                                        <i class="fas fa-bookmark"></i> Save
-                                    </button>
-                                <?php endif; ?>
+                                <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                                    <i class="fas fa-bookmark"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -234,43 +228,40 @@ include "../layout/layout.php";
 
 </div>
 
-<!-- Save Publication Modal -->
-<div id="saveModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Save Publication</h3>
-            <span class="close-modal" onclick="closeSaveModal()">&times;</span>
-        </div>
-        <div class="modal-body">
-            <p>Do you want to save "<span id="saveTitle"></span>" to your saved publications?</p>
-            <p>You can view saved publications in your library.</p>
-        </div>
-        <div class="modal-footer">
-            <button onclick="closeSaveModal()" class="btn btn-secondary">Cancel</button>
-            <button id="confirmSaveBtn" onclick="confirmSave()" class="btn btn-success">Save Publication</button>
-        </div>
-    </div>
-</div>
 
 <script>
 // Save publication functionality
-let publicationToSave = null;
-
 function savePublication(publicationID, title) {
-    publicationToSave = publicationID;
+    // Check if modal exists, create if not
+    var modal = document.getElementById('saveModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'saveModal';
+        modal.className = 'modal';
+        modal.innerHTML = '<div class="modal-content"><div class="modal-header"><h3>Save Publication</h3><span class="close-modal" onclick="closeSaveModal()">&times;</span></div><div class="modal-body"><p>Do you want to save "<span id="saveTitle"></span>" to your saved publications?</p><p>You can view saved publications in your library.</p></div><div class="modal-footer"><button onclick="closeSaveModal()" class="btn btn-secondary">Cancel</button><button id="confirmSaveBtn" onclick="confirmSave()" class="btn btn-success">Save Publication</button></div></div>';
+        document.body.appendChild(modal);
+    }
+
+    window.publicationToSave = publicationID;
     document.getElementById('saveTitle').textContent = title;
-    document.getElementById('saveModal').style.display = 'flex';
+    modal.style.display = 'flex';
+    modal.style.opacity = '1';
 }
 
 function closeSaveModal() {
-    document.getElementById('saveModal').style.display = 'none';
-    publicationToSave = null;
+    const modal = document.getElementById('saveModal');
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            window.publicationToSave = null;
+        }, 300); // Match CSS transition
+    }
 }
 
 function confirmSave() {
-    if (!publicationToSave) return;
+    if (!window.publicationToSave) return;
 
-    // Disable button to prevent double-clicks
     const btn = document.getElementById('confirmSaveBtn');
     btn.disabled = true;
     btn.textContent = 'Saving...';
@@ -280,7 +271,7 @@ function confirmSave() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: 'publicationID=' + encodeURIComponent(publicationToSave)
+        body: 'publicationID=' + encodeURIComponent(window.publicationToSave)
     })
     .then(response => response.json())
     .then(data => {
@@ -303,152 +294,34 @@ function confirmSave() {
     });
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const saveModal = document.getElementById('saveModal');
-    const previewModal = document.getElementById('previewModal');
 
+
+// Close modal when clicking outside
+// Preview handled by centralized script: ../assets/js/preview.js
+
+// Close modals when clicking outside (save modal only)
+window.addEventListener('click', function(event) {
+    const saveModal = document.getElementById('saveModal');
     if (saveModal && event.target === saveModal) {
         closeSaveModal();
     }
-    if (previewModal && event.target === previewModal) {
-        closePreviewModal();
-    }
-}
+});
 
-// Publication preview functionality
-function previewPublication(elementOrFilePath, title, author, publishDate, abstract, department, type, thumbnail) {
-    // Support both element-based (from data attributes) and parameter-based calls
-    let filePath, formattedDate;
-    
-    if (elementOrFilePath && typeof elementOrFilePath === 'object' && elementOrFilePath.getAttribute) {
-        // Element-based call (from data attributes)
-        const element = elementOrFilePath;
-        filePath = element.getAttribute('data-filepath');
-        title = element.getAttribute('data-title');
-        author = element.getAttribute('data-author');
-        publishDate = element.getAttribute('data-date');
-        abstract = element.getAttribute('data-abstract');
-        department = element.getAttribute('data-department');
-        type = element.getAttribute('data-type');
-        thumbnail = element.getAttribute('data-thumbnail');
-    } else {
-        // Parameter-based call (legacy)
-        filePath = elementOrFilePath;
-    }
-    
-    // Format the publication date
-    formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    // Create preview modal
-    const modal = document.createElement('div');
-    modal.id = 'previewModal';
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content preview-modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close-modal" onclick="closePreviewModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="preview-content-wrapper">
-                    ${thumbnail ? `<div class="preview-thumbnail-container">
-                        <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
-                    </div>` : ''}
-                    <div class="preview-details-container">
-                <div class="publication-details">
-                    <div class="detail-row">
-                        <strong>Author:</strong> <span>${author}</span>
-                    </div>
-                    <div class="detail-row">
-                        <strong>Published:</strong> <span>${formattedDate}</span>
-                    </div>
-                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                        </div>
-                <div class="abstract-section">
-                            <div class="abstract-label"><strong>Abstract:</strong></div>
-                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
-                </div>
-                    </div>
-                </div>
-                <div class="preview-actions">
-                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> View Full Document
-                    </a>
-                    <a href="../${filePath}" download class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-}
-
-function closePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-// Home search and filter (titles, authors, student IDs across Newly Added and Most Viewed)
-function filterHomeSearch() {
-    const query = (document.getElementById('homeSearchInput')?.value || '').toLowerCase().trim();
-
-    const sections = [
-        { gridId: 'newlyAddedGrid', emptyClass: 'empty-state', emptyText: '<h3>No publications found</h3><p>Try adjusting your search.</p>' },
-        { gridId: 'mostViewedGrid', emptyClass: 'empty-state', emptyText: '<h3>No publications found</h3><p>Try adjusting your search.</p>' },
-    ];
-
-    sections.forEach(section => {
-        const grid = document.getElementById(section.gridId);
-        if (!grid) return;
-
-        const cards = grid.querySelectorAll('.card, .author-card');
-        let visible = 0;
-
-        cards.forEach(card => {
-            const title = (card.getAttribute('data-title') || '').toLowerCase();
-            const author = (card.getAttribute('data-author') || card.getAttribute('data-name') || '').toLowerCase();
-            const studentId = (card.getAttribute('data-studentid') || '').toLowerCase();
-
-            const match = !query || title.includes(query) || author.includes(query) || studentId.includes(query);
-            card.style.display = match ? 'block' : 'none';
-            if (match) visible++;
-        });
-
-        let emptyState = grid.querySelector(`.${section.emptyClass}`);
-        if (visible === 0) {
-            if (!emptyState) {
-                emptyState = document.createElement('div');
-                emptyState.className = section.emptyClass;
-                emptyState.innerHTML = section.emptyText;
-                grid.appendChild(emptyState);
-            }
-        } else if (emptyState) {
-            emptyState.remove();
-        }
-    });
-}
-
+// Home search functionality (server-side like publication page)
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('homeSearchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', filterHomeSearch);
         searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') e.preventDefault();
+            if (e.key === 'Enter') {
+                const q = searchInput.value.trim();
+                if (q) {
+                    window.location.href = 'home.php?search=' + encodeURIComponent(q);
+                } else {
+                    window.location.href = 'home.php';
+                }
+            }
         });
     }
-    // Initialize search/filter on page load
-    filterHomeSearch();
 });
 </script>
 
@@ -580,6 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 
 <script src="../js/session_checker.js"></script>
+<script src="../assets/js/preview.js"></script>
 
 <?php
 // Include layout footer

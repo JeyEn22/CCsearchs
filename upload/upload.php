@@ -14,147 +14,11 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-// Function to generate document preview
-function generateDocumentPreview($filePath, $previewPath) {
-    $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+// Centralized PDF→image preview helper (uses external API). See includes/pdf_preview.php
+include_once __DIR__ . '/../includes/pdf_preview.php';
 
-    // Ensure previews directory exists
-    $previewDir = dirname($previewPath);
-    if (!is_dir($previewDir)) {
-        mkdir($previewDir, 0755, true);
-    }
-
-    if ($fileExtension === 'pdf') {
-        // Method 1: Try ImageMagick if available
-        if (extension_loaded('imagick') && class_exists('Imagick')) {
-            try {
-                $imagick = new Imagick();
-                $imagick->setResolution(150, 150); // Higher resolution for better quality
-                $imagick->readImage($filePath . '[0]'); // First page
-                $imagick->setImageFormat('jpg');
-                $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
-                $imagick->setImageCompressionQuality(85);
-                $imagick->thumbnailImage(200, 280, true); // Resize maintaining aspect ratio
-                $imagick->writeImage($previewPath);
-                $imagick->clear();
-                $imagick->destroy();
-                error_log("PDF preview generated using ImageMagick: " . $previewPath);
-                return true;
-            } catch (Exception $e) {
-                error_log("ImageMagick preview generation failed: " . $e->getMessage());
-            }
-        }
-
-        // Method 2: Try using pdftoppm (poppler-utils) if available
-        if (function_exists('exec')) {
-            try {
-                $tempPpm = tempnam(sys_get_temp_dir(), 'pdf_preview');
-                $command = "pdftoppm -f 1 -l 1 -scale-to 200 -jpeg \"$filePath\" \"$tempPpm\" 2>/dev/null";
-                exec($command, $output, $returnCode);
-
-                if ($returnCode === 0) {
-                    $ppmFile = $tempPpm . '-1.jpg';
-                    if (file_exists($ppmFile)) {
-                        rename($ppmFile, $previewPath);
-                        // Clean up temp files
-                        $tempFiles = glob($tempPpm . '*');
-                        foreach ($tempFiles as $tempFile) {
-                            @unlink($tempFile);
-                        }
-                        error_log("PDF preview generated using pdftoppm: " . $previewPath);
-                        return true;
-                    }
-                }
-                // Clean up temp file
-                @unlink($tempPpm);
-            } catch (Exception $e) {
-                error_log("pdftoppm preview generation failed: " . $e->getMessage());
-            }
-        }
-
-        // Method 3: Try using convert (ImageMagick command line)
-        if (function_exists('exec')) {
-            try {
-                $command = "convert \"$filePath\"[0] -quality 85 -resize 200x280 \"$previewPath\" 2>/dev/null";
-                exec($command, $output, $returnCode);
-
-                if ($returnCode === 0 && file_exists($previewPath) && filesize($previewPath) > 0) {
-                    error_log("PDF preview generated using convert command: " . $previewPath);
-                    return true;
-                }
-            } catch (Exception $e) {
-                error_log("Convert command preview generation failed: " . $e->getMessage());
-            }
-        }
-
-        // Method 4: Try using Ghostscript
-        if (function_exists('exec')) {
-            try {
-                $command = "gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -dJPEGQ=85 -dFirstPage=1 -dLastPage=1 -sOutputFile=\"$previewPath\" -r150 \"$filePath\" 2>/dev/null";
-                exec($command, $output, $returnCode);
-
-                if ($returnCode === 0 && file_exists($previewPath) && filesize($previewPath) > 0) {
-                    // Resize if needed
-                    if (filesize($previewPath) > 0) {
-                        $command2 = "convert \"$previewPath\" -resize 200x280 \"$previewPath\" 2>/dev/null";
-                        exec($command2);
-                    }
-                    error_log("PDF preview generated using Ghostscript: " . $previewPath);
-                    return true;
-                }
-            } catch (Exception $e) {
-                error_log("Ghostscript preview generation failed: " . $e->getMessage());
-            }
-        }
-
-        // Method 5: PHP-only solution using PDF parsing (basic)
-        try {
-            if (function_exists('file_get_contents') && class_exists('Imagick')) {
-                // Try a simpler ImageMagick approach
-                $imagick = new Imagick();
-                $imagick->readImage($filePath . '[0]');
-                $imagick->setImageFormat('jpg');
-                $imagick->setImageCompressionQuality(75);
-                $imagick->scaleImage(200, 0); // Scale to width 200, maintain aspect ratio
-                $imagick->writeImage($previewPath);
-                $imagick->clear();
-                $imagick->destroy();
-                error_log("PDF preview generated using fallback ImageMagick: " . $previewPath);
-                return true;
-            }
-        } catch (Exception $e) {
-            error_log("Fallback ImageMagick failed: " . $e->getMessage());
-        }
-
-        // Final fallback: Create a PDF placeholder
-        createPlaceholderPreview($previewPath, 'PDF Document', 'This preview could not be generated. The document was uploaded successfully.');
-        return true;
-
-    } elseif (in_array($fileExtension, ['doc', 'docx'])) {
-        // For Word documents, try to extract preview if possible
-        try {
-            // Try using unoconv or libreoffice to convert first page to image
-            if (function_exists('exec')) {
-                $tempPdf = tempnam(sys_get_temp_dir(), 'doc_preview') . '.pdf';
-                $command = "libreoffice --headless --convert-to pdf \"$filePath\" --outdir " . dirname($tempPdf) . " 2>/dev/null";
-                exec($command, $output, $returnCode);
-
-                if ($returnCode === 0 && file_exists($tempPdf)) {
-                    // Now convert the PDF to image using the same methods as above
-                    return generateDocumentPreview($tempPdf, $previewPath);
-                }
-            }
-        } catch (Exception $e) {
-            error_log("Word document preview generation failed: " . $e->getMessage());
-        }
-
-        // Fallback: Create a Word document placeholder
-        createPlaceholderPreview($previewPath, 'Word Document');
-        return true;
-    }
-
-    return false;
-}
+// The centralized implementation provides generateDocumentPreview($filePath, $previewPath)
+// which returns 'success' on success and 'placeholder' on fallback (or 'error' for config issues).
 
 function createPlaceholderPreview($previewPath, $documentType, $additionalText = '') {
     // Create a placeholder image with better styling
@@ -262,10 +126,10 @@ if (isset($_POST['upload'])) {
 
                 $previewGenerated = generateDocumentPreview($filePath, $previewPath);
 
-                // Use fallback if preview generation failed
-                if (!$previewGenerated) {
+                // Use strict success check: the helper returns 'success' on a good thumbnail
+                if ($previewGenerated !== 'success') {
                     $bgImagePath = 'assets/preview-fallback.jpg';
-                    error_log("Preview generation failed for: " . $filePath);
+                    error_log("Preview generation failed for: " . $filePath . " (status: " . var_export($previewGenerated, true) . ")");
                 } else {
                     $bgImagePath = 'uploads/previews/' . $previewFileName;
                 }
@@ -276,7 +140,7 @@ if (isset($_POST['upload'])) {
                     VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, 0)");
 
                 $documentPath = 'uploads/documents/' . $uniqueFileName;
-                $thumbnailPath = $previewGenerated ? 'uploads/previews/' . $previewFileName : 'uploads/publications/covers/default_cover.jpg';
+                $thumbnailPath = ($previewGenerated === 'success') ? 'uploads/previews/' . $previewFileName : 'uploads/publications/covers/default_cover.jpg';
 
                 $stmt->bind_param("sssssss", $studentID, $title, $authors, $department, $type, $abstract, $documentPath, $thumbnailPath);
 

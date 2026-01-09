@@ -127,11 +127,14 @@
 .card-thumbnail {
     background-color: #e6edf1;
     border-radius: 5px;
-    height: 120px;
+    height: 150px;
     width: 100%;
     background-size: cover;
     background-position: center;
 }
+
+/* Ensure img-based covers use same sizing as publication cards */
+.cover-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
 
 .card-info {
     display: flex;
@@ -401,6 +404,17 @@ body.dark-theme .posted-by a {
     }
 }
 
+/* Preview modal specific content styling */
+.modal .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 1000px;
+    position: relative;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -479,74 +493,7 @@ body.dark-theme .modal-body p {
     color: #B0B0B0;
 }
 
-/* Preview Modal Styles */
-.preview-modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    width: 90vw;
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-modal-content .modal-body {
-    overflow: hidden;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-modal-content .modal-header {
-    text-align: center;
-}
-
-.preview-modal-content .modal-header h3 {
-    text-align: center;
-    margin: 0;
-    width: 100%;
-}
-
-.publication-details {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    border: 1px solid #e9ecef;
-    flex-shrink: 0;
-}
-
-.detail-row {
-    display: flex;
-    margin-bottom: 8px;
-    align-items: flex-start;
-}
-
-.detail-row:last-child {
-    margin-bottom: 0;
-}
-
-.detail-row strong {
-    min-width: 100px;
-    color: #495057;
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.detail-row span {
-    color: #212529;
-}
-
-.abstract-text {
-    background: transparent;
-    padding: 8px 0;
-    border-radius: 0;
-    text-align: center;
-    border: none;
-    margin-top: 4px;
-    line-height: 1.4;
-    width: 100%;
-    max-width: 800px;
-}
+/* Preview modal styles are now centralized in layout.css */
 
 .detail-row:has(.abstract-text) {
     justify-content: center;
@@ -572,64 +519,7 @@ body.dark-theme .modal-body p {
     border-radius: 4px;
 }
 
-.preview-content-wrapper {
-    display: flex;
-    gap: 20px;
-    flex: 1;
-    overflow: hidden;
-    align-items: flex-start;
-}
-
-.preview-thumbnail-container {
-    flex: 0 0 300px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 10px;
-    background: transparent;
-    border-radius: 0;
-    border: none;
-}
-
-.preview-thumbnail {
-    max-width: 100%;
-    max-height: 400px;
-    width: 100%;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    object-fit: contain;
-}
-
-.preview-details-container {
-    flex: 1;
-    overflow-y: auto;
-    min-width: 0;
-}
-
-.preview-actions {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e9ecef;
-    z-index: 1000;
-}
-
-.preview-actions .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    text-decoration: none;
-}
+/* Preview modal styles are now centralized in layout.css */
 
 /* Dark mode for preview modal */
 body.dark-theme .publication-details {
@@ -712,10 +602,7 @@ body.dark-theme .preview-actions {
         max-width: 85%;
     }
 
-    .preview-modal-content {
-        width: 85vw;
-        height: 85vh;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 }
 
 @media (max-width: 767px) {
@@ -809,54 +696,7 @@ body.dark-theme .preview-actions {
         gap: 8px;
     }
 
-    .preview-modal-content {
-        width: 95%;
-        max-height: 85vh;
-    }
-
-    .preview-content-wrapper {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .preview-thumbnail-container {
-        flex: 0 0 auto;
-        width: 100%;
-    }
-
-    .preview-thumbnail {
-        max-height: 300px;
-    }
-
-    .publication-details {
-        font-size: 11px;
-        padding: 10px;
-    }
-
-    .detail-row {
-        flex-direction: column;
-        margin-bottom: 6px;
-    }
-
-    .detail-row strong {
-        min-width: auto;
-        margin-bottom: 3px;
-    }
-
-    .preview-actions {
-        flex-wrap: wrap;
-        gap: 8px;
-        bottom: 10px;
-        width: 95%;
-        padding: 10px;
-    }
-
-    .preview-actions .btn {
-        flex: 1;
-        min-width: 70px;
-        font-size: 10px;
-        padding: 8px;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 }
 
 @media (max-width: 479px) {
@@ -944,19 +784,7 @@ body.dark-theme .preview-actions {
         gap: 5px;
     }
 
-    .preview-modal-content {
-        width: 98%;
-        max-height: 80vh;
-    }
-
-    .preview-thumbnail {
-        max-height: 200px;
-    }
-
-    .publication-details {
-        font-size: 10px;
-        padding: 8px;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 
     .preview-actions {
         bottom: 8px;

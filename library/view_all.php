@@ -215,6 +215,9 @@ include "../layout/layout.php";
                   <button onclick="unsavePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
                     <i class="fas fa-times"></i> Unsave
                   </button>
+                  <button onclick="event.stopPropagation(); unsaveAndPreview(<?php echo $pub['publicationID']; ?>, this.closest('.card'))" class="btn btn-danger btn-sm" style="margin-left:6px;">
+                    <i class="fas fa-bookmark"></i> Unsave &amp; Preview
+                  </button>
                 <?php elseif (isset($_SESSION['studentID']) && $_SESSION['studentID'] === $pub['studentID']): ?>
                   <button onclick="deletePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-danger btn-sm">
                     <i class="fas fa-trash"></i> Delete
@@ -474,85 +477,41 @@ function confirmUnsave() {
     });
 }
 
-// Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
-    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+// Unsave and Preview — removes saved publication then opens preview
+function unsaveAndPreview(publicationID, elementOrFilePath) {
+    fetch('unsave_publication.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'publicationID=' + encodeURIComponent(publicationID)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success && data.message) console.warn('Unsave response:', data.message);
+        // Show preview regardless so user can view the document
+        previewPublication(elementOrFilePath);
+    })
+    .catch(err => {
+        console.error('Unsave error:', err);
+        previewPublication(elementOrFilePath);
     });
-
-    const modal = document.createElement('div');
-    modal.id = 'previewModal';
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content preview-modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close-modal" onclick="closePreviewModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="preview-content-wrapper">
-                    ${thumbnail ? `<div class="preview-thumbnail-container">
-                        <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
-                    </div>` : ''}
-                    <div class="preview-details-container">
-                <div class="publication-details">
-                    <div class="detail-row">
-                        <strong>Author:</strong> <span>${author}</span>
-                    </div>
-                    <div class="detail-row">
-                        <strong>Published:</strong> <span>${formattedDate}</span>
-                    </div>
-                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                </div>
-                <div class="abstract-section">
-                    <div class="abstract-label"><strong>Abstract:</strong></div>
-                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
-                </div>
-                    </div>
-                </div>
-                <div class="preview-actions">
-                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> View Full Document
-                    </a>
-                    <a href="../${filePath}" download class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
 }
 
-function closePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    if (modal) {
-        modal.remove();
-    }
-}
+// Preview handled by centralized script: ../assets/js/preview.js
 
-// Close modals when clicking outside
-window.onclick = function(event) {
+// Close modals when clicking outside (keep other modal handlers)
+window.addEventListener('click', function(event) {
     const deleteModal = document.getElementById('deleteModal');
     const unsaveModal = document.getElementById('unsaveModal');
-    const previewModal = document.getElementById('previewModal');
-
     if (deleteModal && event.target === deleteModal) {
         closeDeleteModal();
     }
     if (unsaveModal && event.target === unsaveModal) {
         closeUnsaveModal();
     }
-    if (previewModal && event.target === previewModal) {
-        closePreviewModal();
-    }
-}
+});
 </script>
+
+<script src="../assets/js/preview.js"></script>
 
 <?php
 // Include layout footer

@@ -441,99 +441,10 @@ $additionalScripts = ['profile.js'];
 include "../layout/layout_footer.php";
 ?>
 
-<!-- Preview publication modal functionality -->
-<script>
-function previewPublication(element) {
-    const filePath = element.getAttribute('data-filepath');
-    const title = element.getAttribute('data-title');
-    const author = element.getAttribute('data-author');
-    const publishDate = element.getAttribute('data-date');
-    const abstract = element.getAttribute('data-abstract');
-    const department = element.getAttribute('data-department');
-    const type = element.getAttribute('data-type');
-    const thumbnail = element.getAttribute('data-thumbnail');
+<!-- Preview handled by centralized script: ../assets/js/preview.js -->
+<!-- No inline JS required; global functions are provided by /assets/js/preview.js -->
 
-    console.log('previewPublication called with:', {filePath, title, author, publishDate, abstract, department, type, thumbnail});
-
-    // Create modal with proper CSS classes
-    const modal = document.createElement('div');
-    modal.id = 'previewModal';
-    modal.className = 'modal';
-
-    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    let html = '<div class="modal-content preview-modal-content">';
-    html += '<div class="modal-header">';
-    html += '<h3>' + title + '</h3>';
-    html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
-    html += '</div>';
-    html += '<div class="modal-body">';
-    html += '<div class="preview-content-wrapper">';
-
-    // Thumbnail on left side
-    if (thumbnail) {
-        html += '<div class="preview-thumbnail-container">';
-        html += '<img src="../' + thumbnail + '?t=' + Date.now() + '" alt="Document preview" class="preview-thumbnail">';
-        html += '</div>';
-    }
-
-    // Publication details on right side
-    html += '<div class="preview-details-container">';
-    html += '<div class="publication-details">';
-    html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
-    html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
-
-    if (department) {
-        html += '<div class="detail-row"><strong>Department:</strong> <span>' + department + '</span></div>';
-    }
-    if (type) {
-        html += '<div class="detail-row"><strong>Type:</strong> <span>' + type + '</span></div>';
-    }
-    html += '</div>';
-
-    // Abstract section (separated from publication details)
-    html += '<div class="abstract-section">';
-    html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
-    html += '<div class="abstract-text">' + (abstract || 'No abstract available.') + '</div>';
-    html += '</div>';
-    html += '</div>'; // Close preview-details-container
-    html += '</div>'; // Close preview-content-wrapper
-
-    // Action buttons
-    html += '<div class="preview-actions">';
-    html += '<a href="../' + filePath + '" target="_blank" class="btn btn-primary">';
-    html += '<i class="fas fa-external-link-alt"></i> View Full Document';
-    html += '</a>';
-    html += '<a href="../' + filePath + '" download class="btn btn-secondary">';
-    html += '<i class="fas fa-download"></i> Download';
-    html += '</a>';
-    html += '</div>';
-
-    html += '</div>';
-    html += '</div>';
-
-    modal.innerHTML = html;
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-
-    // Close modal when clicking outside the modal content
-    modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closePreviewModal();
-        }
-    });
-}
-
-function closePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    if (modal) {
-        modal.remove();
-    }
-}
+// Preview handled by centralized script: ../assets/js/preview.js
 </script>
 
 <!-- Publication deletion functionality -->
@@ -727,3 +638,4 @@ console.log('Body has public-view class:', document.body.classList.contains('pub
 </style>
 
 <script src="../js/session_checker.js"></script>
+<script src="../assets/js/preview.js"></script>

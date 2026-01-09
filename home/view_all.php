@@ -186,10 +186,10 @@ include "../layout/layout.php";
               <?php endif; ?>
               <div class="card-actions">
                 <button onclick="previewPublication('<?php echo htmlspecialchars($pub['file_path']); ?>', '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['firstName'] . ' ' . $pub['lastName'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['published_datetime'])); ?>', '<?php echo htmlspecialchars(addslashes($pub['abstract'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['department'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['type'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($pub['thumbnail'] ?? '')); ?>')" class="btn btn-primary btn-sm">
-                  <i class="fas fa-eye"></i> Preview
+                    <i class="fas fa-eye"></i> Preview
                 </button>
                 <?php if (isset($_SESSION['studentID'])): ?>
-                  <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm">
+                  <button onclick="savePublication(<?php echo $pub['publicationID']; ?>, '<?php echo htmlspecialchars(addslashes($pub['title'])); ?>')" class="btn btn-success btn-sm" style="margin-left:6px;">
                     <i class="fas fa-bookmark"></i> Save
                   </button>
                 <?php endif; ?>
@@ -349,6 +349,8 @@ function savePublication(publicationID, title) {
     document.getElementById('saveModal').style.display = 'flex';
 }
 
+
+
 function closeSaveModal() {
     document.getElementById('saveModal').style.display = 'none';
     publicationToSave = null;
@@ -389,81 +391,18 @@ function confirmSave() {
     });
 }
 
-// Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
-    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+// Preview handled by centralized script: ../assets/js/preview.js
 
-    const modal = document.createElement('div');
-    modal.id = 'previewModal';
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content preview-modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close-modal" onclick="closePreviewModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="preview-content-wrapper">
-                    ${thumbnail ? `<div class="preview-thumbnail-container">
-                        <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
-                    </div>` : ''}
-                    <div class="preview-details-container">
-                <div class="publication-details">
-                    <div class="detail-row">
-                        <strong>Author:</strong> <span>${author}</span>
-                    </div>
-                    <div class="detail-row">
-                        <strong>Published:</strong> <span>${formattedDate}</span>
-                    </div>
-                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                </div>
-                <div class="abstract-section">
-                    <div class="abstract-label"><strong>Abstract:</strong></div>
-                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
-                </div>
-                    </div>
-                </div>
-                <div class="preview-actions">
-                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> View Full Document
-                    </a>
-                    <a href="../${filePath}" download class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-}
-
-function closePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-// Close modals when clicking outside
-window.onclick = function(event) {
+// Close modals when clicking outside (save modal only)
+window.addEventListener('click', function(event) {
     const saveModal = document.getElementById('saveModal');
-    const previewModal = document.getElementById('previewModal');
-
     if (saveModal && event.target === saveModal) {
         closeSaveModal();
     }
-    if (previewModal && event.target === previewModal) {
-        closePreviewModal();
-    }
-}
+});
 </script>
+
+<script src="../assets/js/preview.js"></script>
 
 <?php
 // Include layout footer

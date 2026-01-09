@@ -364,7 +364,13 @@ body.dark-theme .fa {
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
 }
+
+/* Ensure card content fills available space and actions sit at the bottom */
+.card-info { display: flex; flex-direction: column; flex: 1; }
+.card .card-actions { margin-top: auto; display: flex; gap: 8px; align-items: center; }
 
 .card:hover {
     transform: translateY(-2px);
@@ -1026,4 +1032,93 @@ body.dark-theme .border-right {
         width: 100%;
         flex: 1;
     }
+}
+
+/* ==========================
+   Publication Preview Modal (centralized)
+   Copied from `publication_page.css` to ensure consistent modal layout, styling, and animations
+   across all pages that use the publication preview.
+   ========================== */
+
+/* Modal base styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.28s ease-out;
+    overflow: hidden;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h3 { margin: 0; color: #222; font-size: 18px; }
+
+.close-modal { font-size: 26px; cursor: pointer; color: #666; transition: color 0.2s ease; }
+.close-modal:hover { color: #222; }
+
+.modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+
+/* Preview-specific */
+.preview-modal-content { max-width: 90vw; max-height: 90vh; width: 90vw; height: 90vh; display: flex; flex-direction: column; }
+
+.preview-modal-content .modal-body { overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+
+.preview-modal-content .modal-header { text-align: center; }
+
+.preview-modal-content .modal-header h3 { text-align: center; margin: 0; width: 100%; }
+
+.publication-details { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e9ecef; flex-shrink: 0; }
+
+.detail-row { display: flex; margin-bottom: 8px; align-items: flex-start; }
+
+.preview-content-wrapper { display: flex; gap: 16px; align-items: flex-start; }
+
+.preview-thumbnail-container { width: 220px; flex-shrink: 0; display: flex; align-items: stretch; }
+.preview-thumbnail { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+
+.preview-details-container { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+.abstract-section { display: flex; flex-direction: column; gap: 6px; }
+.abstract-text { max-height: 38vh; overflow: auto; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #e9ecef; }
+
+.preview-actions { display: flex; gap: 10px; margin-top: 12px; justify-content: flex-end; }
+
+/* Dark theme compatibility */
+body.dark-theme .modal-content { background: #121212; color: #e0e0e0; }
+body.dark-theme .close-modal { color: #B0B0B0; }
+body.dark-theme .close-modal:hover { color: #FFFFFF; }
+body.dark-theme .modal-body p { color: #B0B0B0; }
+
+/* small screens */
+@media (max-width: 700px) {
+    .preview-content-wrapper { flex-direction: column; }
+    .preview-thumbnail-container { width: 100%; height: 200px; }
+    .preview-modal-content { width: 95vw; height: 80vh; }
 }

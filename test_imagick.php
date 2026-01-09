@@ -1,7 +1,8 @@
 <?php
-// Test Imagick PDF reading and thumbnail generation
+// NOTE: This project now uses an external PDF→image API for preview generation by default.
+// The script below is informational: it checks whether local Imagick-based conversion would work on this host.
 
-echo "Testing Imagick PDF thumbnail generation...\n\n";
+echo "Testing Imagick (informational) - local ImageMagick/Imagick availability...\n\n";
 
 // Check if Imagick extension is loaded
 if (!extension_loaded('imagick')) {

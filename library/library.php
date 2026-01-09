@@ -399,11 +399,12 @@ function confirmUnsave() {
     });
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
+// `unsaveAndPreview` removed — saved-books now use separate Unsave and Preview buttons
+
+// Close modal when clicking outside (delete/unsave/filter only)
+window.addEventListener('click', function(event) {
     const deleteModal = document.getElementById('deleteModal');
     const unsaveModal = document.getElementById('unsaveModal');
-    const previewModal = document.getElementById('previewModal');
     const filterModal = document.getElementById('filterModal');
 
     if (event.target === deleteModal) {
@@ -412,13 +413,10 @@ window.onclick = function(event) {
     if (event.target === unsaveModal) {
         closeUnsaveModal();
     }
-    if (previewModal && event.target === previewModal) {
-        closePreviewModal();
-    }
     if (filterModal && event.target === filterModal) {
         filterModal.style.display = 'none';
     }
-}
+});
 
     // Unfavorite author functionality
     function unfavoriteAuthor(authorID) {
@@ -461,93 +459,7 @@ window.onclick = function(event) {
         }
     }
 
-    // Publication preview functionality
-    function previewPublication(element) {
-        const filePath = element.getAttribute('data-filepath');
-        const title = element.getAttribute('data-title');
-        const author = element.getAttribute('data-author');
-        const publishDate = element.getAttribute('data-date');
-        const abstract = element.getAttribute('data-abstract');
-        const department = element.getAttribute('data-department');
-        const type = element.getAttribute('data-type');
-        const thumbnail = element.getAttribute('data-thumbnail');
-
-        console.log('previewPublication called with:', {filePath, title, author, publishDate, abstract, department, type, thumbnail});
-
-        // Create modal with proper CSS classes
-        const modal = document.createElement('div');
-        modal.id = 'previewModal';
-        modal.className = 'modal';
-
-        const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-
-        let html = '<div class="modal-content preview-modal-content">';
-        html += '<div class="modal-header">';
-        html += '<h3>' + title + '</h3>';
-        html += '<span class="close-modal" onclick="closePreviewModal()">&times;</span>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += '<div class="preview-content-wrapper">';
-
-        // Thumbnail on left side
-        if (thumbnail) {
-            html += '<div class="preview-thumbnail-container">';
-            html += '<img src="../' + thumbnail + '?t=' + Date.now() + '" alt="Document preview" class="preview-thumbnail">';
-            html += '</div>';
-        }
-
-        // Publication details on right side
-        html += '<div class="preview-details-container">';
-        html += '<div class="publication-details">';
-        html += '<div class="detail-row"><strong>Author:</strong> <span>' + author + '</span></div>';
-        html += '<div class="detail-row"><strong>Published:</strong> <span>' + formattedDate + '</span></div>';
-
-        if (department) {
-            html += '<div class="detail-row"><strong>Department:</strong> <span>' + department + '</span></div>';
-        }
-        if (type) {
-            html += '<div class="detail-row"><strong>Type:</strong> <span>' + type + '</span></div>';
-        }
-        html += '</div>';
-
-        // Abstract section (separated from publication details)
-            html += '<div class="abstract-section">';
-            html += '<div class="abstract-label"><strong>Abstract:</strong></div>';
-        html += '<div class="abstract-text">' + (abstract || 'No abstract available.') + '</div>';
-            html += '</div>';
-        html += '</div>'; // Close preview-details-container
-        html += '</div>'; // Close preview-content-wrapper
-
-        // Action buttons
-        html += '<div class="preview-actions">';
-        html += '<a href="../' + filePath + '" target="_blank" class="btn btn-primary">';
-        html += '<i class="fas fa-external-link-alt"></i> View Full Document';
-        html += '</a>';
-        html += '<a href="../' + filePath + '" download class="btn btn-secondary">';
-        html += '<i class="fas fa-download"></i> Download';
-        html += '</a>';
-        html += '</div>';
-
-        html += '</div>';
-        html += '</div>';
-
-        modal.innerHTML = html;
-
-        document.body.appendChild(modal);
-        modal.style.display = 'flex';
-        console.log('Modal created and displayed:', modal);
-    }
-
-    function closePreviewModal() {
-        const modal = document.getElementById('previewModal');
-        if (modal) {
-            modal.remove();
-        }
-    }
+    // Preview handled by centralized script: ../assets/js/preview.js
 
 // Library search and filter (titles, authors, student IDs across My Books, Saved Books, Favorite Authors)
 function filterLibrarySearch() {
@@ -622,90 +534,93 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- Add modal styles for session checker -->
+<!-- Add modal styles for session checker (scoped to #loginModal to avoid
+         overriding global modal/preview styles in layout/layout.css) -->
 <style>
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 10000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
-  }
+    #loginModal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+    }
 
-  .modal-content {
-    background-color: #fff;
-    padding: 0;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 350px;
-    height: auto;
-    min-height: 280px;
-    position: relative;
-    pointer-events: auto;
-    margin: auto;
-    transform: translateY(0);
-    display: flex;
-    flex-direction: column;
-  }
+    /* Scope inner elements to #loginModal so .modal-content and other
+         generic selectors don't clash with the centralized preview modal */
+    #loginModal .modal-content {
+        background-color: #fff;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 350px;
+        height: auto;
+        min-height: 280px;
+        position: relative;
+        pointer-events: auto;
+        margin: auto;
+        transform: translateY(0);
+        display: flex;
+        flex-direction: column;
+    }
 
-  .modal-header {
-    padding: 12px 20px 0;
-    text-align: right;
-  }
+    #loginModal .modal-header {
+        padding: 12px 20px 0;
+        text-align: right;
+    }
 
-  .close-modal {
-    font-size: 20px;
-    font-weight: 500;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
+    #loginModal .close-modal {
+        font-size: 20px;
+        font-weight: 500;
+        color: #aaa;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
 
-  .close-modal:hover {
-    color: #000;
-  }
+    #loginModal .close-modal:hover {
+        color: #000;
+    }
 
-  .modal-body {
-    padding: 20px 24px;
-    text-align: center;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+    #loginModal .modal-body {
+        padding: 20px 24px;
+        text-align: center;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-  .modal-icon {
-    margin-bottom: 16px;
-  }
+    #loginModal .modal-icon {
+        margin-bottom: 16px;
+    }
 
-  .modal-icon .fas {
-    font-size: 48px;
-    color: #dc2626;
-  }
+    #loginModal .modal-icon .fas {
+        font-size: 48px;
+        color: #dc2626;
+    }
 
-  .modal-body h3 {
-    margin: 12px 0 8px;
-    color: #333;
-    font-size: 18px;
-    font-weight: 700;
-  }
+    #loginModal .modal-body h3 {
+        margin: 12px 0 8px;
+        color: #333;
+        font-size: 18px;
+        font-weight: 700;
+    }
 
-  .modal-body p {
-    margin: 12px 0;
-    color: #555;
-    line-height: 1.6;
-    font-size: 14px;
-  }
+    #loginModal .modal-body p {
+        margin: 12px 0;
+        color: #555;
+        line-height: 1.6;
+        font-size: 14px;
+    }
 
   .modal-footer {
     padding: 16px 24px 24px;
@@ -731,6 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 
 <script src="../js/session_checker.js"></script>
+<script src="../assets/js/preview.js"></script>
 
 <?php
 // Include layout footer

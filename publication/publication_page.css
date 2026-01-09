@@ -868,172 +868,7 @@ body.dark-theme .close-modal:hover {
     color: #FFFFFF;
 }
 
-body.dark-theme .modal-body p {
-    color: #B0B0B0;
-}
-
-/* Preview Modal Styles */
-.preview-modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    width: 90vw;
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-modal-content .modal-body {
-    overflow: hidden;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.preview-modal-content .modal-header {
-    text-align: center;
-}
-
-.preview-modal-content .modal-header h3 {
-    text-align: center;
-    margin: 0;
-    width: 100%;
-}
-
-.publication-details {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    border: 1px solid #e9ecef;
-    flex-shrink: 0;
-}
-
-.detail-row {
-    display: flex;
-    margin-bottom: 8px;
-    align-items: flex-start;
-}
-
-.detail-row:has(.abstract-text) {
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.detail-row:has(.abstract-text) strong {
-    margin-bottom: 8px;
-}
-
-.detail-row:last-child {
-    margin-bottom: 0;
-}
-
-.detail-row strong {
-    min-width: 100px;
-    color: #495057;
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.detail-row span {
-    color: #212529;
-}
-
-.abstract-text {
-    background: transparent;
-    padding: 8px 0;
-    border-radius: 0;
-    text-align: center;
-    border: none;
-    margin-top: 4px;
-    line-height: 1.4;
-    width: 100%;
-    max-width: 800px;
-}
-
-.preview-iframe-container {
-    width: 100%;
-    height: calc(100% - 200px);
-    margin-bottom: 15px;
-}
-
-.preview-iframe-container iframe {
-    width: 100%;
-    height: 100%;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.preview-content-wrapper {
-    display: flex;
-    gap: 20px;
-    flex: 1;
-    overflow: hidden;
-    align-items: flex-start;
-}
-
-.preview-thumbnail-container {
-    flex: 0 0 300px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 10px;
-    background: transparent;
-    border-radius: 0;
-    border: none;
-}
-
-.preview-thumbnail {
-    max-width: 100%;
-    max-height: 400px;
-    width: 100%;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    object-fit: contain;
-}
-
-.preview-details-container {
-    flex: 1;
-    overflow-y: auto;
-    min-width: 0;
-}
-
-.preview-actions {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e9ecef;
-    z-index: 10001;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-/* Make card action buttons fixed at bottom when in preview modal */
-.preview-modal-content .card-actions {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10001;
-}
-
-.preview-actions .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    text-decoration: none;
-}
+/* Preview modal styles are centralized in layout/layout.css to ensure a single source of truth for the preview modal (see layout/layout.css). Duplicate page-level preview styles removed. */
 
 /* Dark mode for preview modal */
 body.dark-theme .publication-details {
@@ -1114,10 +949,7 @@ body.dark-theme .preview-actions {
         max-width: 85%;
     }
 
-    .preview-modal-content {
-        width: 85vw;
-        height: 85vh;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 }
 
 @media (max-width: 767px) {
@@ -1216,10 +1048,7 @@ body.dark-theme .preview-actions {
         gap: 8px;
     }
 
-    .preview-modal-content {
-        width: 95%;
-        max-height: 85vh;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 
     .preview-content-wrapper {
         flex-direction: column;
@@ -1249,20 +1078,8 @@ body.dark-theme .preview-actions {
         margin-bottom: 3px;
     }
 
-    .preview-actions {
-        flex-wrap: wrap;
-        gap: 8px;
-        width: 95%;
-        padding: 10px;
-    }
-
-    .preview-actions .btn {
-        flex: 1;
-        min-width: 70px;
-        font-size: 10px;
-        padding: 8px;
-    }
-}
+    /* Preview actions layout centralized in layout/layout.css to ensure consistent preview modal styling across the site. */
+} 
 
 @media (max-width: 479px) {
     .upload-section {
@@ -1347,29 +1164,12 @@ body.dark-theme .preview-actions {
         gap: 5px;
     }
 
-    .preview-modal-content {
-        width: 98%;
-        max-height: 80vh;
-    }
-
-    .preview-thumbnail {
-        max-height: 200px;
-    }
+    /* Preview modal responsive styles are now in layout.css */
 
     .publication-details {
         font-size: 10px;
         padding: 8px;
     }
 
-    .preview-actions {
-        width: 94%;
-        padding: 8px;
-        gap: 5px;
-    }
-
-    .preview-actions .btn {
-        font-size: 8px;
-        padding: 6px 4px;
-        min-width: 50px;
-    }
-}
+    /* Preview actions layout centralized in layout/layout.css to ensure consistent preview modal styling across the site. */
+} 

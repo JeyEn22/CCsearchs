@@ -9,195 +9,11 @@ if (!isset($_SESSION['studentID'])) {
   exit();
 }
 
-function generateDocumentPreview($filePath, $previewPath) {
-    $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+// Centralized PDF→image preview helper (uses external API). See includes/pdf_preview.php
+include_once __DIR__ . '/../includes/pdf_preview.php';
 
-    // Define absolute paths from document root
-    $baseDir = realpath(__DIR__ . '/../');
-    $documentsDir = $baseDir . '/uploads/documents';
-    $previewsDir = $baseDir . '/uploads/previews';
-    $coversDir = $baseDir . '/uploads/publications/covers';
-
-    // Ensure all required directories exist with proper permissions
-    $directories = [$documentsDir, $previewsDir, $coversDir];
-    foreach ($directories as $dir) {
-        if (!is_dir($dir)) {
-            if (!mkdir($dir, 0755, true)) {
-                error_log("Failed to create directory: $dir");
-                return 'error';
-            }
-        }
-        // Ensure directory is writable
-        if (!is_writable($dir)) {
-            error_log("Directory not writable: $dir");
-            return 'error';
-        }
-    }
-
-    // Convert relative paths to absolute paths
-    if (!realpath($filePath)) {
-        $filePath = $baseDir . '/' . ltrim($filePath, '/');
-    }
-    if (!realpath(dirname($previewPath))) {
-        $previewPath = $baseDir . '/' . ltrim($previewPath, '/');
-    }
-
-    error_log("Processing file: $filePath");
-    error_log("Preview path: $previewPath");
-
-    if ($fileExtension === 'pdf') {
-        // Verify file exists and is readable
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            error_log("PDF file not accessible: $filePath");
-            createPlaceholderPreview($previewPath, 'PDF Document', 'File not accessible');
-            return 'placeholder';
-        }
-
-        // Verify file is not empty and has minimum size
-        if (filesize($filePath) < 100) {
-            error_log("PDF file is too small: $filePath");
-            createPlaceholderPreview($previewPath, 'PDF Document', 'File appears to be corrupted');
-            return 'placeholder';
-        }
-
-        // Try to validate PDF header
-        $handle = fopen($filePath, 'rb');
-        if ($handle) {
-            $header = fread($handle, 8);
-            fclose($handle);
-            if (strpos($header, '%PDF-') !== 0) {
-                error_log("File does not appear to be a valid PDF: $filePath");
-                createPlaceholderPreview($previewPath, 'PDF Document', 'Invalid PDF format');
-                return 'placeholder';
-            }
-        }
-
-        // Method 1: PHP Imagick
-        if (extension_loaded('imagick') && class_exists('Imagick')) {
-            try {
-                $imagick = new Imagick();
-                $imagick->setResolution(150, 150);
-                $imagick->readImage($filePath . '[0]');
-
-                // Check if image was loaded successfully
-                if ($imagick->getNumberImages() > 0) {
-                    // Get image dimensions to verify it's not empty
-                    $geometry = $imagick->getImageGeometry();
-                    if ($geometry['width'] > 0 && $geometry['height'] > 0) {
-                        $imagick->setImageFormat('jpg');
-                        $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
-                        $imagick->setImageCompressionQuality(90);
-                        $imagick->thumbnailImage(200, 150, true);
-
-                        // Verify the thumbnail was created successfully
-                        $thumbGeometry = $imagick->getImageGeometry();
-                        if ($thumbGeometry['width'] > 0 && $thumbGeometry['height'] > 0) {
-                            $imagick->writeImage($previewPath);
-
-                            // Verify file was written and has content
-                            if (file_exists($previewPath) && filesize($previewPath) > 1000) {
-                                $imagick->clear();
-                                $imagick->destroy();
-                                error_log("PDF preview generated using PHP Imagick: " . $previewPath);
-                                return 'success';
-                            } else {
-                                error_log("PHP Imagick: Generated file is too small or missing");
-                                @unlink($previewPath); // Remove failed file
-                            }
-                        } else {
-                            error_log("PHP Imagick: Thumbnail has invalid dimensions");
-                        }
-                    } else {
-                        error_log("PHP Imagick: Source image has invalid dimensions");
-                    }
-                } else {
-                    error_log("PHP Imagick: No images loaded from PDF");
-                }
-
-                $imagick->clear();
-                $imagick->destroy();
-            } catch (Exception $e) {
-                error_log("PHP Imagick failed: " . $e->getMessage());
-            }
-        }
-
-        // Method 2: ImageMagick convert command
-        if (function_exists('exec')) {
-            try {
-                // Escape paths for Windows/Linux compatibility
-                $escapedFilePath = escapeshellarg($filePath);
-                $escapedPreviewPath = escapeshellarg($previewPath);
-                $command = "convert -density 150 {$escapedFilePath}[0] -quality 90 -resize 200x150 -background white -alpha remove -alpha off {$escapedPreviewPath} 2>nul";
-                exec($command, $output, $returnCode);
-                if ($returnCode === 0 && file_exists($previewPath) && filesize($previewPath) > 1000) {
-                    error_log("PDF preview generated using convert: " . $previewPath);
-                    return 'success';
-                } else {
-                    error_log("Convert command failed with return code: $returnCode");
-                    @unlink($previewPath); // Remove failed file
-                }
-            } catch (Exception $e) {
-                error_log("Convert command exception: " . $e->getMessage());
-            }
-        }
-
-        // Method 3: Ghostscript
-        if (function_exists('exec')) {
-            try {
-                $escapedFilePath = escapeshellarg($filePath);
-                $escapedPreviewPath = escapeshellarg($previewPath);
-                $command = "gswin64c -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -dJPEGQ=90 -dFirstPage=1 -dLastPage=1 -sOutputFile={$escapedPreviewPath} -dPDFFitPage -dDEVICEWIDTHPOINTS=200 -dDEVICEHEIGHTPOINTS=150 {$escapedFilePath} 2>nul";
-                exec($command, $output, $returnCode);
-                if ($returnCode === 0 && file_exists($previewPath) && filesize($previewPath) > 1000) {
-                    error_log("PDF preview generated using Ghostscript: " . $previewPath);
-                    return 'success';
-                } else {
-                    error_log("Ghostscript command failed with return code: $returnCode");
-                    @unlink($previewPath); // Remove failed file
-                }
-            } catch (Exception $e) {
-                error_log("Ghostscript exception: " . $e->getMessage());
-            }
-        }
-
-        // Method 4: pdftoppm
-        if (function_exists('exec')) {
-            try {
-                $tempBase = tempnam(sys_get_temp_dir(), 'pdf_preview');
-                $escapedFilePath = escapeshellarg($filePath);
-                $command = "pdftoppm -f 1 -l 1 -scale-to-x 200 -scale-to-y 280 -jpeg {$escapedFilePath} \"{$tempBase}\" 2>nul";
-                exec($command, $output, $returnCode);
-                if ($returnCode === 0) {
-                    $ppmFile = $tempBase . '-1.jpg';
-                    if (file_exists($ppmFile)) {
-                        rename($ppmFile, $previewPath);
-                        // Clean up temp files
-                        $tempFiles = glob($tempBase . '*');
-                        foreach ($tempFiles as $tempFile) {
-                            @unlink($tempFile);
-                        }
-                        error_log("PDF preview generated using pdftoppm: " . $previewPath);
-                        return 'success';
-                    }
-                }
-                @unlink($tempBase);
-                error_log("pdftoppm command failed with return code: $returnCode");
-            } catch (Exception $e) {
-                error_log("pdftoppm exception: " . $e->getMessage());
-            }
-        }
-
-        // All methods failed -> placeholder
-        error_log("All PDF preview methods failed, creating placeholder");
-        createPlaceholderPreview($previewPath, 'PDF Document', 'First page preview could not be generated.');
-        return 'placeholder';
-    } else {
-        // Unsupported file type
-        error_log("Unsupported file type: $fileExtension");
-        createPlaceholderPreview($previewPath, 'Unsupported File', 'This file type is not supported for preview generation.');
-        return 'placeholder';
-    }
-}
+// The centralized implementation provides generateDocumentPreview($filePath, $previewPath) which
+// returns 'success' when an image was produced and 'placeholder' when a placeholder was created.
 
 function createPlaceholderPreview($previewPath, $documentType, $additionalText = '') {
     try {
@@ -495,7 +311,7 @@ include "../layout/layout.php";
           echo '</div>';
           echo '<div class="posted-by">' . date("M d, Y", strtotime($row2['published_datetime'])) . '</div>';
           echo '<div class="card-actions">';
-          echo '<button onclick="previewPublication(\'' . htmlspecialchars($row2['file_path']) . '\', \'' . htmlspecialchars(addslashes($row2['title'])) . '\', \'' . htmlspecialchars(addslashes($row2['firstName'] . ' ' . $row2['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row2['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row2['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['type'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
+           echo '<button onclick="previewPublication(\'' . htmlspecialchars($row2['file_path']) . '\', \'' . htmlspecialchars(addslashes($row2['title'])) . '\', \'' . htmlspecialchars(addslashes($row2['firstName'] . ' ' . $row2['lastName'])) . '\', \'' . htmlspecialchars(addslashes($row2['published_datetime'])) . '\', \'' . htmlspecialchars(addslashes($row2['abstract'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['department'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['type'] ?? '')) . '\', \'' . htmlspecialchars(addslashes($row2['thumbnail'] ?? '')) . '\')" class="btn btn-primary btn-sm">';
           echo '<i class="fas fa-eye"></i> Preview';
           echo '</button>';
           echo '<button onclick="savePublication(' . $row2['publicationID'] . ', \'' . htmlspecialchars(addslashes($row2['title'])) . '\')" class="btn btn-success btn-sm">';
@@ -842,18 +658,15 @@ include "../layout/layout.php";
         });
     }
 
-    // Close modals when clicking outside
-    window.onclick = function(event) {
-    const uploadModal = document.getElementById("uploadModal");
-    const saveModal = document.getElementById('saveModal');
-    const deleteModal = document.getElementById('deleteModal');
-    const previewModal = document.getElementById('previewModal');
-
-    if (event.target === uploadModal) uploadModal.style.display = "none";
-    if (saveModal && event.target === saveModal) closeSaveModal();
-    if (deleteModal && event.target === deleteModal) closeDeleteModal();
-    if (previewModal && event.target === previewModal) closePreviewModal();
-}
+    // Close modals when clicking outside (upload/save/delete only)
+    window.addEventListener('click', function(event) {
+        const uploadModal = document.getElementById("uploadModal");
+        const saveModal = document.getElementById('saveModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (event.target === uploadModal) uploadModal.style.display = "none";
+        if (saveModal && event.target === saveModal) closeSaveModal();
+        if (deleteModal && event.target === deleteModal) closeDeleteModal();
+    });
 
 // Publication search (titles)
 document.addEventListener('DOMContentLoaded', () => {
@@ -884,69 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Publication preview functionality
-function previewPublication(filePath, title, author, publishDate, abstract, department, type, thumbnail) {
-    // Format the publication date
-    const formattedDate = new Date(publishDate).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    // Create preview modal
-    const modal = document.createElement('div');
-    modal.id = 'previewModal';
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content preview-modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close-modal" onclick="closePreviewModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="preview-content-wrapper">
-                    ${thumbnail ? `<div class="preview-thumbnail-container">
-                        <img src="../${thumbnail}?t=${Date.now()}" alt="Document preview" class="preview-thumbnail">
-                    </div>` : ''}
-                    <div class="preview-details-container">
-                <div class="publication-details">
-                    <div class="detail-row">
-                        <strong>Author:</strong> <span>${author}</span>
-                    </div>
-                    <div class="detail-row">
-                        <strong>Published:</strong> <span>${formattedDate}</span>
-                    </div>
-                    ${department ? `<div class="detail-row"><strong>Department:</strong> <span>${department}</span></div>` : ''}
-                    ${type ? `<div class="detail-row"><strong>Type:</strong> <span>${type}</span></div>` : ''}
-                </div>
-                <div class="abstract-section">
-                    <div class="abstract-label"><strong>Abstract:</strong></div>
-                    <div class="abstract-text">${abstract || 'No abstract available.'}</div>
-                </div>
-                    </div>
-                </div>
-                <div class="preview-actions">
-                    <a href="../${filePath}" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> View Full Document
-                    </a>
-                    <a href="../${filePath}" download class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-}
-
-function closePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    if (modal) {
-        modal.remove();
-    }
-}
+// Preview handled by centralized script: ../assets/js/preview.js
 
 // Ensure a goBack function exists for Back links (history-first, then referrer, then fallback)
 if (typeof window.goBack !== 'function') {
@@ -967,5 +718,7 @@ if (typeof window.goBack !== 'function') {
     };
 }
 </script>
+
+<script src="../assets/js/preview.js"></script>
 
 
